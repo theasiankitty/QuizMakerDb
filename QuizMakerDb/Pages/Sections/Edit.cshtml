@@ -1,0 +1,70 @@
+﻿@page
+@model QuizMakerDb.Pages.Sections.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Section</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Section.Id" />
+            <div class="form-group">
+                <label asp-for="Section.Name" class="control-label"></label>
+                <input asp-for="Section.Name" class="form-control" />
+                <span asp-validation-for="Section.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.SchoolYearId" class="control-label"></label>
+                <select asp-for="Section.SchoolYearId" class="form-control" asp-items="ViewBag.SchoolYearId"></select>
+                <span asp-validation-for="Section.SchoolYearId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.CourseYearId" class="control-label"></label>
+                <select asp-for="Section.CourseYearId" class="form-control" asp-items="ViewBag.CourseYearId"></select>
+                <span asp-validation-for="Section.CourseYearId" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Section.Active" /> @Html.DisplayNameFor(model => model.Section.Active)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.CreatedBy" class="control-label"></label>
+                <input asp-for="Section.CreatedBy" class="form-control" />
+                <span asp-validation-for="Section.CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.CreatedDate" class="control-label"></label>
+                <input asp-for="Section.CreatedDate" class="form-control" />
+                <span asp-validation-for="Section.CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.UpdatedBy" class="control-label"></label>
+                <input asp-for="Section.UpdatedBy" class="form-control" />
+                <span asp-validation-for="Section.UpdatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Section.UpdatedDate" class="control-label"></label>
+                <input asp-for="Section.UpdatedDate" class="form-control" />
+                <span asp-validation-for="Section.UpdatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

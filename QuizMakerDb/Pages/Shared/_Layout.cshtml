@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Quiz Maker</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="title" content="Quiz Maker">
+	@{
+		var fontLink = "https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css";
+	}
+	<link rel="stylesheet" href="@fontLink" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/styles/overlayscrollbars.min.css" integrity="sha256-dSokZseQNT08wYEWiz5iLI8QPlKxG+TswNRD8k35cpg=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css" integrity="sha256-Qsx5lrStHZyR9REqhUF8iQt73X06c8LGIUPzpOhwRrI=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous">
+	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="~/lib/admin-lte/css/adminlte.min.css" rel="stylesheet" />
+	<link href="~/css/site.css" rel="stylesheet" />
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+	<div class="app-wrapper">
+		<nav class="app-header navbar navbar-expand bg-body">
+			<div class="container-fluid">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+							<i class="bi bi-list"></i>
+						</a>
+					</li>
+				</ul>
+				<ul class="navbar-nav d-block d-md-none">
+					<a asp-area="" asp-page="/Index" class="brand-link">
+						Quiz Maker
+					</a>
+				</ul>
+				<ul class="navbar-nav ms-md-auto">
+					<partial name="_LoginPartial" />
+				</ul>
+			</div>
+		</nav>
+
+		<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+			<div class="sidebar-brand">
+				<a asp-area="" asp-page="/Index" class="brand-link">
+					<span class="brand-text fw-light fs-5">Quiz Maker</span>
+				</a>
+			</div>
+
+			<div class="sidebar-wrapper sidebar-no-expand ">
+				<nav class="mt-2">
+					<ul class="nav sidebar-menu flex-column" role="menu">
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Index" class="nav-link">
+								<i class="nav-icon bi bi-house"></i>
+								<p>Home</p>
+							</a>
+						</li>
+						<li class="nav-header">MEMBERS</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Teachers/Index" class="nav-link">
+								<i class="nav-icon bi bi-person-vcard"></i>
+								<p>Teachers</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Students/Index" class="nav-link">
+								<i class="nav-icon bi bi-people"></i>
+								<p>Students</p>
+							</a>
+						</li>
+						<li class="nav-header">MANAGEMENT</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/SchoolYears/Index" class="nav-link">
+								<i class="nav-icon bi bi-calendar-date"></i>
+								<p>School Years</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Courses/Index" class="nav-link">
+								<i class="nav-icon bi bi-bar-chart"></i>
+								<p>Courses</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/CourseYears/Index" class="nav-link">
+								<i class="nav-icon bi bi-clipboard2-data"></i>
+								<p>Course Years</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Sections/Index" class="nav-link">
+								<i class="nav-icon bi bi-person-rolodex"></i>
+								<p>Sections</p>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</aside>
+		<main class="app-main">
+			<div class="app-content-header">
+				<div class="container-fluid">
+					@RenderBody()
+				</div>
+			</div>
+		</main>
+		<footer class="app-footer">
+			<div class="float-end d-none d-sm-inline"></div>
+			<strong>
+				&copy; 2024 - Quiz Maker - <a asp-area="" asp-page="/Privacy">Privacy</a>
+			</strong>
+		</footer>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-H2VM7BKda+v2Z4+DRy69uknwxjyDRhszjXFhsL4gD3w=" crossorigin="anonymous"></script>
+	@{
+		var popperJsLink = "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js";
+	}
+	<script src="@popperJsLink" integrity="sha256-whL0tQWoY1Ku1iskqPFvmZ+CHsvmRWx/PIoEvIeWh4I=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha256-YMa+wAM6QkVyz999odX7lPRxkoYAan8suedu4k2Zur8=" crossorigin="anonymous"></script>
+	<script>
+		const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
+		const Default = {
+			scrollbarTheme: "os-theme-light",
+			scrollbarAutoHide: "leave",
+			scrollbarClickScroll: true,
+		};
+		document.addEventListener("DOMContentLoaded", function () {
+			const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+			if (
+				sidebarWrapper &&
+				typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
+			) {
+				OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+					scrollbars: {
+						theme: Default.scrollbarTheme,
+						autoHide: Default.scrollbarAutoHide,
+						clickScroll: Default.scrollbarClickScroll,
+					},
+				});
+			}
+		});
+	</script>
+	<script src="~/lib/admin-lte/js/adminlte.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="~/js/site.js"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

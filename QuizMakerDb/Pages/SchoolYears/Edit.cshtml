@@ -1,0 +1,60 @@
+﻿@page
+@model QuizMakerDb.Pages.SchoolYears.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item fs-3"><a asp-page="Index">School Years</a></li>
+            <li class="breadcrumb-item fs-3 active" aria-current="page">Edit</li>
+        </ol>
+    </nav>
+    <form class="row justify-content-center mt-3" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="SchoolYearVM.Id" type="hidden" />
+        <input asp-for="SchoolYearVM.CreatedBy" type="hidden" />
+        <input asp-for="SchoolYearVM.CreatedDate" type="hidden" />
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+            <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                    <div class="card-title fw-medium">Edit School Year</div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="SchoolYearVM.Name" class="form-label"></label>
+                                    <input asp-for="SchoolYearVM.Name" class="form-control" placeholder="First Name" maxlength="30" />
+                                    <span asp-validation-for="SchoolYearVM.Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input asp-for="SchoolYearVM.Active" class="form-check-input" type="checkbox" tabindex="-1" />
+                                <label class="form-check-label ps-1">Active</label>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

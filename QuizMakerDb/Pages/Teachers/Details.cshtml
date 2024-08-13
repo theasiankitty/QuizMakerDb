@@ -1,0 +1,112 @@
+﻿@page
+@model QuizMakerDb.Pages.Teachers.DetailsModel
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">Teachers</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Details</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Teacher Details</div>
+					<div class="card-tools">
+						<a href="./Edit?id=@Model.TeacherVM.Id" class="btn btn-block shadow-none p-0 pe-2">
+							<i class="bi bi-pencil-square fs-5"></i>
+						</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+                            <div class="col-md-12 col-lg-12 col-xl-6">
+								<div class="info-box">
+									<span class="info-box-icon text-bg-primary shadow-sm">
+										<i class="bi bi-person"></i>
+									</span>
+									<div class="info-box-content">
+										<span class="info-box-text">
+											@Html.DisplayNameFor(model => model.TeacherVM.Teacher)
+										</span>
+										<span class="info-box-number">
+											@Html.DisplayFor(model => model.TeacherVM.Teacher)
+										</span>
+									</div>
+								</div>
+							</div>
+                            <div class="col-md-12 col-lg-12 col-xl-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        @if (Model.TeacherVM.SexDescription == "Male")
+                                        {
+                                            <i class="bi bi-gender-male"></i>
+                                        }
+
+                                        else if (Model.TeacherVM.SexDescription == "Female")
+                                        {
+                                            <i class="bi bi-gender-female"></i>
+                                        }
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.TeacherVM.SexDescription)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.TeacherVM.SexDescription)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-xl-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.TeacherVM.Email)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.TeacherVM.Email)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-xl-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-123"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.TeacherVM.UserName)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.TeacherVM.UserName)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-12 text-end">
+							<a asp-page="Index" class="btn btn-secondary">Back</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

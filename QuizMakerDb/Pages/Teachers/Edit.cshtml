@@ -1,0 +1,105 @@
+﻿@page
+@model QuizMakerDb.Pages.Teachers.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item fs-3"><a asp-page="Index">Teachers</a></li>
+            <li class="breadcrumb-item fs-3 active" aria-current="page">Edit</li>
+        </ol>
+    </nav>
+    <form class="row justify-content-center mt-3" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="TeacherVM.Id" type="hidden" />
+        <input asp-for="TeacherVM.UserId" type="hidden" />
+        <input asp-for="TeacherVM.CreatedBy" type="hidden" />
+        <input asp-for="TeacherVM.CreatedDate" type="hidden" />
+        <div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+            <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                    <div class="card-title fw-medium">Create Teacher</div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.FirstName" class="form-label"></label>
+                                    <input asp-for="TeacherVM.FirstName" class="form-control" placeholder="First Name" maxlength="30" />
+                                    <span asp-validation-for="TeacherVM.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.MiddleName" class="form-label"></label>
+                                    <input asp-for="TeacherVM.MiddleName" class="form-control" placeholder="Middle Name" maxlength="30" />
+                                    <span asp-validation-for="TeacherVM.MiddleName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.LastName" class="form-label"></label>
+                                    <input asp-for="TeacherVM.LastName" class="form-control" placeholder="Last Name" maxlength="30" />
+                                    <span asp-validation-for="TeacherVM.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.Sex" class="form-label"></label>
+                                    <select asp-for="TeacherVM.Sex" asp-items="Html.GetEnumSelectList<Sex>()" class="form-control form-select" onchange="onChangeSex()"></select>
+                                    <span asp-validation-for="TeacherVM.Sex" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.Email" class="form-label"></label>
+                                    <input asp-for="TeacherVM.Email" class="form-control" placeholder="name@example.com" maxlength="100" />
+                                    <span asp-validation-for="TeacherVM.Email"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="TeacherVM.UserName" class="form-label"></label>
+                                    <input asp-for="TeacherVM.UserName" class="form-control" placeholder="Username" maxlength="20" />
+                                    <span asp-validation-for="TeacherVM.UserName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input asp-for="TeacherVM.Active" class="form-check-input" type="checkbox" tabindex="-1" />
+                                <label class="form-check-label ps-1">Active</label>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function onChangeSex() {
+            var value = event.srcElement.value;
+        }
+    </script>
+}
+

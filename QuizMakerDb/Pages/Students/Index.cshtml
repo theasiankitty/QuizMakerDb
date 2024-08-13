@@ -1,0 +1,364 @@
+﻿@page
+@using QuizMakerDb.Data.Identity
+@model QuizMakerDb.Pages.Students.IndexModel
+@inject UserManager<AppUser> userManager
+@{
+    ViewData["Title"] = "Index";
+
+    var user = await userManager.GetUserAsync(User);
+
+    bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+
+    var hasStudents = Model.Students.Count > 0;
+
+    var firstDisabled = Model.Students.PageIndex == 1 ? "disabled" : "";
+    var lastDisabled = Model.Students.PageIndex == Model.Students.TotalPages ? "disabled" : "";
+    var prevDisabled = !Model.Students.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Students.HasNextPage ? "disabled" : "";
+
+    int length = 3;
+    int start = 1;
+    int center = Math.Abs(length / 2) + 1;
+    if (Model.Students.PageIndex < center)
+    {
+        start = 1;
+    }
+    else
+    {
+        start = (Model.Students.PageIndex - center) + 1;
+    }
+    int end = start + length;
+    if (Model.Students.TotalPages == 1)
+        end = 1;
+    if (end > Model.Students.TotalPages)
+    {
+        end = Model.Students.TotalPages + 1;
+        start = end - length;
+        if (start < 1)
+        {
+            start = 1;
+            end = length;
+        }
+    }
+}
+
+<div class="container-fluid mb-3">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3" aria-current="page">Students</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-end mt-3" asp-page="./Index" method="get">
+		<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
+		<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
+		<div class="col-5">
+			<a asp-page="Create" class="btn btn-outline-primary btn-block text-center">
+				<i class="bi bi-plus-lg"></i>
+				Create
+			</a>
+		</div>
+		<div class="col-7 text-end">
+			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
+				<i class="bi bi-search"></i>
+				Search
+			</button>
+			<a class="btn btn-primary btn-block"
+			   asp-page="./Index"
+			   asp-route-sortColumn=""
+			   asp-route-sortOrder=""
+			   asp-route-pageIndex="1"
+			   asp-route-searchStudent="">
+				<i class="bi bi-arrow-clockwise"></i>
+				Refresh
+			</a>
+		</div>
+	</form>
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title fw-medium">Students</h3>
+				</div>
+				@if (hasStudents)
+				{
+					<div class="card-body">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														#
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "id")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									<th class="bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="student" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														@Html.DisplayNameFor(model => model.Students[0].Student)
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "student")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									<th class="bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="username" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														@Html.DisplayNameFor(model => model.Students[0].UserName)
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "username")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									<th class="bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="sex" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														@Html.DisplayNameFor(model => model.Students[0].SexDescription)
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "sex")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									<th class="bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="email" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														@Html.DisplayNameFor(model => model.Students[0].Email)
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "email")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									@if (isAdmin)
+									{
+										<th class="bg-body-secondary bg-gradient" style="min-width: 125px; width: 130px;"></th>
+									}
+
+									else
+									{
+										<th class="bg-body-secondary bg-gradient" style="min-width: 90px; width: 90px;"></th>
+									}
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in Model.Students)
+								{
+									<tr class="align-middle">
+										<td class="d-none d-md-table-cell">
+											@Html.DisplayFor(modelItem => item.Id)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.Student)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.UserName)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.SexDescription)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.Email)
+										</td>
+										<td class="text-center">
+											<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">
+												<i class="bi bi-pencil-square"></i>
+											</a>
+											<a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm btn-block">
+												<i class="bi bi-eye"></i>
+											</a>
+											@if (isAdmin)
+											{
+												<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm btn-block">
+													<i class="bi bi-trash3"></i>
+												</a>
+											}
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+					<div class="card-footer clearfix">
+						<div class="container-fluid">
+							<div class="row justify-content-end">
+								<div class="col text-start d-none d-sm-block">
+									<small>@Model.TotalItems record@(Model.TotalItems != 1 ? "s" : "") in total</small>
+								</div>
+								@if (Model.TotalItems > 10)
+								{
+									<div class="col text-end">
+										<a asp-page="./Index"
+										   asp-route-sortColumn="@Model.SortColumn"
+										   asp-route-sortOrder="@Model.SortOrder"
+										   asp-route-pageIndex="1"
+										   asp-route-searchStudent="@Model.SearchStudent"
+										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == 1 ? "disabled" : "")">
+											<i class="nav-icon bi bi-chevron-double-left"></i>
+										</a>
+
+										<a asp-page="./Index"
+										   asp-route-sortColumn="@Model.SortColumn"
+										   asp-route-sortOrder="@Model.SortOrder"
+										   asp-route-pageIndex="@(Model.Students.PageIndex - 1)"
+										   asp-route-searchStudent="@Model.SearchStudent"
+										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex <= 1 ? "disabled" : "")">
+											<i class="nav-icon bi bi-chevron-left"></i>
+										</a>
+
+										@for (int i = start; i < end; i++)
+										{
+											<a asp-page="./Index"
+											   asp-route-sortColumn="@Model.SortColumn"
+											   asp-route-sortOrder="@Model.SortOrder"
+											   asp-route-pageIndex="@i"
+											   asp-route-searchStudent="@Model.SearchStudent"
+											   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == i ? "disabled" : "")">
+												@i
+											</a>
+										}
+
+										<a asp-page="./Index"
+										   asp-route-sortColumn="@Model.SortColumn"
+										   asp-route-sortOrder="@Model.SortOrder"
+										   asp-route-pageIndex="@(Model.Students.PageIndex + 1)"
+										   asp-route-searchStudent="@Model.SearchStudent"
+										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex >= Model.Students.TotalPages ? "disabled" : "")">
+											<i class="nav-icon bi bi-chevron-right"></i>
+										</a>
+
+										<a asp-page="./Index"
+										   asp-route-sortColumn="@Model.SortColumn"
+										   asp-route-sortOrder="@Model.SortOrder"
+										   asp-route-pageIndex="@Model.Students.TotalPages"
+										   asp-route-searchStudent="@Model.SearchStudent"
+										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == Model.Students.TotalPages ? "disabled" : "")">
+											<i class="nav-icon bi bi-chevron-double-right"></i>
+										</a>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				}
+				else
+				{
+					<div style="height: 400px">
+						<div class="h-100 d-flex justify-content-center align-items-center">
+							<div class="container-fluid">
+								<div class="row justify-content-center">
+									<div class="col-12 text-center text-secondary">
+										<h2>No Records Found</h2>
+									</div>
+									<div class="col-12 text-center text-secondary">
+										<i class="bi bi-folder-x display-1"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">
+					<span class="pe-1">Search</span>
+					<i class="bi bi-search"></i>
+				</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form asp-page="./Index" method="get">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
+				<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row gap-3">
+							<div class="col-12">
+								<input class="form-control" type="text" name="SearchStudent" value="@Model.SearchStudent" placeholder="Search Student" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" value="Search" type="submit">Search</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,84 @@
+﻿@page
+@model LoginModel
+
+@{
+	ViewData["Title"] = "Log in";
+	Layout = "/Pages/Shared/_LayoutEmpty.cshtml";
+}
+
+<div class="login-page bg-body-secondary">
+	<div class="login-box">
+		<div class="login-logo">
+			<a href="#">
+				Quiz Maker
+			</a>
+		</div>
+		<div class="card">
+			<div class="card-body login-card-body">
+				<p class="login-box-msg">Sign in</p>
+				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+				<form id="account" method="post">
+					<div class="input-group">
+						<input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+						<div class="input-group-text">
+							<i class="bi bi-person-bounding-box"></i>
+						</div>
+					</div>
+					<span asp-validation-for="Input.Username" class="text-danger"></span>
+					<div class="input-group mt-3">
+						<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
+						<button class="btn btn-outline-secondary btn-block" id="toggle_password" type="button">
+							<i class="bi bi-eye" id="show_icon"></i>
+							<i class="bi bi-eye-slash" id="hide_icon"></i>
+						</button>
+					</div>
+					<span asp-validation-for="Input.Password" class="text-danger"></span>
+					<div class="row">
+						<div class="col-12 mt-3">
+							<div class="form-check">
+								<label asp-for="Input.RememberMe" class="form-label">
+									<input class="form-check-input" asp-for="Input.RememberMe" />
+									@Html.DisplayNameFor(m => m.Input.RememberMe)
+								</label>
+							</div>
+						</div>
+						<div class="col-12 mt-3">
+							<div class="d-grid gap-2">
+								<button id="login-submit" type="submit" class="w-100 btn btn-primary">Log in</button>
+							</div>
+						</div>
+					</div>
+				</form>
+				<p class="mb-1 text-center mt-3">
+					<a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+
+	<script>
+		$(document).ready(function () {
+			$('#hide_icon').hide();
+
+			$('#toggle_password').click(function () {
+				const passwordField = $('#Input_Password');
+				const showIcon = $('#show_icon');
+				const hideIcon = $('#hide_icon');
+
+				if (passwordField.attr('type') === 'password') {
+					passwordField.attr('type', 'text');
+					showIcon.hide();
+					hideIcon.show();
+				} else {
+					passwordField.attr('type', 'password');
+					showIcon.show();
+					hideIcon.hide();
+				}
+			});
+		});
+	</script>
+}
