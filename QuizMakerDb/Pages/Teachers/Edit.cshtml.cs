@@ -98,6 +98,7 @@ namespace QuizMakerDb.Pages.Teachers
             }
 
             teacherIdentity.UserName = teacher.UserName;
+            teacherIdentity.Email = teacher.Email;
 
             _context.Attach(teacher).State = EntityState.Modified;
 

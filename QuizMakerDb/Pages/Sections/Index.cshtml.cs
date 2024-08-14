@@ -25,7 +25,7 @@ namespace QuizMakerDb.Pages.Sections
 		public string SearchSection { get; set; } = string.Empty!;
 		public string SearchSchoolYear { get; set; } = string.Empty!;
 		public string SearchCourse { get; set; } = string.Empty!;
-		public string SearchCourseYear { get; set; } = string.Empty!;
+		public string SearchYear { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
         public static string GetEnumDisplayName(Enum value)
@@ -35,7 +35,7 @@ namespace QuizMakerDb.Pages.Sections
             return attribute?.Name ?? value.ToString();
         }
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchCourseYear)
+        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchYear)
 		{
 			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
 			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
@@ -45,7 +45,7 @@ namespace QuizMakerDb.Pages.Sections
 			searchSection = string.IsNullOrEmpty(searchSection) ? "" : searchSection;
 			searchSchoolYear = string.IsNullOrEmpty(searchSchoolYear) ? "" : searchSchoolYear;
 			searchCourse = string.IsNullOrEmpty(searchCourse) ? "" : searchCourse;
-			searchCourseYear = string.IsNullOrEmpty(searchCourseYear) ? "" : searchCourseYear;
+			searchYear = string.IsNullOrEmpty(searchYear) ? "" : searchYear;
 
 
 			if (_context.Sections != null)
@@ -54,7 +54,6 @@ namespace QuizMakerDb.Pages.Sections
 
 				sections = sections
 					.Include(m => m.SchoolYearInfo)
-					.Include(m => m.CourseYearInfo)
 					.OrderByDescending(o => o.Id);
 
 				if (!string.IsNullOrEmpty(searchSection))
@@ -71,12 +70,12 @@ namespace QuizMakerDb.Pages.Sections
 
 				if (!string.IsNullOrEmpty(searchCourse))
 				{
-					sections = sections.Where(m => m.CourseYearInfo.CourseId == int.Parse(searchCourse));
+					sections = sections.Where(m => m.CourseInfo.Id == int.Parse(searchCourse));
 				}
 
-				if (!string.IsNullOrEmpty(searchCourseYear))
+				if (!string.IsNullOrEmpty(searchYear))
 				{
-					sections = sections.Where(m => m.CourseYearInfo.Year == byte.Parse(searchCourseYear));
+					sections = sections.Where(m => m.Year == byte.Parse(searchYear));
 				}
 
 				switch (sortColumn)
@@ -94,12 +93,12 @@ namespace QuizMakerDb.Pages.Sections
 							: sections.OrderByDescending(o => o.SchoolYearInfo.Name);
 						break;
 					case "course":
-						sections = SortOrder == "asc" ? sections.OrderBy(o => o.CourseYearInfo.CourseInfo.Name)
-							: sections.OrderByDescending(o => o.CourseYearInfo.CourseInfo.Name);
+						sections = SortOrder == "asc" ? sections.OrderBy(o => o.CourseInfo.Name)
+							: sections.OrderByDescending(o => o.CourseInfo.Name);
 						break;
-					case "course_year":
-						sections = SortOrder == "asc" ? sections.OrderBy(o => o.CourseYearInfo.Year)
-							: sections.OrderByDescending(o => o.CourseYearInfo.Year);
+					case "year":
+						sections = SortOrder == "asc" ? sections.OrderBy(o => o.Year)
+							: sections.OrderByDescending(o => o.Year);
 						break;
 				}
 
@@ -113,8 +112,8 @@ namespace QuizMakerDb.Pages.Sections
 						Id = m.Id,
 						Name = m.Name,
 						SchoolYearName = m.SchoolYearInfo.Name,
-						CourseName = m.CourseYearInfo.CourseInfo.Name,
-						CourseYear = GetEnumDisplayName((YearLevel)m.CourseYearInfo.Year),
+						CourseName = m.CourseInfo.Name,
+						Year = GetEnumDisplayName((YearLevel)m.Year),
 					}).AsNoTracking(),
 					pageIndex ?? 1,
 					pageSize

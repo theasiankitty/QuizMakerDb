@@ -2,70 +2,115 @@
 @model QuizMakerDb.Pages.Sections.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
+
+	var message = TempData["Message"] as string;
+	var messageType = TempData["MessageType"] as string;
+	var sectionId = TempData["SectionId"] as int?;
 }
 
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item fs-3"><a asp-page="Index">Sections</a></li>
-            <li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
-        </ol>
-    </nav>
-    <form class="row justify-content-center mt-3" method="post">
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
-            <div class="card card-primary card-outline mb-4">
-                <div class="card-header">
-                    <div class="card-title fw-medium">Create Section</div>
-                </div>
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SectionVM.Name" class="form-label"></label>
-                                    <input asp-for="SectionVM.Name" class="form-control" placeholder="Name" maxlength="30" />
-                                    <span asp-validation-for="SectionVM.Name" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SectionVM.CourseYearId" class="form-label"></label>
-                                    <select asp-for="SectionVM.CourseYearId" asp-items="ViewBag.CourseYears" class="form-select"></select>
-                                    <span asp-validation-for="SectionVM.CourseYearId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SectionVM.SchoolYearId" class="form-label"></label>
-                                    <select asp-for="SectionVM.SchoolYearId" asp-items="ViewBag.SchoolYears" class="form-select"></select>
-                                    <span asp-validation-for="SectionVM.SchoolYearId" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input asp-for="SectionVM.Active" class="form-check-input bg-secondary border-secondary custom-disabled-checkbox" type="checkbox" tabindex="-1" checked />
-                                <label class="form-check-label ps-1">Active</label>
-                            </div>
-                        </div>
-                        <div class="col-6 text-end">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">Sections</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Create Section</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SectionVM.Name" class="form-label"></label>
+									<input asp-for="SectionVM.Name" class="form-control" placeholder="Name" maxlength="30" />
+									<span asp-validation-for="SectionVM.Name" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SectionVM.SchoolYearId" class="form-label"></label>
+									<select asp-for="SectionVM.SchoolYearId" asp-items="ViewBag.SchoolYears" class="form-select"></select>
+									<span asp-validation-for="SectionVM.SchoolYearId" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SectionVM.CourseId" class="form-label"></label>
+									<select asp-for="SectionVM.CourseId" asp-items="ViewBag.Courses" class="form-select"></select>
+									<span asp-validation-for="SectionVM.CourseId" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SectionVM.Year" class="form-label"></label>
+									<select class="form-control form-select" asp-for="SectionVM.Year" asp-items="Html.GetEnumSelectList<YearLevel>()"></select>
+									<span asp-validation-for="SectionVM.Year" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-6">
+							<div class="form-group">
+								<input asp-for="SectionVM.Active" class="form-check-input bg-secondary border-secondary custom-disabled-checkbox" type="checkbox" tabindex="-1" checked />
+								<label class="form-check-label ps-1">Active</label>
+							</div>
+						</div>
+						<div class="col-6 text-end">
+							<input type="submit" value="Create" class="btn btn-primary" />
+							<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="modal fade" id="messageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="messageModalLabel">Section</h5>
+			</div>
+			<div class="modal-body">
+				<p id="modalMessage"></p>
+			</div>
+			<div class="modal-footer">
+				<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+				@if (sectionId.HasValue)
+				{
+					<a href="/SectionStudents?sectionId=@sectionId" class="btn btn-primary" id="addStudentButton">Add Students</a>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		$(document).ready(function () {
+			var message = "@message";
+			var sectionId = "@sectionId";
+
+			if (message) {
+				$('#modalMessage').text(message);
+				$('#messageModal').modal('show');
+			}
+		});
+	</script>
 }

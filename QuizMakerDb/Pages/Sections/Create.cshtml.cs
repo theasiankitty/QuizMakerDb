@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,19 +6,21 @@ using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
 using QuizMakerDb.Data.ViewModels;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace QuizMakerDb.Pages.Sections
 {
-	public class CreateModel : PageModel
-	{
-		private readonly ApplicationDbContext _context;
-		private readonly UserManager<AppUser> _userManager;
+    public class CreateModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-		public CreateModel(ApplicationDbContext context, UserManager<AppUser> userManager)
-		{
-			_context = context;
-			_userManager = userManager;
-		}
+        public CreateModel(ApplicationDbContext context, UserManager<AppUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
         public static string GetEnumDisplayName(Enum value)
         {
@@ -34,54 +30,63 @@ namespace QuizMakerDb.Pages.Sections
         }
 
         public IActionResult OnGet()
-		{
-			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
+        {
+            ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
+            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
 
-			var courseYears = _context.CourseYears
-				.Select(m => new CourseYearVM
-				{
-					Id = m.Id,
-					CourseYearName = m.CourseInfo.Name + " - " + GetEnumDisplayName((YearLevel)m.Year)
-                });
+            return Page();
+        }
 
-			ViewData["CourseYears"] = new SelectList(courseYears, "Id", "CourseYearName");
+        [BindProperty]
+        public SectionVM SectionVM { get; set; } = default!;
 
-			return Page();
-		}
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-		[BindProperty]
-		public SectionVM SectionVM { get; set; } = default!;
+            var creator = await _userManager.GetUserAsync(User);
 
-		public async Task<IActionResult> OnPostAsync()
-		{
-			if (!ModelState.IsValid)
-			{
-				return Page();
-			}
+            if (creator == null)
+            {
+                TempData["Message"] = "User not found. Section could not be created.";
+                TempData["MessageType"] = "error";
+                return RedirectToPage("./Index");
+            }
 
-			var creator = await _userManager.GetUserAsync(User);
+            try
+            {
+                var section = new Section
+                {
+                    Name = SectionVM.Name,
+                    SchoolYearId = SectionVM.SchoolYearId,
+                    CourseId = SectionVM.CourseId,
+                    Year = byte.Parse(SectionVM.Year),
+                    Active = true,
+                    CreatedBy = creator.Id,
+                    CreatedDate = DateTime.Now,
+                    UpdatedBy = null,
+                    UpdatedDate = null
+                };
 
-			if (creator == null)
-			{
-				return NotFound();
-			}
+                _context.Sections.Add(section);
+                await _context.SaveChangesAsync();
 
-			var section = new Section
-			{
-				Name = SectionVM.Name,
-				SchoolYearId = SectionVM.SchoolYearId,
-				CourseYearId = SectionVM.CourseYearId,
-				Active = true,
-				CreatedBy = creator.Id,
-				CreatedDate = DateTime.Now,
-				UpdatedBy = null,
-				UpdatedDate = null
-			};
+                TempData["Message"] = "Section successfully created!";
+                TempData["MessageType"] = "success";
+                TempData["SectionId"] = section.Id;
 
-			_context.Sections.Add(section);
-			await _context.SaveChangesAsync();
+                return RedirectToPage();
+            }
+            catch (Exception)
+            {
+                TempData["Message"] = "An error occurred while creating the section. Please try again.";
+                TempData["MessageType"] = "error";
 
-			return RedirectToPage("./Index");
-		}
-	}
+                return RedirectToPage();
+            }
+        }
+    }
 }

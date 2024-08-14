@@ -15,14 +15,14 @@ namespace QuizMakerDb.Data.ViewModels
 		[Display(Name = "School Year")]
 		public string SchoolYearName { get; set; } = string.Empty;
 
-		[Display(Name = "Course Year")]
-		public int CourseYearId { get; set; }
+		[Display(Name = "Course")]
+		public int CourseId { get; set; }
 
 		[Display(Name = "Course")]
 		public string CourseName { get; set; } = string.Empty;
 
-		[Display(Name = "Course Year")]
-		public string CourseYear { get; set; } = string.Empty;
+		[Display(Name = "Year")]
+		public string Year { get; set; } = string.Empty;
 
 		public bool Active { get; set; }
 

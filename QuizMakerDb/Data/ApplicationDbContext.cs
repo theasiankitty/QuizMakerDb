@@ -15,10 +15,10 @@ namespace QuizMakerDb.Data
 
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Course> Courses { get; set; }
         public DbSet<SchoolYear> SchoolYears { get; set; }
-        public DbSet<CourseYear> CourseYears { get; set; }
+        public DbSet<Course> Courses { get; set; }
         public DbSet<Section> Sections { get; set; }
+        public DbSet<SectionStudent> SectionStudents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

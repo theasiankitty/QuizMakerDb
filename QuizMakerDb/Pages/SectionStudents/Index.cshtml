@@ -1,0 +1,505 @@
+﻿@page
+@using QuizMakerDb.Data.Identity
+@model QuizMakerDb.Pages.SectionStudents.IndexModel
+@inject UserManager<AppUser> userManager
+@{
+	ViewData["Title"] = "Index";
+
+	var user = await userManager.GetUserAsync(User);
+
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+
+	var hasStudentSections = Model.StudentSections.Count > 0;
+
+	var firstDisabled = Model.StudentSections.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.StudentSections.PageIndex == Model.StudentSections.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.StudentSections.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.StudentSections.HasNextPage ? "disabled" : "";
+
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+	if (Model.StudentSections.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.StudentSections.PageIndex - center) + 1;
+	}
+	int end = start + length;
+	if (Model.StudentSections.TotalPages == 1)
+		end = 1;
+	if (end > Model.StudentSections.TotalPages)
+	{
+		end = Model.StudentSections.TotalPages + 1;
+		start = end - length;
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
+
+	var hasStudent = TempData["HasStudent"] as string;
+}
+
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a href="/Sections/Index">Sections</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">@Model.SectionVM.Name</li>
+		</ol>
+	</nav>
+	<div class="row justify-content-end mt-3">
+		<form class="col-12 text-end" asp-page="./Index" method="get">
+			@Html.AntiForgeryToken()
+			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
+				<i class="bi bi-search"></i>
+				Search In Section
+			</button>
+			<a class="btn btn-primary btn-block"
+			   asp-page="./Index"
+			   asp-route-sectionId="@Model.SectionVM.Id"
+			   asp-route-searchStudent=""
+			   asp-route-sortColumn=""
+			   asp-route-sortOrder=""
+			   asp-route-pageIndex="1"
+			   asp-route-searchName="">
+				<i class="bi bi-arrow-clockwise"></i>
+				Refresh
+			</a>
+		</form>
+	</div>
+</div>
+
+<div class="container-fluid mt-3">
+	<div class="row">
+		<div class="col-md-6 col-lg-6 col-xl-5">
+			<form asp-page="./Index" method="get" class="row">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
+				<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
+				<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
+				<div class="input-group">
+					<input class="form-control" id="searchStudentId" name="SearchStudent" value="@Model.SearchStudent" placeholder="Student" maxlength="100" />
+					<a asp-page="./Index" asp-route-sectionId="@Model.SectionVM.Id" asp-route-searchStudent="" class="btn btn-outline-secondary btn-block" id="clearButton" value="Clear" type="button">
+						<i class="bi bi-x-lg"></i>
+					</a>
+					<button class="btn btn-secondary" value="Search" type="submit">Search</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row mt-3">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title fw-medium">@Model.SectionVM.Name Students</h3>
+						</div>
+						@if (hasStudentSections)
+						{
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th class="d-none d-xl-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
+												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																#
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "id")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											<th class="bg-body-secondary bg-gradient">
+												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="name" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.StudentSections[0].Student)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "name")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient">
+												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="username" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.StudentSections[0].StudentUserName)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "username")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											@if (isAdmin)
+											{
+												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
+											}
+
+											else
+											{
+												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
+											}
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var item in Model.StudentSections)
+										{
+											<tr class="align-middle">
+												<td class="d-none d-xl-table-cell">
+													@Html.DisplayFor(modelItem => item.Id)
+												</td>
+												<td>
+													@Html.DisplayFor(modelItem => item.Student)
+												</td>
+												<td class="d-none d-sm-table-cell">
+													@Html.DisplayFor(modelItem => item.StudentUserName)
+												</td>
+												<td class="text-center">
+													@if (isAdmin)
+													{
+														<button type="button" class="btn btn-danger btn-sm btn-block" onclick="removeStudent(@item.Id)">
+															<i class="bi bi-x-lg"></i>
+														</button>
+													}
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+							<div class="card-footer clearfix">
+								<div class="container-fluid">
+									<div class="row justify-content-end">
+										<div class="col text-start d-none d-sm-block">
+											<small>@Model.TotalItems record@(Model.TotalItems != 1 ? "s" : "") in total</small>
+										</div>
+										@if (Model.TotalItems > 10)
+										{
+											<div class="col text-end">
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="1"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudent="@Model.SearchStudent"
+												   asp-route-searchName="@Model.SearchStudentInSection"
+												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == 1 ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-double-left"></i>
+												</a>
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@(Model.StudentSections.PageIndex - 1)"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudent="@Model.SearchStudent"
+												   asp-route-searchName="@Model.SearchStudentInSection"
+												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex <= 1 ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-left"></i>
+												</a>
+
+												@for (int i = start; i < end; i++)
+												{
+													<a asp-page="./Index"
+													   asp-route-sortColumn="@Model.SortColumn"
+													   asp-route-sortOrder="@Model.SortOrder"
+													   asp-route-pageIndex="@i"
+													   asp-route-sectionId="@Model.SectionVM.Id"
+													   asp-route-searchStudent="@Model.SearchStudent"
+													   asp-route-searchName="@Model.SearchStudentInSection"
+													   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == i ? "disabled" : "")">
+														@i
+													</a>
+												}
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@(Model.StudentSections.PageIndex + 1)"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudent="@Model.SearchStudent"
+												   asp-route-searchName="@Model.SearchStudentInSection"
+												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex >= Model.StudentSections.TotalPages ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-right"></i>
+												</a>
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@Model.StudentSections.TotalPages"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudent="@Model.SearchStudent"
+												   asp-route-searchName="@Model.SearchStudentInSection"
+												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == Model.StudentSections.TotalPages ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-double-right"></i>
+												</a>
+											</div>
+										}
+									</div>
+								</div>
+							</div>
+						}
+						else
+						{
+							<div style="height: 400px">
+								<div class="h-100 d-flex justify-content-center align-items-center">
+									<div class="container-fluid">
+										<div class="row justify-content-center">
+											<div class="col-12 text-center text-secondary">
+												<h2>No Records Found</h2>
+											</div>
+											<div class="col-12 text-center text-secondary">
+												<i class="bi bi-folder-x display-1"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Search In Section</span>
+					<i class="bi bi-search"></i>
+				</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form asp-page="./Index" method="get">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
+				<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
+				<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row gap-3">
+							<div class="col-12">
+								<input class="form-control" type="text" name="SearchStudentInSection" value="@Model.SearchStudentInSection" placeholder="Search Student" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" value="Search" type="submit">Search</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addStudentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Add Student</span>
+					<i class="bi bi-person-plus"></i>
+				</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				@if (Model.Students.Any())
+				{
+					<div class="card-body">
+						<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
+						<div class="overflow-auto" style="max-height: 300px;">
+							<table class="table table-light">
+								<thead class="table-secondary sticky-top">
+									<tr>
+										<th>Name</th>
+										<th>Username</th>
+										<th style="min-width: 20px; width: 25px;"></th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var student in Model.Students)
+									{
+										<tr class="align-middle">
+											<td>@student.StudentInfo.FirstName @student.StudentInfo.LastName</td>
+											<td>@student.StudentInfo.UserName</td>
+											<td>
+												<input class="form-check-input" type="checkbox" name="selectedStudentIds" value="@student.Id" />
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				}
+			</div>
+			<div class="modal-footer">
+				<div class="mt-3 text-end">
+					<button class="btn btn-primary" id="submitStudentButton" type="button" onclick="submitStudents();"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="notFoundModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="notFoundModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Student Not Found</span>
+					<i class="bi bi-exclamation-triangle"></i>
+				</h1>
+				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>The student may already be assigned to a section or might not be registered/enrolled yet.</p>
+				<p>To check the student's section, <a type="button" href="/SearchStudentSection" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+				<p>To verify if the student is enrolled, <a type="button" href="/Students" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$('#clearButton').hide();
+
+		$(document).ready(function () {
+			function toggleClearButton() {
+				if ($('#searchStudentId').val().trim() !== '') {
+					$('#clearButton').show();
+				} else {
+					$('#clearButton').hide();
+				}
+			}
+
+			toggleClearButton();
+
+			$('#searchStudentId').on('input', function () {
+				toggleClearButton();
+			});
+
+			$('#clearButton').on('click', function () {
+				$('#searchStudentId').val('');
+				toggleClearButton();
+			});
+
+			var hasStudent = "@hasStudent";
+
+			if (hasStudent == 'true') {
+				$('#addStudentModal').modal('show');
+			} else if (hasStudent == 'false') {
+				$('#notFoundModal').modal('show');
+				console.log(false);
+			}
+
+			function updateButton() {
+				var checkedCount = $('input[name="selectedStudentIds"]:checked').length;
+				var button = $('#submitStudentButton');
+
+				if (checkedCount > 0) {
+					button.prop('disabled', false);
+					button.text('Add (' + checkedCount + ')');
+				} else {
+					button.prop('disabled', true);
+					button.text('Add');
+				}
+			}
+
+			updateButton();
+
+			$('input[name="selectedStudentIds"]').on('change', function () {
+				updateButton();
+			});
+		});
+
+		function submitStudents() {
+			var sectionStudents = [];
+			$("[name=selectedStudentIds]:checked").each(function (i, elem) {
+				sectionStudents.push({ "sectionId": @Model.SectionVM.Id, "studentId": elem.value });
+			});
+
+			$.ajax({
+				type: 'POST',
+				url: '/SectionStudents/Update?operation=update',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+				},
+				data: JSON.stringify(sectionStudents),
+				success: function (data) {
+					var newUrl = `${window.location.pathname}?sectionId=${@Model.SectionVM.Id}`;
+					window.location.href = newUrl;
+				}
+			});
+		}
+
+		function removeStudent(studentId) {
+			$.ajax({
+				type: 'POST',
+				url: '/SectionStudents/Update?operation=remove',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+				},
+				data: JSON.stringify(studentId),
+				success: function (response) {
+					var newUrl = `${window.location.pathname}?sectionId=${@Model.SectionVM.Id}`;
+					window.location.href = newUrl;
+				}
+			});
+		}
+	</script>
+}

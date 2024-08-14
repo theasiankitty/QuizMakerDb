@@ -70,7 +70,7 @@
 			   asp-route-searchSection=""
 			   asp-route-searchSchoolYear=""
 			   asp-route-searchCourse=""
-			   asp-route-searchCourseYear="">
+			   asp-route-searchYear="">
 				<i class="bi bi-arrow-clockwise"></i>
 				Refresh
 			</a>
@@ -83,7 +83,7 @@
 		<div class="col-12">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="card-title fw-medium">School Years</h3>
+					<h3 class="card-title fw-medium">Sections</h3>
 				</div>
 				@if (hasSections)
 				{
@@ -180,14 +180,14 @@
 										</a>
 									</th>
 									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="course_year" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="year" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Sections[0].CourseYear)
+														@Html.DisplayNameFor(model => model.Sections[0].Year)
 													</div>
 													<div class="col-2 text-end p-0">
-														@if (Model.SortColumn == "course_year")
+														@if (Model.SortColumn == "year")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -229,11 +229,10 @@
 											@Html.DisplayFor(modelItem => item.CourseName)
 										</td>
 										<td>
-											@Html.DisplayFor(modelItem => item.CourseYear)
+											@Html.DisplayFor(modelItem => item.Year)
 										</td>
 										<td class="text-center">
-											<a asp-page="/SectionStudents/Index" asp-route-id="@item.Id" class="btn btn-success btn-sm btn-block">
-												@* <i class="bi bi-person-add"></i> *@
+											<a href="/SectionStudents?sectionId=@item.Id" class="btn btn-success btn-sm btn-block">
 												<i class="bi bi-person-plus"></i>
 											</a>
 											<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">
@@ -270,7 +269,7 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchCourseYear="@Model.SearchCourseYear"
+										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
@@ -282,7 +281,7 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchCourseYear="@Model.SearchCourseYear"
+										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
@@ -296,7 +295,7 @@
 											   asp-route-searchSection="@Model.SearchSection"
 											   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 											   asp-route-searchCourse="@Model.SearchCourse"
-											   asp-route-searchCourseYear="@Model.SearchCourseYear"
+											   asp-route-searchYear="@Model.SearchYear"
 											   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
@@ -309,7 +308,7 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchCourseYear="@Model.SearchCourseYear"
+										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex >= Model.Sections.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
@@ -321,7 +320,7 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchCourseYear="@Model.SearchCourseYear"
+										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == Model.Sections.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
@@ -357,7 +356,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="exampleModalLabel">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
 					<span class="pe-1">Search</span>
 					<i class="bi bi-search"></i>
 				</h1>
@@ -384,7 +383,7 @@
 								</select>
 							</div>
 							<div class="col-12">
-								<select class="form-control form-select" asp-items="Html.GetEnumSelectList<YearLevel>()" name="SearchCourseYear" value="@Model.SearchCourseYear">
+								<select class="form-control form-select" asp-items="Html.GetEnumSelectList<YearLevel>()" name="SearchYear" value="@Model.SearchYear">
 									<option selected disabled>Select Year</option>
 								</select>
 							</div>

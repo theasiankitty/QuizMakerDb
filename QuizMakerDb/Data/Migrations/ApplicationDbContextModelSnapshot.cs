@@ -52,19 +52,19 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9199919f-b8d4-45ca-8229-1277ede21b5f"),
+                            Id = new Guid("08c5e119-df24-4c9f-9033-ef0cc833b3bd"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("ae279ba8-092c-4f4d-b7c3-7f02ac1921aa"),
+                            Id = new Guid("2248e70d-8fb5-4715-8dec-9c49fc9e0826"),
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = new Guid("6996d826-4b68-481e-88ad-e47d2115bbc0"),
+                            Id = new Guid("e83b84fd-148c-4703-a51b-f46b729c01cf"),
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -165,49 +165,49 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fbe44311-b1b9-472b-9797-1c3395afb9b4"),
+                            Id = new Guid("7ba49f1c-a41b-4b2c-9ceb-1f89897f0a1a"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c67ba5a9-1779-4b23-9407-61b19a569629",
+                            ConcurrencyStamp = "cc0ea515-6e94-4777-af1e-8abdb4306be8",
                             Email = "sysadmin@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSADMIN@DOMAIN.COM",
                             NormalizedUserName = "SYSADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFq33rClxQbbuTLW+yeT37uXKGZ+A4BrpxOV/6BPkYBNTtqpF8XQXVxGWJQmcjJH3g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIyeQ39J1MFeB/5gcy2bpFiHBZDRI4rDmYXi+C/E547g/BE8eCLMZTWt7KfuERSx6g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9ced249c-a34b-44d2-b677-2c1cedf43fb0",
+                            SecurityStamp = "9cfc9797-669b-4113-8d6f-37504634a9d9",
                             TwoFactorEnabled = false,
                             UserName = "SysAdmin"
                         },
                         new
                         {
-                            Id = new Guid("25cf9744-30c1-4e55-93f4-4357c4e418d5"),
+                            Id = new Guid("9f3ab149-9049-417d-b46c-aa0f937621a2"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "69c07c02-4b77-47f3-adf4-d77a9261d98c",
+                            ConcurrencyStamp = "819549e2-2b70-4916-8242-7ccbbcc3d2a7",
                             Email = "teacher@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TEACHER@DOMAIN.COM",
                             NormalizedUserName = "TEACHER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI2XvA4jqdh2jBbOjqF7D96gUm7Z0iiv75JKlR8gvCCRWxl/YYVvtkPxTlNS4YHpoQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAKjkdVQzk0h/uqgstCJX7W5hWD0CowffTU9kS+WUMEpvEtEwgOStA1PFgwjZBeBrw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8e2b91a9-675a-486a-b423-7589adbae5ae",
+                            SecurityStamp = "feca3841-d278-4444-8b0a-7580cabd5c2f",
                             TwoFactorEnabled = false,
                             UserName = "Teacher"
                         },
                         new
                         {
-                            Id = new Guid("b93e7491-95a8-46db-b4e0-6374b52b0fe3"),
+                            Id = new Guid("6f4953a4-c2df-48ce-a1d3-eea0409eb023"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dac60255-bfa6-411e-9f91-0e143821d15f",
+                            ConcurrencyStamp = "47a0bebf-22f9-467a-ad83-24de78db9958",
                             Email = "student@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "STUDENT@DOMAIN.COM",
                             NormalizedUserName = "STUDENT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG82ct1rhpDyqHGByXnC3vwwuRC2bJXvGcmWoYuL+ugl3QE7WWpTK4GMaaG2aWgLyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI4ogekyaH3ojehTIWQby32UAgzNFcVYWQEgB9f770Onwpr4+kpGwkP/CifJGMj6PA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "57ec7cb2-3a1c-42cf-9788-ddc7802bf30c",
+                            SecurityStamp = "3dfc6e5e-7241-4c12-836b-a9e9899dad5c",
                             TwoFactorEnabled = false,
                             UserName = "Student"
                         });
@@ -277,18 +277,18 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("fbe44311-b1b9-472b-9797-1c3395afb9b4"),
-                            RoleId = new Guid("9199919f-b8d4-45ca-8229-1277ede21b5f")
+                            UserId = new Guid("7ba49f1c-a41b-4b2c-9ceb-1f89897f0a1a"),
+                            RoleId = new Guid("08c5e119-df24-4c9f-9033-ef0cc833b3bd")
                         },
                         new
                         {
-                            UserId = new Guid("25cf9744-30c1-4e55-93f4-4357c4e418d5"),
-                            RoleId = new Guid("ae279ba8-092c-4f4d-b7c3-7f02ac1921aa")
+                            UserId = new Guid("9f3ab149-9049-417d-b46c-aa0f937621a2"),
+                            RoleId = new Guid("2248e70d-8fb5-4715-8dec-9c49fc9e0826")
                         },
                         new
                         {
-                            UserId = new Guid("b93e7491-95a8-46db-b4e0-6374b52b0fe3"),
-                            RoleId = new Guid("6996d826-4b68-481e-88ad-e47d2115bbc0")
+                            UserId = new Guid("6f4953a4-c2df-48ce-a1d3-eea0409eb023"),
+                            RoleId = new Guid("e83b84fd-148c-4703-a51b-f46b729c01cf")
                         });
                 });
 
@@ -346,42 +346,6 @@ namespace QuizMakerDb.Data.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("QuizMakerDb.Data.Models.CourseYear", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("Year")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("CourseYears");
-                });
-
             modelBuilder.Entity("QuizMakerDb.Data.Models.SchoolYear", b =>
                 {
                     b.Property<int>("Id")
@@ -426,7 +390,7 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int>("CourseYearId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("CreatedBy")
@@ -449,13 +413,54 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<byte>("Year")
+                        .HasColumnType("tinyint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseYearId");
+                    b.HasIndex("CourseId");
 
                     b.HasIndex("SchoolYearId");
 
                     b.ToTable("Sections");
+                });
+
+            modelBuilder.Entity("QuizMakerDb.Data.Models.SectionStudent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SectionId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("SectionStudents");
                 });
 
             modelBuilder.Entity("QuizMakerDb.Data.Models.Student", b =>
@@ -627,22 +632,11 @@ namespace QuizMakerDb.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuizMakerDb.Data.Models.CourseYear", b =>
+            modelBuilder.Entity("QuizMakerDb.Data.Models.Section", b =>
                 {
                     b.HasOne("QuizMakerDb.Data.Models.Course", "CourseInfo")
                         .WithMany()
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CourseInfo");
-                });
-
-            modelBuilder.Entity("QuizMakerDb.Data.Models.Section", b =>
-                {
-                    b.HasOne("QuizMakerDb.Data.Models.CourseYear", "CourseYearInfo")
-                        .WithMany()
-                        .HasForeignKey("CourseYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -652,9 +646,26 @@ namespace QuizMakerDb.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourseYearInfo");
+                    b.Navigation("CourseInfo");
 
                     b.Navigation("SchoolYearInfo");
+                });
+
+            modelBuilder.Entity("QuizMakerDb.Data.Models.SectionStudent", b =>
+                {
+                    b.HasOne("QuizMakerDb.Data.Models.Section", "SectionInfo")
+                        .WithMany()
+                        .HasForeignKey("SectionId");
+
+                    b.HasOne("QuizMakerDb.Data.Models.Student", "StudentInfo")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SectionInfo");
+
+                    b.Navigation("StudentInfo");
                 });
 
             modelBuilder.Entity("QuizMakerDb.Data.Models.Student", b =>
