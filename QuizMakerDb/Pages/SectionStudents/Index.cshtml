@@ -48,9 +48,12 @@
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item fs-3"><a href="/Sections/Index">Sections</a></li>
-			<li class="breadcrumb-item fs-3 active" aria-current="page">@Model.SectionVM.Name</li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">
+				@Model.SectionVM.Name
+			</li>
 		</ol>
 	</nav>
+	<p class="fs-5 text-secondary">(S.Y. @Model.SectionVM.SchoolYearName)</p>
 	<div class="row justify-content-end mt-3">
 		<form class="col-12 text-end" asp-page="./Index" method="get">
 			@Html.AntiForgeryToken()
@@ -86,7 +89,7 @@
 					<a asp-page="./Index" asp-route-sectionId="@Model.SectionVM.Id" asp-route-searchStudent="" class="btn btn-outline-secondary btn-block" id="clearButton" value="Clear" type="button">
 						<i class="bi bi-x-lg"></i>
 					</a>
-					<button class="btn btn-secondary" value="Search" type="submit">Search</button>
+					<button class="btn btn-secondary" value="Add" type="submit">Add</button>
 				</div>
 			</form>
 		</div>
@@ -355,7 +358,7 @@
 					<div class="card-body">
 						<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
 						<div class="overflow-auto" style="max-height: 300px;">
-							<table class="table table-light">
+							<table class="table table-light mb-0">
 								<thead class="table-secondary sticky-top">
 									<tr>
 										<th>Name</th>
@@ -367,8 +370,8 @@
 									@foreach (var student in Model.Students)
 									{
 										<tr class="align-middle">
-											<td>@student.StudentInfo.FirstName @student.StudentInfo.LastName</td>
-											<td>@student.StudentInfo.UserName</td>
+											<td>@student.FirstName @student.LastName</td>
+											<td>@student.UserName</td>
 											<td>
 												<input class="form-check-input" type="checkbox" name="selectedStudentIds" value="@student.Id" />
 											</td>
@@ -380,10 +383,8 @@
 					</div>
 				}
 			</div>
-			<div class="modal-footer">
-				<div class="mt-3 text-end">
-					<button class="btn btn-primary" id="submitStudentButton" type="button" onclick="submitStudents();"></button>
-				</div>
+			<div class="modal-footer text-end">
+				<button class="btn btn-primary" id="submitStudentButton" type="button" onclick="submitStudents();"></button>
 			</div>
 		</div>
 	</div>
@@ -464,12 +465,15 @@
 		function submitStudents() {
 			var sectionStudents = [];
 			$("[name=selectedStudentIds]:checked").each(function (i, elem) {
-				sectionStudents.push({ "sectionId": @Model.SectionVM.Id, "studentId": elem.value });
+				sectionStudents.push({ 
+					"sectionId": @Model.SectionVM.Id, 
+					"studentId": elem.value, 
+					"schoolYearId": @Model.SectionVM.SchoolYearId });
 			});
 
 			$.ajax({
 				type: 'POST',
-				url: '/SectionStudents/Update?operation=update',
+				url: '/SectionStudents/Create',
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
@@ -484,17 +488,17 @@
 			});
 		}
 
-		function removeStudent(studentId) {
+		function removeStudent(studentSectionId) {
 			$.ajax({
 				type: 'POST',
-				url: '/SectionStudents/Update?operation=remove',
+				url: '/SectionStudents/Update',
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
 					RequestVerificationToken:
 						$('input:hidden[name="__RequestVerificationToken"]').val()
 				},
-				data: JSON.stringify(studentId),
+				data: JSON.stringify(studentSectionId),
 				success: function (response) {
 					var newUrl = `${window.location.pathname}?sectionId=${@Model.SectionVM.Id}`;
 					window.location.href = newUrl;

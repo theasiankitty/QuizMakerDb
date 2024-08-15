@@ -11,7 +11,9 @@ namespace QuizMakerDb.Data.Models
 
         public int StudentId { get; set; }
 
-        public int? SectionId { get; set; } = null;
+        public int SectionId { get; set; }
+
+        public int SchoolYearId { get; set; }
 
         public bool Active { get; set; }
 

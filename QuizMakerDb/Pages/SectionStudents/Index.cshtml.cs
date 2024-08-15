@@ -26,7 +26,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 		[BindProperty]
 		public PaginatedList<SectionStudentVM> StudentSections { get; set; } = default!;
 		public SectionVM SectionVM { get; set; } = default!;
-		public IList<SectionStudent> Students { get; set; } = new List<SectionStudent>();
+		public IList<Student> Students { get; set; } = new List<Student>();
 		public string SearchStudent { get; set; } = string.Empty!;
 		public string SortColumn { get; set; } = string.Empty!;
 		public string SortOrder { get; set; } = string.Empty!;
@@ -42,6 +42,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 			var section = await _context.Sections
 				.Include(m => m.CourseInfo)
+				.Include(m => m.SchoolYearInfo)
 				.FirstOrDefaultAsync(s => s.Id == sectionId);
 
 			if (section == null)
@@ -52,37 +53,44 @@ namespace QuizMakerDb.Pages.SectionStudents
 			SectionVM = new SectionVM
 			{
 				Id = section.Id,
-				Name = section.Name + " - " + section.CourseInfo.Name + " - " + GetEnumDisplayName((YearLevel)section.Year),
+				Name = section.Name + " - " + section.CourseInfo.Name
+					+ " - " + GetEnumDisplayName((YearLevel)section.Year),
+				SchoolYearId = section.SchoolYearId,
+				SchoolYearName = section.SchoolYearInfo.Name
 			};
 
 			if (!string.IsNullOrEmpty(searchStudent))
 			{
-				IQueryable<SectionStudent> unassignedStudents = _context.SectionStudents
-					.Include(m => m.StudentInfo)
-					.Where(m => m.SectionId == null);
+				IQueryable<Student> unassignedStudents = _context.Students.AsQueryable();
 
-				int studentNumber = 0;
+				bool isNumeric = int.TryParse(searchStudent, out int studentNumber);
 
-				try
-				{
-					int.TryParse(searchStudent, out studentNumber);
-				}
-				catch (Exception ex)
-				{
-					var err = ex.Message;
-				}
-
-				if (studentNumber == 0)
+				if (isNumeric)
 				{
 					unassignedStudents = unassignedStudents
-						.Where(m => (m.StudentInfo.FirstName + " " + m.StudentInfo.LastName)
-						.ToLower()
-						.Contains(searchStudent.ToLower()));
+						.Where(m => m.UserName == searchStudent);
 				}
 				else
 				{
+					string searchLower = searchStudent.ToLower();
 					unassignedStudents = unassignedStudents
-						.Where(m => m.StudentInfo.UserName == searchStudent);
+						.Where(m => (m.FirstName + " " + m.LastName).ToLower().Contains(searchLower));
+				}
+
+				if (sectionId.HasValue)
+				{
+					if (SectionVM.SchoolYearId != 0)
+					{
+						var assignedStudents = await _context.SectionStudents
+							.Where(m => m.SectionId != 0 
+								&& m.SchoolYearId == SectionVM.SchoolYearId
+								&& m.Active == true)
+							.Select(m => m.StudentId)
+							.ToListAsync();
+
+						unassignedStudents = unassignedStudents
+							.Where(m => !assignedStudents.Contains(m.Id));
+					}
 				}
 
 				Students = await unassignedStudents.ToListAsync();
@@ -112,7 +120,9 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 				studentSection = studentSection
 					.Include(m => m.StudentInfo)
-					.Where(m => m.SectionId == section.Id)
+					.Where(m => m.SectionId == section.Id
+						&& m.SectionInfo.SchoolYearId == section.SchoolYearId
+						&& m.Active == true)
 					.OrderByDescending(o => o.Id);
 
 				if (!string.IsNullOrEmpty(searchStudentInSection))

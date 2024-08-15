@@ -79,20 +79,6 @@ namespace QuizMakerDb.Pages.Students
 			_context.Students.Add(student);
 			await _context.SaveChangesAsync();
 
-			var studentSection = new SectionStudent
-			{
-				StudentId = student.Id,
-				SectionId = null,
-				Active = true,
-				CreatedBy = creator.Id,
-				CreatedDate = DateTime.Now,
-				UpdatedBy = null,
-				UpdatedDate = null
-			};
-
-			_context.SectionStudents.Add(studentSection);
-            await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
     }

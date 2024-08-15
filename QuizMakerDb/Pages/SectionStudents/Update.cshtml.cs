@@ -20,7 +20,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 			_context = context;
 		}
 
-		public async Task<JsonResult> OnPostAsync([FromBody] object data, [FromQuery] string operation)
+		public async Task<JsonResult> OnPostAsync([FromBody] int sectionStudentId)
 		{
 			var editor = await _userManager.GetUserAsync(User);
 
@@ -29,50 +29,21 @@ namespace QuizMakerDb.Pages.SectionStudents
 				return new JsonResult("NOT FOUND");
 			}
 
-			if (operation == "update")
+			var sectionStudent = await _context.SectionStudents
+				.Where(m => m.Id == sectionStudentId)
+				.FirstOrDefaultAsync();
+
+			if (sectionStudent == null)
 			{
-				var sectionStudents = JsonConvert.DeserializeObject<List<SectionStudent>>(data.ToString());
-
-				if (sectionStudents.Any())
-				{
-					foreach (var item in sectionStudents)
-					{
-						SectionStudent? sectionStudent = await _context.SectionStudents
-							.Where(m => m.StudentId == item.StudentId)
-							.Where(m => m.SectionId == null)
-							.FirstOrDefaultAsync();
-
-						if (sectionStudent != null)
-						{
-							sectionStudent.SectionId = item.SectionId;
-							sectionStudent.UpdatedBy = editor.Id;
-							sectionStudent.UpdatedDate = DateTime.Now;
-							_context.SectionStudents.Update(sectionStudent);
-						}
-					}
-
-					await _context.SaveChangesAsync();
-				}
+				return new JsonResult("NOT FOUND");
 			}
-			else if (operation == "remove")
-			{
-				var studentId = JsonConvert.DeserializeObject<int>(data.ToString());
 
-				SectionStudent? sectionStudent = await _context.SectionStudents
-					.Where(m => m.StudentId == studentId)
-					.Where(m => m.SectionId != null)
-					.FirstOrDefaultAsync();
+			sectionStudent.Active = false;
+			sectionStudent.UpdatedBy = editor.Id;
+			sectionStudent.UpdatedDate = DateTime.Now;
 
-				if (sectionStudent != null)
-				{
-					sectionStudent.SectionId = null;
-					sectionStudent.UpdatedBy = editor.Id;
-					sectionStudent.UpdatedDate = DateTime.Now;
-					_context.SectionStudents.Update(sectionStudent);
-				}
-
-				await _context.SaveChangesAsync();
-			}
+			_context.SectionStudents.Update(sectionStudent);
+			await _context.SaveChangesAsync();
 
 			return new JsonResult("OK");
 		}
