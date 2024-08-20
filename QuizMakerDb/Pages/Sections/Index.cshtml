@@ -3,43 +3,43 @@
 @model QuizMakerDb.Pages.Sections.IndexModel
 @inject UserManager<AppUser> userManager
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 
-    var user = await userManager.GetUserAsync(User);
+	var user = await userManager.GetUserAsync(User);
 
-    bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
 
-    var hasSections = Model.Sections.Count > 0;
+	var hasSections = Model.Sections.Count > 0;
 
-    var firstDisabled = Model.Sections.PageIndex == 1 ? "disabled" : "";
-    var lastDisabled = Model.Sections.PageIndex == Model.Sections.TotalPages ? "disabled" : "";
-    var prevDisabled = !Model.Sections.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Sections.HasNextPage ? "disabled" : "";
+	var firstDisabled = Model.Sections.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.Sections.PageIndex == Model.Sections.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.Sections.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.Sections.HasNextPage ? "disabled" : "";
 
-    int length = 3;
-    int start = 1;
-    int center = Math.Abs(length / 2) + 1;
-    if (Model.Sections.PageIndex < center)
-    {
-        start = 1;
-    }
-    else
-    {
-        start = (Model.Sections.PageIndex - center) + 1;
-    }
-    int end = start + length;
-    if (Model.Sections.TotalPages == 1)
-        end = 1;
-    if (end > Model.Sections.TotalPages)
-    {
-        end = Model.Sections.TotalPages + 1;
-        start = end - length;
-        if (start < 1)
-        {
-            start = 1;
-            end = length;
-        }
-    }
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+	if (Model.Sections.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.Sections.PageIndex - center) + 1;
+	}
+	int end = start + length;
+	if (Model.Sections.TotalPages == 1)
+		end = 1;
+	if (end > Model.Sections.TotalPages)
+	{
+		end = Model.Sections.TotalPages + 1;
+		start = end - length;
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
 }
 
 <div class="container-fluid mb-3">
@@ -92,7 +92,14 @@
 							<thead>
 								<tr>
 									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="id"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchSection="@Model.SearchSection"
+										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
+										   asp-route-searchCourse="@Model.SearchCourse"
+										   asp-route-searchYear="@Model.SearchYear">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -114,7 +121,14 @@
 										</a>
 									</th>
 									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="section" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="section"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchSection="@Model.SearchSection"
+										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
+										   asp-route-searchCourse="@Model.SearchCourse"
+										   asp-route-searchYear="@Model.SearchYear">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -135,8 +149,15 @@
 											</div>
 										</a>
 									</th>
-									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="school_year" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+									<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="school_year"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchSection="@Model.SearchSection"
+										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
+										   asp-route-searchCourse="@Model.SearchCourse"
+										   asp-route-searchYear="@Model.SearchYear">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -157,37 +178,22 @@
 											</div>
 										</a>
 									</th>
-									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="course" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+									<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient" style="min-width: 150px; width: 155px;">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="course"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchSection="@Model.SearchSection"
+										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
+										   asp-route-searchCourse="@Model.SearchCourse"
+										   asp-route-searchYear="@Model.SearchYear">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Sections[0].CourseName)
+														@Html.DisplayNameFor(model => model.Sections[0].CourseYearName)
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "course")
-														{
-															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
-															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
-														}
-														else
-														{
-															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
-														}
-													</div>
-												</div>
-											</div>
-										</a>
-									</th>
-									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="year" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
-											<div class="container-fluid">
-												<div class="row">
-													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Sections[0].Year)
-													</div>
-													<div class="col-2 text-end p-0">
-														@if (Model.SortColumn == "year")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -222,14 +228,11 @@
 										<td>
 											@Html.DisplayFor(modelItem => item.Name)
 										</td>
-										<td>
+										<td class="d-none d-lg-table-cell">
 											@Html.DisplayFor(modelItem => item.SchoolYearName)
 										</td>
-										<td>
-											@Html.DisplayFor(modelItem => item.CourseName)
-										</td>
-										<td>
-											@Html.DisplayFor(modelItem => item.Year)
+										<td class="d-none d-sm-table-cell">
+											@Html.DisplayFor(modelItem => item.CourseYearName)
 										</td>
 										<td class="text-center">
 											<a href="/SectionStudents?sectionId=@item.Id" class="btn btn-success btn-sm btn-block">
@@ -370,6 +373,9 @@
 					<div class="container-fluid">
 						<div class="row gap-3">
 							<div class="col-12">
+								<input class="form-control" type="text" name="SearchStudentUserName" value="@Model.SearchStudentUserName" placeholder="Search Student Username" />
+							</div>
+							<div class="col-12">
 								<input class="form-control" type="text" name="SearchSection" value="@Model.SearchSection" placeholder="Search Section" />
 							</div>
 							<div class="col-12">
@@ -378,7 +384,7 @@
 								</select>
 							</div>
 							<div class="col-12">
-								<select class="form-select" asp-items="ViewBag.Courses" name="SearchCourse" value="@Model.SearchCourse">
+								<select class="form-select" asp-items="ViewBag.CourseYears" name="SearchCourse" value="@Model.SearchCourse">
 									<option selected disabled>Select Course</option>
 								</select>
 							</div>

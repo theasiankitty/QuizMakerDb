@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,7 +12,8 @@ using System.Reflection;
 
 namespace QuizMakerDb.Pages.Sections
 {
-    public class CreateModel : PageModel
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
+	public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
@@ -32,7 +34,7 @@ namespace QuizMakerDb.Pages.Sections
         public IActionResult OnGet()
         {
             ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
-            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+            ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
 
             return Page();
         }
@@ -42,6 +44,8 @@ namespace QuizMakerDb.Pages.Sections
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("SectionVM.Active");
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -62,8 +66,7 @@ namespace QuizMakerDb.Pages.Sections
                 {
                     Name = SectionVM.Name,
                     SchoolYearId = SectionVM.SchoolYearId,
-                    CourseId = SectionVM.CourseId,
-                    Year = byte.Parse(SectionVM.Year),
+                    CourseYearId = SectionVM.CourseYearId,
                     Active = true,
                     CreatedBy = creator.Id,
                     CreatedDate = DateTime.Now,

@@ -15,14 +15,11 @@ namespace QuizMakerDb.Data.ViewModels
 		[Display(Name = "School Year")]
 		public string SchoolYearName { get; set; } = string.Empty;
 
-		[Display(Name = "Course")]
-		public int CourseId { get; set; }
+		[Display(Name = "Course Year")]
+		public int CourseYearId { get; set; }
 
-		[Display(Name = "Course")]
-		public string CourseName { get; set; } = string.Empty;
-
-		[Display(Name = "Year")]
-		public string Year { get; set; } = string.Empty;
+		[Display(Name = "Course Year")]
+		public string CourseYearName { get; set; } = string.Empty;
 
 		public bool Active { get; set; }
 
@@ -31,5 +28,7 @@ namespace QuizMakerDb.Data.ViewModels
 		public DateTime CreatedDate { get; set; }
 
 		public Guid? UpdatedBy { get; set; }
+
+		public DateTime? UpdatedDate { get; set; }
 	}
 }

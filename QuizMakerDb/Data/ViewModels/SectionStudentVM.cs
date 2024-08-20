@@ -9,10 +9,15 @@ namespace QuizMakerDb.Data.ViewModels
 
         public string Student { get; set; } = string.Empty;
 
+		[Display(Name = "Sex")]
+		public string SexDescription { get; set; } = string.Empty;
+
 		[Display(Name = "Username")]
         public string StudentUserName { get; set; } = string.Empty;
 
-		public bool Active { get; set; }
+        public int SectionId { get; set; }
+
+        public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }
 

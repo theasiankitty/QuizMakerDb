@@ -1,15 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QuizMakerDb.Data.Identity;
-using QuizMakerDb.Data;
-using QuizMakerDb.Data.Models;
-using QuizMakerDb.Data.ViewModels;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Components.Forms;
+using QuizMakerDb.Data;
+using QuizMakerDb.Data.Identity;
+using QuizMakerDb.Data.Models;
 
 namespace QuizMakerDb.Pages.SectionStudents
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class CreateModel : PageModel
 	{
 		private readonly UserManager<AppUser> _userManager;

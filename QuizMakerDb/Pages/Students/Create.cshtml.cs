@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizMakerDb.Data;
@@ -8,6 +9,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Students
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -30,8 +32,9 @@ namespace QuizMakerDb.Pages.Students
         public async Task<IActionResult> OnPostAsync()
         {
 			ModelState.Remove("StudentVM.UserId");
+			ModelState.Remove("StudentVM.Active");
 
-			if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
 			{
 				return Page();
 			}
@@ -49,7 +52,7 @@ namespace QuizMakerDb.Pages.Students
 				EmailConfirmed = true,
 				SecurityStamp = Guid.NewGuid().ToString()
 			};
-			user.PasswordHash = hasher.HashPassword(user, "Password@1234");
+			user.PasswordHash = hasher.HashPassword(user, StudentVM.UserName);
 			await _userManager.CreateAsync(user);
 			await _userManager.AddToRoleAsync(user, Constants.ROLE_STUDENT);
 

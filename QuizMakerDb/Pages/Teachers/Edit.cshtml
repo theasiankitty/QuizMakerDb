@@ -19,6 +19,7 @@
         <input asp-for="TeacherVM.UserId" type="hidden" />
         <input asp-for="TeacherVM.CreatedBy" type="hidden" />
         <input asp-for="TeacherVM.CreatedDate" type="hidden" />
+        <input asp-for="TeacherVM.Active" type="hidden" />
         <div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
             <div class="card card-primary card-outline mb-4">
                 <div class="card-header">
@@ -74,13 +75,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input asp-for="TeacherVM.Active" class="form-check-input" type="checkbox" tabindex="-1" />
-                                <label class="form-check-label ps-1">Active</label>
-                            </div>
-                        </div>
-                        <div class="col-6 text-end">
+                        <div class="col-12 text-end">
                             <input type="submit" value="Save" class="btn btn-primary" />
                             <a asp-page="Index" class="btn btn-secondary">Cancel</a>
                         </div>

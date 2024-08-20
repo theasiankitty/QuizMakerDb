@@ -3,43 +3,43 @@
 @model QuizMakerDb.Pages.SchoolYears.IndexModel
 @inject UserManager<AppUser> userManager
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 
-    var user = await userManager.GetUserAsync(User);
+	var user = await userManager.GetUserAsync(User);
 
-    bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
 
-    var hasSchoolYears = Model.SchoolYears.Count > 0;
+	var hasSchoolYears = Model.SchoolYears.Count > 0;
 
-    var firstDisabled = Model.SchoolYears.PageIndex == 1 ? "disabled" : "";
-    var lastDisabled = Model.SchoolYears.PageIndex == Model.SchoolYears.TotalPages ? "disabled" : "";
-    var prevDisabled = !Model.SchoolYears.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.SchoolYears.HasNextPage ? "disabled" : "";
+	var firstDisabled = Model.SchoolYears.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.SchoolYears.PageIndex == Model.SchoolYears.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.SchoolYears.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.SchoolYears.HasNextPage ? "disabled" : "";
 
-    int length = 3;
-    int start = 1;
-    int center = Math.Abs(length / 2) + 1;
-    if (Model.SchoolYears.PageIndex < center)
-    {
-        start = 1;
-    }
-    else
-    {
-        start = (Model.SchoolYears.PageIndex - center) + 1;
-    }
-    int end = start + length;
-    if (Model.SchoolYears.TotalPages == 1)
-        end = 1;
-    if (end > Model.SchoolYears.TotalPages)
-    {
-        end = Model.SchoolYears.TotalPages + 1;
-        start = end - length;
-        if (start < 1)
-        {
-            start = 1;
-            end = length;
-        }
-    }
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+	if (Model.SchoolYears.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.SchoolYears.PageIndex - center) + 1;
+	}
+	int end = start + length;
+	if (Model.SchoolYears.TotalPages == 1)
+		end = 1;
+	if (end > Model.SchoolYears.TotalPages)
+	{
+		end = Model.SchoolYears.TotalPages + 1;
+		start = end - length;
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
 }
 
 <div class="container-fluid mb-3">
@@ -89,7 +89,11 @@
 							<thead>
 								<tr>
 									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="id"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchName="@Model.SearchName">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -111,7 +115,11 @@
 										</a>
 									</th>
 									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="name" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="name"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchName="@Model.SearchName">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">

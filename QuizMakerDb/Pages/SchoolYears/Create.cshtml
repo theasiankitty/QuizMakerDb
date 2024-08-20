@@ -15,6 +15,7 @@
     <form class="row justify-content-center mt-3" method="post">
         @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="SchoolYearVM.Active" type="hidden" />
         <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
             <div class="card card-primary card-outline mb-4">
                 <div class="card-header">
@@ -35,13 +36,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input asp-for="SchoolYearVM.Active" class="form-check-input bg-secondary border-secondary custom-disabled-checkbox" type="checkbox" tabindex="-1" checked />
-                                <label class="form-check-label ps-1">Active</label>
-                            </div>
-                        </div>
-                        <div class="col-6 text-end">
+                        <div class="col-12 text-end">
                             <input type="submit" value="Create" class="btn btn-primary" />
                             <a asp-page="Index" class="btn btn-secondary">Cancel</a>
                         </div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
@@ -10,43 +11,46 @@ using System.Reflection;
 
 namespace QuizMakerDb.Pages.Sections
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class IndexModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
+	{
+		private readonly ApplicationDbContext _context;
 
-        public IndexModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public IndexModel(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
 		public PaginatedList<SectionVM> Sections { get; set; } = null!;
+		public SectionStudentVM SectionStudentVM { get; set; } = default!;
 		public string SortColumn { get; set; } = string.Empty!;
 		public string SortOrder { get; set; } = string.Empty!;
 		public string SearchSection { get; set; } = string.Empty!;
 		public string SearchSchoolYear { get; set; } = string.Empty!;
 		public string SearchCourse { get; set; } = string.Empty!;
 		public string SearchYear { get; set; } = string.Empty!;
+		public string SearchStudentUserName { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
-        public static string GetEnumDisplayName(Enum value)
-        {
-            var field = value.GetType().GetField(value.ToString());
-            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
-            return attribute?.Name ?? value.ToString();
-        }
+		public static string GetEnumDisplayName(Enum value)
+		{
+			var field = value.GetType().GetField(value.ToString());
+			var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+			return attribute?.Name ?? value.ToString();
+		}
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchYear)
+		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchYear, string? searchStudentUserName)
 		{
 			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
-			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+			ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
 
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
-			searchSection = string.IsNullOrEmpty(searchSection) ? "" : searchSection;
-			searchSchoolYear = string.IsNullOrEmpty(searchSchoolYear) ? "" : searchSchoolYear;
-			searchCourse = string.IsNullOrEmpty(searchCourse) ? "" : searchCourse;
-			searchYear = string.IsNullOrEmpty(searchYear) ? "" : searchYear;
-
+			SearchSection = string.IsNullOrEmpty(searchSection) ? "" : searchSection;
+			SearchSchoolYear = string.IsNullOrEmpty(searchSchoolYear) ? "" : searchSchoolYear;
+			SearchCourse = string.IsNullOrEmpty(searchCourse) ? "" : searchCourse;
+			SearchYear = string.IsNullOrEmpty(searchYear) ? "" : searchYear;
+			SearchStudentUserName = string.IsNullOrEmpty(searchStudentUserName) ? "" : searchStudentUserName;
 
 			if (_context.Sections != null)
 			{
@@ -54,6 +58,7 @@ namespace QuizMakerDb.Pages.Sections
 
 				sections = sections
 					.Include(m => m.SchoolYearInfo)
+					.Where(m => m.Active == true)
 					.OrderByDescending(o => o.Id);
 
 				if (!string.IsNullOrEmpty(searchSection))
@@ -70,12 +75,18 @@ namespace QuizMakerDb.Pages.Sections
 
 				if (!string.IsNullOrEmpty(searchCourse))
 				{
-					sections = sections.Where(m => m.CourseInfo.Id == int.Parse(searchCourse));
+					sections = sections.Where(m => m.CourseYearInfo.Id == int.Parse(searchCourse));
 				}
 
-				if (!string.IsNullOrEmpty(searchYear))
+				if (!string.IsNullOrEmpty(searchStudentUserName))
 				{
-					sections = sections.Where(m => m.Year == byte.Parse(searchYear));
+					var sectionIds = await _context.SectionStudents
+						.Where(m => m.StudentInfo.UserName == searchStudentUserName && m.Active == true)
+						.Select(m => m.SectionId)
+						.Distinct()
+						.ToListAsync();
+
+					sections = sections.Where(m => sectionIds.Contains(m.Id));
 				}
 
 				switch (sortColumn)
@@ -93,12 +104,8 @@ namespace QuizMakerDb.Pages.Sections
 							: sections.OrderByDescending(o => o.SchoolYearInfo.Name);
 						break;
 					case "course":
-						sections = SortOrder == "asc" ? sections.OrderBy(o => o.CourseInfo.Name)
-							: sections.OrderByDescending(o => o.CourseInfo.Name);
-						break;
-					case "year":
-						sections = SortOrder == "asc" ? sections.OrderBy(o => o.Year)
-							: sections.OrderByDescending(o => o.Year);
+						sections = SortOrder == "asc" ? sections.OrderBy(o => o.CourseYearInfo.Name)
+							: sections.OrderByDescending(o => o.CourseYearInfo.Name);
 						break;
 				}
 
@@ -112,13 +119,12 @@ namespace QuizMakerDb.Pages.Sections
 						Id = m.Id,
 						Name = m.Name,
 						SchoolYearName = m.SchoolYearInfo.Name,
-						CourseName = m.CourseInfo.Name,
-						Year = GetEnumDisplayName((YearLevel)m.Year),
+						CourseYearName = m.CourseYearInfo.Name,
 					}).AsNoTracking(),
 					pageIndex ?? 1,
 					pageSize
 				);
 			}
 		}
-    }
+	}
 }

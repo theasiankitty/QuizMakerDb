@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Students
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -61,6 +63,13 @@ namespace QuizMakerDb.Pages.Students
                 return NotFound();
             }
 
+            var updater = await _userManager.GetUserAsync(User);
+
+            if (updater == null)
+            {
+                return NotFound();
+            }
+
             var student = await _context.Students.FindAsync(id);
 
             if (student == null)
@@ -68,18 +77,15 @@ namespace QuizMakerDb.Pages.Students
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(student.UserId);
-
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-            }
-
             else
             {
-                return NotFound();
+                student.Active = false;
+                student.UpdatedBy = updater.Id;
+                student.UpdatedDate = DateTime.Now;
             }
+
+            _context.Students.Update(student);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

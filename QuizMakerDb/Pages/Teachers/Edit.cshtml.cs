@@ -12,118 +12,128 @@ namespace QuizMakerDb.Pages.Teachers
 {
 	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class EditModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<AppUser> _userManager;
+	{
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-        public EditModel(ApplicationDbContext context, UserManager<AppUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+		public EditModel(ApplicationDbContext context, UserManager<AppUser> userManager)
+		{
+			_context = context;
+			_userManager = userManager;
+		}
 
-        [BindProperty]
-        public TeacherVM TeacherVM { get; set; } = default!;
+		[BindProperty]
+		public TeacherVM TeacherVM { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		public async Task<IActionResult> OnGetAsync(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var teacher = await _context.Teachers.FirstOrDefaultAsync(m => m.Id == id);
+			var teacher = await _context.Teachers.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (teacher == null)
-            {
-                return NotFound();
-            }
+			if (teacher == null)
+			{
+				return NotFound();
+			}
 
-            TeacherVM = new TeacherVM
-            {
-                Id = teacher.Id,
-                FirstName = teacher.FirstName,
-                MiddleName = teacher.MiddleName,
-                LastName = teacher.LastName,
-                Sex = teacher.Sex,
-                Email = teacher.Email,
-                UserName = teacher.UserName,
-                UserId = teacher.UserId,
-                Active = teacher.Active,
-                CreatedBy = teacher.CreatedBy,
-                CreatedDate = teacher.CreatedDate,
-                UpdatedBy = teacher.UpdatedBy,
-                UpdatedDate = teacher.UpdatedDate,
-            };
+			TeacherVM = new TeacherVM
+			{
+				Id = teacher.Id,
+				FirstName = teacher.FirstName,
+				MiddleName = teacher.MiddleName,
+				LastName = teacher.LastName,
+				Sex = teacher.Sex,
+				Email = teacher.Email,
+				UserName = teacher.UserName,
+				UserId = teacher.UserId,
+				Active = teacher.Active,
+				CreatedBy = teacher.CreatedBy,
+				CreatedDate = teacher.CreatedDate,
+				UpdatedBy = teacher.UpdatedBy,
+				UpdatedDate = teacher.UpdatedDate,
+			};
 
-            return Page();
-        }
+			return Page();
+		}
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+		public async Task<IActionResult> OnPostAsync()
+		{
+			ModelState.Remove("TeacherVM.UserId");
+			ModelState.Remove("TeacherVM.Active");
 
-            var editor = await _userManager.GetUserAsync(User);
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
 
-            if (editor == null)
-            {
-                return NotFound();
-            }
+			var editor = await _userManager.GetUserAsync(User);
 
-            var teacher = new Teacher
-            {
-                Id = TeacherVM.Id,
-                FirstName = TeacherVM.FirstName,
-                MiddleName = TeacherVM.MiddleName,
-                LastName = TeacherVM.LastName,
-                Sex = TeacherVM.Sex,
-                Email = TeacherVM.Email,
-                UserName = TeacherVM.UserName,
-                UserId = TeacherVM.UserId,
-                Active = TeacherVM.Active,
-                CreatedBy = TeacherVM.CreatedBy,
-                CreatedDate = TeacherVM.CreatedDate,
-                UpdatedBy = editor.Id,
-                UpdatedDate = DateTime.Now,
-            };
+			if (editor == null)
+			{
+				return NotFound();
+			}
 
-            var teacherIdentity = await _userManager.FindByIdAsync(teacher.UserId.ToString());
+			var teacher = new Teacher
+			{
+				Id = TeacherVM.Id,
+				FirstName = TeacherVM.FirstName,
+				MiddleName = TeacherVM.MiddleName,
+				LastName = TeacherVM.LastName,
+				Sex = TeacherVM.Sex,
+				Email = TeacherVM.Email,
+				UserName = TeacherVM.UserName,
+				UserId = TeacherVM.UserId,
+				Active = true,
+				CreatedBy = TeacherVM.CreatedBy,
+				CreatedDate = TeacherVM.CreatedDate,
+				UpdatedBy = editor.Id,
+				UpdatedDate = DateTime.Now,
+			};
 
-            if (teacherIdentity == null)
-            {
-                return NotFound();
-            }
+			var teacherIdentity = await _userManager.FindByIdAsync(teacher.UserId.ToString());
+
+			if (teacherIdentity == null)
+			{
+				return NotFound();
+			}
+
+            var hasher = new PasswordHasher<AppUser>();
 
             teacherIdentity.UserName = teacher.UserName;
-            teacherIdentity.Email = teacher.Email;
+			teacherIdentity.NormalizedUserName = teacher.UserName.ToUpper();
+			teacherIdentity.Email = teacher.Email;
+			teacherIdentity.NormalizedEmail = teacher.Email.ToUpper();
+            teacherIdentity.PasswordHash = hasher.HashPassword(teacherIdentity, teacher.UserName);
 
-            _context.Attach(teacher).State = EntityState.Modified;
+            await _userManager.UpdateAsync(teacherIdentity);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TeacherExists(TeacherVM.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+			_context.Attach(teacher).State = EntityState.Modified;
 
-            return RedirectToPage("./Index");
-        }
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!TeacherExists(TeacherVM.Id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 
-        private bool TeacherExists(int id)
-        {
-            return _context.Teachers.Any(e => e.Id == id);
-        }
-    }
+			return RedirectToPage("./Index");
+		}
+
+		private bool TeacherExists(int id)
+		{
+			return _context.Teachers.Any(e => e.Id == id);
+		}
+	}
 }

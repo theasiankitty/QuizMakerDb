@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Models;
@@ -7,6 +8,7 @@ using QuizMakerDb.Infrastructure;
 
 namespace QuizMakerDb.Pages.Students
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -20,19 +22,25 @@ namespace QuizMakerDb.Pages.Students
         public string SortColumn { get; set; } = string.Empty!;
         public string SortOrder { get; set; } = string.Empty!;
         public string SearchStudent { get; set; } = string.Empty!;
-        public int TotalItems { get; set; }
+		public string SearchUserName { get; set; } = string.Empty!;
+		public string SearchSex { get; set; } = string.Empty!;
+		public int TotalItems { get; set; }
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudent)
+        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudent, string? searchUserName, string? searchSex)
         {
             SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
             SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
-            searchStudent = string.IsNullOrEmpty(searchStudent) ? "" : searchStudent;
+            SearchStudent = string.IsNullOrEmpty(searchStudent) ? "" : searchStudent;
+			SearchUserName = string.IsNullOrEmpty(searchUserName) ? "" : searchUserName;
+			SearchSex = string.IsNullOrEmpty(searchSex) ? "" : searchSex;
 
-            if (_context.Students != null)
+			if (_context.Students != null)
             {
                 IQueryable<Student> students = _context.Students.AsQueryable();
 
-				students = students.OrderByDescending(o => o.Id);
+				students = students
+                    .Where(m => m.Active == true)
+                    .OrderByDescending(o => o.Id);
 
                 if (!string.IsNullOrEmpty(searchStudent))
                 {
@@ -41,7 +49,17 @@ namespace QuizMakerDb.Pages.Students
                     .Contains(searchStudent.ToLower()));
                 }
 
-                switch (sortColumn)
+				if (!string.IsNullOrEmpty(searchUserName))
+				{
+                    students = students.Where(m => m.UserName == searchUserName);
+				}
+
+				if (!string.IsNullOrEmpty(searchSex))
+				{
+					students = students.Where(m => m.Sex == byte.Parse(searchSex));
+				}
+
+				switch (sortColumn)
                 {
                     case "id":
                         students = SortOrder == "asc" ? students.OrderBy(o => o.Id)

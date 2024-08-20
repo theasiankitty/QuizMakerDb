@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizMakerDb.Data;
@@ -8,6 +9,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Courses
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -29,6 +31,8 @@ namespace QuizMakerDb.Pages.Courses
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("CourseVM.Active");
+
             if (!ModelState.IsValid)
             {
 				return Page();

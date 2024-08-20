@@ -2,23 +2,50 @@
 @using QuizMakerDb.Data.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+@inject ApplicationDbContext Context
+@{
+	var user = await UserManager.GetUserAsync(User);
+
+	var profileName = "";
+
+	bool isAdmin = await UserManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+	bool isTeacher = await UserManager.IsInRoleAsync(user, Constants.ROLE_TEACHER);
+	bool isStudent = await UserManager.IsInRoleAsync(user, Constants.ROLE_STUDENT);
+
+	if (isAdmin)
+	{
+		profileName = user.ToString();
+	}
+
+	if (isTeacher)
+	{
+		var teacher = Context.Teachers.FirstOrDefault(m => m.UserName == user.UserName);
+		profileName = teacher.LastName + ", " + teacher.FirstName;
+	}
+
+	if (isStudent)
+	{
+		var student = Context.Students.FirstOrDefault(m => m.UserName == user.UserName);
+		profileName = student.LastName + ", " + student.FirstName;
+	}
+}
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+	@if (SignInManager.IsSignedIn(User))
+	{
+		<li class="nav-item">
+			<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@profileName</a>
+		</li>
+		<li class="nav-item">
+			<form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+				<button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+			</form>
+		</li>
+	}
+	else
+	{
+		<li class="nav-item">
+			<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+		</li>
+	}
 </ul>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Courses
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -53,6 +55,8 @@ namespace QuizMakerDb.Pages.Courses
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("CourseVM.Active");
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -69,7 +73,7 @@ namespace QuizMakerDb.Pages.Courses
             {
                 Id = CourseVM.Id,
                 Name = CourseVM.Name,
-                Active = CourseVM.Active,
+                Active = true,
                 CreatedBy = CourseVM.CreatedBy,
                 CreatedDate = CourseVM.CreatedDate,
                 UpdatedBy = editor.Id,

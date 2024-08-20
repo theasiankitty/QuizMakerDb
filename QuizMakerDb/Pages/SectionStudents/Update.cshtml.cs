@@ -1,14 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QuizMakerDb.Data.Identity;
-using QuizMakerDb.Data;
-using QuizMakerDb.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using QuizMakerDb.Data;
+using QuizMakerDb.Data.Identity;
 
 namespace QuizMakerDb.Pages.SectionStudents
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class UpdateModel : PageModel
 	{
 		private readonly UserManager<AppUser> _userManager;
@@ -22,9 +22,9 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 		public async Task<JsonResult> OnPostAsync([FromBody] int sectionStudentId)
 		{
-			var editor = await _userManager.GetUserAsync(User);
+			var updater = await _userManager.GetUserAsync(User);
 
-			if (editor == null)
+			if (updater == null)
 			{
 				return new JsonResult("NOT FOUND");
 			}
@@ -39,7 +39,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 			}
 
 			sectionStudent.Active = false;
-			sectionStudent.UpdatedBy = editor.Id;
+			sectionStudent.UpdatedBy = updater.Id;
 			sectionStudent.UpdatedDate = DateTime.Now;
 
 			_context.SectionStudents.Update(sectionStudent);

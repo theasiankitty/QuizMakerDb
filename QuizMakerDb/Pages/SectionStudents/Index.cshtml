@@ -63,12 +63,12 @@
 			</button>
 			<a class="btn btn-primary btn-block"
 			   asp-page="./Index"
-			   asp-route-sectionId="@Model.SectionVM.Id"
-			   asp-route-searchStudent=""
 			   asp-route-sortColumn=""
 			   asp-route-sortOrder=""
 			   asp-route-pageIndex="1"
-			   asp-route-searchName="">
+			   asp-route-sectionId="@Model.SectionVM.Id"
+			   asp-route-searchStudent=""
+			   asp-route-searchStudentInSection="">
 				<i class="bi bi-arrow-clockwise"></i>
 				Refresh
 			</a>
@@ -111,8 +111,13 @@
 								<table class="table table-bordered">
 									<thead>
 										<tr>
-											<th class="d-none d-xl-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
-												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+											<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="id"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection">
 													<div class="container-fluid">
 														<div class="row">
 															<div class="col-10">
@@ -134,7 +139,12 @@
 												</a>
 											</th>
 											<th class="bg-body-secondary bg-gradient">
-												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="name" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="name"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection">
 													<div class="container-fluid">
 														<div class="row">
 															<div class="col-10">
@@ -156,7 +166,12 @@
 												</a>
 											</th>
 											<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient">
-												<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="username" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="username"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection">
 													<div class="container-fluid">
 														<div class="row">
 															<div class="col-10">
@@ -164,6 +179,33 @@
 															</div>
 															<div class="col-2 text-end p-0">
 																@if (Model.SortColumn == "username")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="sex"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-sectionId="@Model.SectionVM.Id"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.StudentSections[0].SexDescription)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "sex")
 																{
 																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -192,7 +234,7 @@
 										@foreach (var item in Model.StudentSections)
 										{
 											<tr class="align-middle">
-												<td class="d-none d-xl-table-cell">
+												<td class="d-none d-sm-table-cell">
 													@Html.DisplayFor(modelItem => item.Id)
 												</td>
 												<td>
@@ -200,6 +242,9 @@
 												</td>
 												<td class="d-none d-sm-table-cell">
 													@Html.DisplayFor(modelItem => item.StudentUserName)
+												</td>
+												<td class="d-none d-lg-table-cell">
+													@Html.DisplayFor(modelItem => item.SexDescription)
 												</td>
 												<td class="text-center">
 													@if (isAdmin)
@@ -229,7 +274,7 @@
 												   asp-route-pageIndex="1"
 												   asp-route-sectionId="@Model.SectionVM.Id"
 												   asp-route-searchStudent="@Model.SearchStudent"
-												   asp-route-searchName="@Model.SearchStudentInSection"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == 1 ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-double-left"></i>
 												</a>
@@ -240,7 +285,7 @@
 												   asp-route-pageIndex="@(Model.StudentSections.PageIndex - 1)"
 												   asp-route-sectionId="@Model.SectionVM.Id"
 												   asp-route-searchStudent="@Model.SearchStudent"
-												   asp-route-searchName="@Model.SearchStudentInSection"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex <= 1 ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-left"></i>
 												</a>
@@ -253,7 +298,7 @@
 													   asp-route-pageIndex="@i"
 													   asp-route-sectionId="@Model.SectionVM.Id"
 													   asp-route-searchStudent="@Model.SearchStudent"
-													   asp-route-searchName="@Model.SearchStudentInSection"
+													   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 													   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == i ? "disabled" : "")">
 														@i
 													</a>
@@ -265,7 +310,7 @@
 												   asp-route-pageIndex="@(Model.StudentSections.PageIndex + 1)"
 												   asp-route-sectionId="@Model.SectionVM.Id"
 												   asp-route-searchStudent="@Model.SearchStudent"
-												   asp-route-searchName="@Model.SearchStudentInSection"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex >= Model.StudentSections.TotalPages ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-right"></i>
 												</a>
@@ -276,7 +321,7 @@
 												   asp-route-pageIndex="@Model.StudentSections.TotalPages"
 												   asp-route-sectionId="@Model.SectionVM.Id"
 												   asp-route-searchStudent="@Model.SearchStudent"
-												   asp-route-searchName="@Model.SearchStudentInSection"
+												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == Model.StudentSections.TotalPages ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-double-right"></i>
 												</a>
@@ -402,8 +447,8 @@
 			</div>
 			<div class="modal-body">
 				<p>The student may already be assigned to a section or might not be registered/enrolled yet.</p>
-				<p>To check the student's section, <a type="button" href="/SearchStudentSection" target="_blank" rel="noopener noreferrer">click here</a>.</p>
-				<p>To verify if the student is enrolled, <a type="button" href="/Students" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+				<p>To check the student's section, <a type="button" href="/Sections/Index" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+				<p>To verify if the student is enrolled, <a type="button" href="/Students/Index" target="_blank" rel="noopener noreferrer">click here</a>.</p>
 			</div>
 		</div>
 	</div>
@@ -465,9 +510,9 @@
 		function submitStudents() {
 			var sectionStudents = [];
 			$("[name=selectedStudentIds]:checked").each(function (i, elem) {
-				sectionStudents.push({ 
-					"sectionId": @Model.SectionVM.Id, 
-					"studentId": elem.value, 
+				sectionStudents.push({
+					"sectionId": @Model.SectionVM.Id,
+					"studentId": elem.value,
 					"schoolYearId": @Model.SectionVM.SchoolYearId });
 			});
 

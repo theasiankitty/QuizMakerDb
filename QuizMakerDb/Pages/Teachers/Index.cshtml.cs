@@ -22,19 +22,25 @@ namespace QuizMakerDb.Pages.Teachers
         public string SortColumn { get; set; } = string.Empty!;
         public string SortOrder { get; set; } = string.Empty!;
         public string SearchTeacher { get; set; } = string.Empty!;
-        public int TotalItems { get; set; }
+		public string SearchUserName { get; set; } = string.Empty!;
+		public string SearchSex { get; set; } = string.Empty!;
+		public int TotalItems { get; set; }
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTeacher)
+        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTeacher, string? searchUserName, string? searchSex)
         {
             SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
             SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
-            searchTeacher = string.IsNullOrEmpty(searchTeacher) ? "" : searchTeacher;
+            SearchTeacher = string.IsNullOrEmpty(searchTeacher) ? "" : searchTeacher;
+			SearchUserName = string.IsNullOrEmpty(searchUserName) ? "" : searchUserName;
+			SearchSex = string.IsNullOrEmpty(searchSex) ? "" : searchSex;
 
-            if (_context.Teachers != null)
+			if (_context.Teachers != null)
             {
                 IQueryable<Teacher> teachers = _context.Teachers.AsQueryable();
 
-                teachers = teachers.OrderByDescending(o => o.Id);
+                teachers = teachers
+                    .Where(m => m.Active == true)
+                    .OrderByDescending(o => o.Id);
 
                 if (!string.IsNullOrEmpty(searchTeacher))
                 {
@@ -43,7 +49,17 @@ namespace QuizMakerDb.Pages.Teachers
                     .Contains(searchTeacher.ToLower()));
                 }
 
-                switch (sortColumn)
+				if (!string.IsNullOrEmpty(searchUserName))
+				{
+					teachers = teachers.Where(m => m.UserName == searchUserName);
+				}
+
+				if (!string.IsNullOrEmpty(searchSex))
+				{
+					teachers = teachers.Where(m => m.Sex == byte.Parse(searchSex));
+				}
+
+				switch (sortColumn)
                 {
                     case "id":
                         teachers = SortOrder == "asc" ? teachers.OrderBy(o => o.Id)

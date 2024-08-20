@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Models;
@@ -7,6 +8,7 @@ using QuizMakerDb.Infrastructure;
 
 namespace QuizMakerDb.Pages.SchoolYears
 {
+	[Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -26,13 +28,15 @@ namespace QuizMakerDb.Pages.SchoolYears
         {
             SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
             SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
-            searchName = string.IsNullOrEmpty(searchName) ? "" : searchName;
+            SearchName = string.IsNullOrEmpty(searchName) ? "" : searchName;
 
             if (_context.SchoolYears != null)
             {
                 IQueryable<SchoolYear> schoolYears = _context.SchoolYears.AsQueryable();
 
-                schoolYears = schoolYears.OrderByDescending(o => o.Id);
+                schoolYears = schoolYears
+                    .Where(m => m.Active == true)
+                    .OrderByDescending(o => o.Id);
 
                 if (!string.IsNullOrEmpty(searchName))
                 {

@@ -1,10 +1,110 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+	ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-6">
+					<div class="small-box text-bg-primary">
+						<div class="inner">
+							<h3>@Model.TotalQuizzes</h3>
+							<p>Quizzes</p>
+						</div>
+						<i class="bi bi-clipboard2-check-fill small-box-icon"></i>
+						<a asp-area="" asp-page="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+							More info <i class="bi bi-link-45deg"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="small-box text-bg-warning">
+						<div class="inner text-light">
+							<h3>@Model.TotalSections</h3>
+							<p>Sections</p>
+						</div>
+						<i class="bi bi-person-rolodex small-box-icon"></i>
+						<a asp-area="" asp-page="/Sections/Index" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+							More info <i class="bi bi-link-45deg"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-6">
+					<div class="small-box text-bg-success">
+						<div class="inner">
+							<h3>@Model.TotalTeachers</h3>
+							<p>Teachers</p>
+						</div>
+						<i class="bi bi-person-vcard small-box-icon"></i>
+						<a asp-area="" asp-page="/Teachers/Index" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+							More info <i class="bi bi-link-45deg"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="small-box text-bg-danger">
+						<div class="inner">
+							<h3>@Model.TotalStudents</h3>
+							<p>Students</p>
+						</div>
+						<i class="bi bi-people small-box-icon"></i>
+						<a asp-area="" asp-page="/Students/Index" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+							More info <i class="bi bi-link-45deg"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-8"></div>
+		<div class="col-4">
+			<div class="card mb-4">
+				<div class="card-header">
+					<h3 class="card-title">Quiz Takers</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-12">
+							<div id="pie-chart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+@section Scripts {
+	<script>
+		const pie_chart_options = {
+			series: [700, 500, 400, 600],
+			chart: {
+				type: "donut",
+			},
+			labels: ["BSIT", "BSBA", "BEED", "BSSW"],
+			dataLabels: {
+				enabled: false,
+			},
+			colors: [
+				"#0d6efd",
+				"#20c997",
+				"#ffc107",
+				"#d63384",
+			],
+		};
+
+		const pie_chart = new ApexCharts(
+			document.querySelector("#pie-chart"),
+			pie_chart_options,
+		);
+		pie_chart.render();
+	</script>
+}

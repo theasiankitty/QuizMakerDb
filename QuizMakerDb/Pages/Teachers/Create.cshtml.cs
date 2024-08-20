@@ -32,8 +32,9 @@ namespace QuizMakerDb.Pages.Teachers
 		public async Task<IActionResult> OnPostAsync()
 		{
 			ModelState.Remove("TeacherVM.UserId");
+            ModelState.Remove("TeacherVM.Active");
 
-			if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
 			{
 				return Page();
 			}
@@ -51,7 +52,7 @@ namespace QuizMakerDb.Pages.Teachers
 				EmailConfirmed = true,
 				SecurityStamp = Guid.NewGuid().ToString()
 			};
-			user.PasswordHash = hasher.HashPassword(user, "Password@1234");
+			user.PasswordHash = hasher.HashPassword(user, TeacherVM.UserName);
 			await _userManager.CreateAsync(user);
             await _userManager.AddToRoleAsync(user, Constants.ROLE_TEACHER);
 

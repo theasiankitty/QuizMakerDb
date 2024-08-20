@@ -4,22 +4,26 @@ namespace QuizMakerDb.Data
 {
     public enum Sex : byte
     {
-        Male = 0,
-        Female = 1
+		Male = 0,
+
+		Female = 1
     }
 
     public enum YearLevel : byte
     {
-        [Display(Name = "1st Year")]
-        FirstYear = 0,
+        First = 0,
 
-        [Display(Name = "2nd Year")]
-        SecondYear = 1,
+        Second = 1,
 
-        [Display(Name = "3rd Year")]
-        ThirdYear = 2,
+        Third = 2,
 
-        [Display(Name = "4th Year")]
-        FourthYear = 3,
+        Fourth = 3
+    }
+
+    public enum Semester : byte
+    {
+        First = 0,
+
+		Second = 1
     }
 }

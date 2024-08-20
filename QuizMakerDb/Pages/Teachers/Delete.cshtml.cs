@@ -63,6 +63,13 @@ namespace QuizMakerDb.Pages.Teachers
                 return NotFound();
             }
 
+            var updater = await _userManager.GetUserAsync(User);
+
+            if (updater == null)
+            {
+                return NotFound();
+            }
+
             var teacher = await _context.Teachers.FindAsync(id);
 
             if (teacher == null)
@@ -70,18 +77,15 @@ namespace QuizMakerDb.Pages.Teachers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(teacher.UserId);
-
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-            }
-
             else
             {
-                return NotFound();
+                teacher.Active = false;
+                teacher.UpdatedBy = updater.Id;
+                teacher.UpdatedDate = DateTime.Now;
             }
+
+            _context.Teachers.Update(teacher);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

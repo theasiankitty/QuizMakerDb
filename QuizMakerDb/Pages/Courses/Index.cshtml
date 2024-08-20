@@ -3,43 +3,43 @@
 @model QuizMakerDb.Pages.Courses.IndexModel
 @inject UserManager<AppUser> userManager
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 
-    var user = await userManager.GetUserAsync(User);
+	var user = await userManager.GetUserAsync(User);
 
-    bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
 
-    var hasCourses = Model.Courses.Count > 0;
+	var hasCourses = Model.Courses.Count > 0;
 
-    var firstDisabled = Model.Courses.PageIndex == 1 ? "disabled" : "";
-    var lastDisabled = Model.Courses.PageIndex == Model.Courses.TotalPages ? "disabled" : "";
-    var prevDisabled = !Model.Courses.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Courses.HasNextPage ? "disabled" : "";
+	var firstDisabled = Model.Courses.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.Courses.PageIndex == Model.Courses.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.Courses.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.Courses.HasNextPage ? "disabled" : "";
 
-    int length = 3;
-    int start = 1;
-    int center = Math.Abs(length / 2) + 1;
-    if (Model.Courses.PageIndex < center)
-    {
-        start = 1;
-    }
-    else
-    {
-        start = (Model.Courses.PageIndex - center) + 1;
-    }
-    int end = start + length;
-    if (Model.Courses.TotalPages == 1)
-        end = 1;
-    if (end > Model.Courses.TotalPages)
-    {
-        end = Model.Courses.TotalPages + 1;
-        start = end - length;
-        if (start < 1)
-        {
-            start = 1;
-            end = length;
-        }
-    }
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+	if (Model.Courses.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.Courses.PageIndex - center) + 1;
+	}
+	int end = start + length;
+	if (Model.Courses.TotalPages == 1)
+		end = 1;
+	if (end > Model.Courses.TotalPages)
+	{
+		end = Model.Courses.TotalPages + 1;
+		start = end - length;
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
 }
 
 <div class="container-fluid mb-3">
@@ -89,7 +89,11 @@
 							<thead>
 								<tr>
 									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="id" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="id"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchName="@Model.SearchName">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -111,7 +115,11 @@
 										</a>
 									</th>
 									<th class="bg-body-secondary bg-gradient">
-										<a class="text-decoration-none text-dark" asp-page="./Index" asp-route-sortColumn="name" asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="name"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchName="@Model.SearchName">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">

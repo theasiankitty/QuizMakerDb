@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Quiz Maker</title>
+	<title>DHVSU Quiz Maker</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="title" content="Quiz Maker">
 	@{
@@ -18,36 +18,30 @@
 	<link href="~/css/site.css" rel="stylesheet" />
 </head>
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
 	<div class="app-wrapper">
-		<nav class="app-header navbar navbar-expand bg-body">
+		<nav class="app-header navbar navbar-expand bg-body sticky-top">
 			<div class="container-fluid">
-				<ul class="navbar-nav">
+				<ul class="navbar-nav d-sm-block d-lg-none">
 					<li class="nav-item">
 						<a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
 							<i class="bi bi-list"></i>
 						</a>
 					</li>
 				</ul>
-				<ul class="navbar-nav d-block d-md-none">
-					<a asp-area="" asp-page="/Index" class="brand-link">
-						Quiz Maker
-					</a>
-				</ul>
 				<ul class="navbar-nav ms-md-auto">
 					<partial name="_LoginPartial" />
 				</ul>
 			</div>
 		</nav>
-
 		<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
 			<div class="sidebar-brand">
 				<a asp-area="" asp-page="/Index" class="brand-link">
-					<span class="brand-text fw-light fs-5">Quiz Maker</span>
+					<img src="~/assets/images/dhvsu-logo.png" alt="DHVSU Logo" class="brand-image img-circle elevation-3 m-1">
+					<span class="brand-text fw-light fs-5 m-0">DHVSU Quiz Maker</span>
 				</a>
 			</div>
-
-			<div class="sidebar-wrapper sidebar-no-expand ">
+			<div class="sidebar-wrapper sidebar-no-expand">
 				<nav class="mt-2">
 					<ul class="nav sidebar-menu flex-column" role="menu">
 						<li class="nav-item">
@@ -83,9 +77,21 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a asp-area="" asp-page="/CourseYears/Index" class="nav-link">
+								<i class="nav-icon bi bi-file-bar-graph"></i>
+								<p>Course Years</p>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a asp-area="" asp-page="/Sections/Index" class="nav-link">
 								<i class="nav-icon bi bi-person-rolodex"></i>
 								<p>Sections</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a asp-area="" asp-page="/Subjects/Index" class="nav-link">
+								<i class="nav-icon bi bi-book"></i>
+								<p>Subjects</p>
 							</a>
 						</li>
 					</ul>
@@ -120,6 +126,15 @@
 			scrollbarClickScroll: true,
 		};
 		document.addEventListener("DOMContentLoaded", function () {
+			const currentPath = window.location.pathname;
+			const navLinks = document.querySelectorAll(".nav-link");
+
+			navLinks.forEach(link => {
+				if (link.getAttribute("href") === currentPath) {
+					link.classList.add("active");
+				}
+			});
+
 			const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
 			if (
 				sidebarWrapper &&
@@ -139,7 +154,9 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="~/js/site.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

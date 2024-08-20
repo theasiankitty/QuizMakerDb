@@ -1,0 +1,144 @@
+﻿@page
+@model QuizMakerDb.Pages.Sections.DetailsModel
+
+@{
+	ViewData["Title"] = "Details";
+
+	var hasMaleStudent = Model.MaleStudents.Count > 0;
+	var hasFemaleStudent = Model.FemaleStudents.Count > 0;
+}
+
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">Sections</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Details</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div class="col-xs-12 col-sm-12 col-md-11 col-lg-10 col-xl-9 col-xxl-8">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Section Details</div>
+					<div class="card-tools">
+						<a href="./Edit?id=@Model.SectionVM.Id" class="btn btn-block shadow-none p-0 pe-2">
+							<i class="bi bi-pencil-square fs-5"></i>
+						</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="info-box">
+									<span class="info-box-icon text-bg-primary shadow-sm">
+										<i class="bi bi-person-rolodex"></i>
+									</span>
+									<div class="info-box-content">
+										<span class="info-box-text">
+											@Html.DisplayNameFor(model => model.SectionVM.Name)
+										</span>
+										<span class="info-box-number">
+											@Html.DisplayFor(model => model.SectionVM.Name)
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="info-box">
+									<span class="info-box-icon text-bg-primary shadow-sm">
+										<i class="bi bi-calendar-date"></i>
+									</span>
+									<div class="info-box-content">
+										<span class="info-box-text">
+											@Html.DisplayNameFor(model => model.SectionVM.SchoolYearName)
+										</span>
+										<span class="info-box-number">
+											@Html.DisplayFor(model => model.SectionVM.SchoolYearName)
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="info-box">
+									<span class="info-box-icon text-bg-primary shadow-sm">
+										<i class="bi bi-file-bar-graph"></i>
+									</span>
+									<div class="info-box-content">
+										<span class="info-box-text">
+											@Html.DisplayNameFor(model => model.SectionVM.CourseYearName)
+										</span>
+										<span class="info-box-number">
+											@Html.DisplayFor(model => model.SectionVM.CourseYearName)
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-title fw-medium">Students</div>
+										<div class="card-tools">
+											<a href="/SectionStudents?sectionId=@Model.SectionVM.Id" class="btn btn-block shadow-none p-0 pe-2">
+												<i class="bi bi-pencil-square fs-5"></i>
+											</a>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-sm-12 col-md-6 mb-3">
+													<h1 class="fs-4">Male</h1>
+													@if (hasMaleStudent)
+													{
+														<ol class="list-group list-group-numbered">
+															@foreach (var student in Model.MaleStudents)
+															{
+																<li class="list-group-item">@student.StudentInfo.LastName, @student.StudentInfo.FirstName</li>
+															}
+														</ol>
+													}
+
+													else
+													{
+														<p class="text-secondary">No Records Found</p>
+													}
+												</div>
+												<div class="col-sm-12 col-md-6 mb-3">
+													<h1 class="fs-4">Female</h1>
+													@if (hasFemaleStudent)
+													{
+														<ol class="list-group list-group-numbered">
+															@foreach (var student in Model.FemaleStudents)
+															{
+																<li class="list-group-item">@student.StudentInfo.LastName, @student.StudentInfo.FirstName</li>
+															}
+														</ol>
+													}
+
+													else
+													{
+														<p class="text-secondary">No Records Found</p>
+													}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-12 text-end">
+							<a asp-page="Index" class="btn btn-secondary">Back</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,104 @@
+﻿@page
+@model QuizMakerDb.Pages.Subjects.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item fs-3"><a asp-page="Index">Subjects</a></li>
+            <li class="breadcrumb-item fs-3 active" aria-current="page">Details</li>
+        </ol>
+    </nav>
+    <form class="row justify-content-center mt-3" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+            <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                    <div class="card-title fw-medium">Subject Details</div>
+                    <div class="card-tools">
+                        <a href="./Edit?id=@Model.SubjectVM.Id" class="btn btn-block shadow-none p-0 pe-2">
+                            <i class="bi bi-pencil-square fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-info-circle"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.SubjectVM.Title)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.SubjectVM.Title)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-hash"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.SubjectVM.Code)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.SubjectVM.Code)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-file-bar-graph"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.SubjectVM.CourseYear)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.SubjectVM.CourseYear)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-boxes"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.SubjectVM.Semester)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.SubjectVM.Semester)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-end">
+                            <a asp-page="Index" class="btn btn-secondary">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

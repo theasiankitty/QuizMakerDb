@@ -1,0 +1,81 @@
+﻿@page
+@model QuizMakerDb.Pages.CourseYears.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item fs-3"><a asp-page="Index">Course Years</a></li>
+            <li class="breadcrumb-item fs-3 active" aria-current="page">Delete</li>
+        </ol>
+    </nav>
+    <div class="row justify-content-center mt-3">
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+            <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                    <div class="card-title fw-medium">Delete Course Year</div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon text-bg-primary shadow-sm">
+                                        <i class="bi bi-file-bar-graph"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            @Html.DisplayNameFor(model => model.CourseYearVM.Name)
+                                        </span>
+                                        <span class="info-box-number">
+                                            @Html.DisplayFor(model => model.CourseYearVM.Name)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <button type="button" class="btn btn-danger btn-lg rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                Delete Course Year
+            </button>
+        </div>
+        <div class="col-12 text-center mt-3">
+            <a asp-page="Index" class="btn btn-primary btn-lg rounded-pill shadow">Go Back to Course Years</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-light">
+                <i class="bi bi-exclamation-triangle fs-5 me-3"></i>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <strong>@Html.DisplayFor(model => model.CourseYearVM.Name)</strong>?
+                <br />
+                This action cannot be undone and may affect related data.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="CourseYearVM.Id" />
+                    <input type="submit" value="Confirm" class="btn btn-danger" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
