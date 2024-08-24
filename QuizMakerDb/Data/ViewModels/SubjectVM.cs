@@ -13,12 +13,6 @@ namespace QuizMakerDb.Data.ViewModels
 
 		public string Semester { get; set; } = string.Empty;
 
-        [Display(Name = "Course Year")]
-		public string CourseYear { get; set; } = string.Empty;
-
-		[Display(Name = "Course Year")]
-		public int CourseYearId { get; set; }
-
 		public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }

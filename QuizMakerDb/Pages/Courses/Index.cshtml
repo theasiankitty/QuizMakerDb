@@ -49,6 +49,7 @@
 		</ol>
 	</nav>
 	<form class="row justify-content-end mt-3" asp-page="./Index" method="get">
+		@Html.AntiForgeryToken()
 		<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
 		<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
 		<div class="col-5">

@@ -16,8 +16,6 @@ namespace QuizMakerDb.Data.Models
 
         public byte Semester { get; set; }
 
-        public int CourseYearId { get; set; }
-
         public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }
@@ -27,8 +25,5 @@ namespace QuizMakerDb.Data.Models
 		public Guid? UpdatedBy { get; set; }
 
 		public DateTime? UpdatedDate { get; set; }
-
-        [ForeignKey(nameof(CourseYearId))]
-        public CourseYear CourseYearInfo { get; set; } = null!;
     }
 }

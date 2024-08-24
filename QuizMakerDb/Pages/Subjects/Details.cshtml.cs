@@ -24,9 +24,7 @@ namespace QuizMakerDb.Pages.Subjects
                 return NotFound();
             }
 
-            var subject = await _context.Subjects
-                .Include(m => m.CourseYearInfo)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.Id == id);
 
             if (subject == null)
             {
@@ -38,7 +36,6 @@ namespace QuizMakerDb.Pages.Subjects
                 Id = subject.Id,
                 Title = subject.Title,
                 Code = subject.Code,
-                CourseYear = subject.CourseYearInfo.Name,
                 Semester = ((Semester)subject.Semester).ToString(),
             };
 

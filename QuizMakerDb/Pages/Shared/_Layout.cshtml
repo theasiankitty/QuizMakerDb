@@ -1,4 +1,26 @@
-﻿<!DOCTYPE html>
+﻿@using QuizMakerDb.Data.Identity
+@inject UserManager<AppUser> userManager
+@{
+	bool adminPage = false;
+	bool teacherPage = false;
+	bool studentPage = false;
+
+	AppUser? user = await userManager.GetUserAsync(User);
+
+	if (user != null)
+	{
+		bool forAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+		adminPage = forAdmin;
+
+		bool forTeacher = await userManager.IsInRoleAsync(user, Constants.ROLE_TEACHER);
+		teacherPage = forTeacher;
+
+		bool forStudent = await userManager.IsInRoleAsync(user, Constants.ROLE_STUDENT);
+		studentPage = forStudent;
+	}
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -47,53 +69,75 @@
 						<li class="nav-item">
 							<a asp-area="" asp-page="/Index" class="nav-link">
 								<i class="nav-icon bi bi-house"></i>
-								<p>Home</p>
+								<p>Dashboard</p>
 							</a>
 						</li>
-						<li class="nav-header">MEMBERS</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/Teachers/Index" class="nav-link">
-								<i class="nav-icon bi bi-person-vcard"></i>
-								<p>Teachers</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/Students/Index" class="nav-link">
-								<i class="nav-icon bi bi-people"></i>
-								<p>Students</p>
-							</a>
-						</li>
-						<li class="nav-header">MANAGEMENT</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/SchoolYears/Index" class="nav-link">
-								<i class="nav-icon bi bi-calendar-date"></i>
-								<p>School Years</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/Courses/Index" class="nav-link">
-								<i class="nav-icon bi bi-bar-chart"></i>
-								<p>Courses</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/CourseYears/Index" class="nav-link">
-								<i class="nav-icon bi bi-file-bar-graph"></i>
-								<p>Course Years</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/Sections/Index" class="nav-link">
-								<i class="nav-icon bi bi-person-rolodex"></i>
-								<p>Sections</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a asp-area="" asp-page="/Subjects/Index" class="nav-link">
-								<i class="nav-icon bi bi-book"></i>
-								<p>Subjects</p>
-							</a>
-						</li>
+						@if (adminPage)
+						{
+							<li class="nav-header">Quiz Management</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="#" class="nav-link">
+									<i class="nav-icon bi bi-clipboard2-check-fill"></i>
+									<p>Quizzes</p>
+								</a>
+							</li>
+							<li class="nav-header">User Management</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/Teachers/Index" class="nav-link">
+									<i class="nav-icon bi bi-person-vcard"></i>
+									<p>Teachers</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/Students/Index" class="nav-link">
+									<i class="nav-icon bi bi-people"></i>
+									<p>Students</p>
+								</a>
+							</li>
+							<li class="nav-header">Academic Structure</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/SchoolYears/Index" class="nav-link">
+									<i class="nav-icon bi bi-calendar-date"></i>
+									<p>School Years</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/Courses/Index" class="nav-link">
+									<i class="nav-icon bi bi-bar-chart"></i>
+									<p>Courses</p>
+								</a>
+							</li>
+							<li class="nav-header">Course Organization</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/Subjects/Index" class="nav-link">
+									<i class="nav-icon bi bi-book"></i>
+									<p>Subjects</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/CourseYears/Index" class="nav-link">
+									<i class="nav-icon bi bi-file-bar-graph"></i>
+									<p>Course Years</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/Sections/Index" class="nav-link">
+									<i class="nav-icon bi bi-person-rolodex"></i>
+									<p>Sections</p>
+								</a>
+							</li>
+						}
+
+						@if (teacherPage)
+						{
+							<li class="nav-header">Quiz Management</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="#" class="nav-link">
+									<i class="nav-icon bi bi-clipboard2-check-fill"></i>
+									<p>Quizzes</p>
+								</a>
+							</li>
+						}
 					</ul>
 				</nav>
 			</div>
@@ -118,6 +162,11 @@
 	}
 	<script src="@popperJsLink" integrity="sha256-whL0tQWoY1Ku1iskqPFvmZ+CHsvmRWx/PIoEvIeWh4I=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha256-YMa+wAM6QkVyz999odX7lPRxkoYAan8suedu4k2Zur8=" crossorigin="anonymous"></script>
+	<script src="~/lib/admin-lte/js/adminlte.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="~/js/site.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 	<script>
 		const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
 		const Default = {
@@ -125,22 +174,18 @@
 			scrollbarAutoHide: "leave",
 			scrollbarClickScroll: true,
 		};
-		document.addEventListener("DOMContentLoaded", function () {
+		$(document).ready(function () {
 			const currentPath = window.location.pathname;
-			const navLinks = document.querySelectorAll(".nav-link");
 
-			navLinks.forEach(link => {
-				if (link.getAttribute("href") === currentPath) {
-					link.classList.add("active");
+			$(".nav-link").each(function () {
+				if ($(this).attr("href") === currentPath) {
+					$(this).addClass("active");
 				}
 			});
 
-			const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-			if (
-				sidebarWrapper &&
-				typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
-			) {
-				OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+			const $sidebarWrapper = $(SELECTOR_SIDEBAR_WRAPPER);
+			if ($sidebarWrapper.length && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined") {
+				OverlayScrollbarsGlobal.OverlayScrollbars($sidebarWrapper[0], {
 					scrollbars: {
 						theme: Default.scrollbarTheme,
 						autoHide: Default.scrollbarAutoHide,
@@ -150,11 +195,6 @@
 			}
 		});
 	</script>
-	<script src="~/lib/admin-lte/js/adminlte.min.js"></script>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="~/js/site.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

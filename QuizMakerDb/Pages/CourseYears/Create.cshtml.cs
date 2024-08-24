@@ -10,7 +10,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.CourseYears
 {
-	[Authorize(Roles = Constants.ROLE_ADMIN)]
+    [Authorize(Roles = Constants.ROLE_ADMIN)]
 	public class CreateModel : PageModel
 	{
 		private readonly ApplicationDbContext _context;
@@ -46,25 +46,41 @@ namespace QuizMakerDb.Pages.CourseYears
 
 			if (creator == null)
 			{
+				TempData["Message"] = "User not found. Course Year could not be created.";
+				TempData["MessageType"] = "error";
 				return NotFound();
 			}
 
-			var courseYear = new CourseYear
+			try
 			{
-				Name = CourseYearVM.Name,
-				Year = byte.Parse(CourseYearVM.Year),
-				CourseId = CourseYearVM.CourseId,
-				Active = true,
-				CreatedBy = creator.Id,
-				CreatedDate = DateTime.Now,
-				UpdatedBy = null,
-				UpdatedDate = null
-			};
+				var courseYear = new CourseYear
+				{
+					Name = CourseYearVM.Name,
+					Year = byte.Parse(CourseYearVM.Year),
+					CourseId = CourseYearVM.CourseId,
+					Active = true,
+					CreatedBy = creator.Id,
+					CreatedDate = DateTime.Now,
+					UpdatedBy = null,
+					UpdatedDate = null
+				};
 
-			_context.CourseYears.Add(courseYear);
-			await _context.SaveChangesAsync();
+				_context.CourseYears.Add(courseYear);
+				await _context.SaveChangesAsync();
 
-			return RedirectToPage("./Index");
+				TempData["Message"] = "Course Year successfully created!";
+				TempData["MessageType"] = "success";
+				TempData["CourseYearId"] = courseYear.Id;
+
+				return RedirectToPage();
+			}
+			catch (Exception)
+			{
+				TempData["Message"] = "An error occurred while creating the course year. Please try again.";
+				TempData["MessageType"] = "error";
+
+				return RedirectToPage();
+			}
 		}
 	}
 }

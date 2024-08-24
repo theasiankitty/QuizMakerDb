@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "Create";
+
+    var message = TempData["Message"] as string;
+    var messageType = TempData["MessageType"] as string;
+    var courseYearId = TempData["CourseYearId"] as int?;
 }
 
 <div class="container-fluid">
@@ -61,6 +65,38 @@
     </form>
 </div>
 
+<div class="modal fade" id="messageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Course Year</h5>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                @if (courseYearId.HasValue)
+                {
+                    <a href="/CourseYearSubjects?courseYearId=@courseYearId" class="btn btn-primary" id="addSubjectButton">Add Subject</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            var message = "@message";
+            var sectionId = "@courseYearId";
+
+            if (message) {
+                $('#modalMessage').text(message);
+                $('#messageModal').modal('show');
+            }
+        });
+    </script>
 }

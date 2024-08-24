@@ -51,7 +51,6 @@ namespace QuizMakerDb.Pages.Subjects
 				Title = SubjectVM.Title,
 				Code = SubjectVM.Code,
 				Semester = byte.Parse(SubjectVM.Semester),
-				CourseYearId = SubjectVM.CourseYearId,
 				Active = true,
 				CreatedBy = creator.Id,
 				CreatedDate = DateTime.Now

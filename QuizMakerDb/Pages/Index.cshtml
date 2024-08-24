@@ -1,10 +1,32 @@
 ﻿@page
 @model IndexModel
+@using QuizMakerDb.Data.Identity
+@inject UserManager<AppUser> userManager
 @{
 	ViewData["Title"] = "Home";
+
+	bool adminPage = false;
+	bool teacherPage = false;
+	bool studentPage = false;
+
+	AppUser? user = await userManager.GetUserAsync(User);
+
+	if (user != null)
+	{
+		bool forAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+		adminPage = forAdmin;
+
+		bool forTeacher = await userManager.IsInRoleAsync(user, Constants.ROLE_TEACHER);
+		teacherPage = forTeacher;
+
+		bool forStudent = await userManager.IsInRoleAsync(user, Constants.ROLE_STUDENT);
+		studentPage = forStudent;
+	}
 }
 
-<div class="container-fluid">
+@if (adminPage)
+{
+	<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-6">
 			<div class="row">
@@ -63,7 +85,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	@* <div class="row">
 		<div class="col-8"></div>
 		<div class="col-4">
 			<div class="card mb-4">
@@ -79,11 +101,22 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> *@
 </div>
+}
+
+@if (teacherPage)
+{
+	<h1>Hello, Teacher! This is your dashboard!</h1>
+}
+
+@if (studentPage)
+{
+	<h1>Hello, Student! This is your dashboard!</h1>
+}
 
 @section Scripts {
-	<script>
+@* 	<script>
 		const pie_chart_options = {
 			series: [700, 500, 400, 600],
 			chart: {
@@ -106,5 +139,5 @@
 			pie_chart_options,
 		);
 		pie_chart.render();
-	</script>
+	</script> *@
 }

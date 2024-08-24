@@ -1,6 +1,6 @@
 ﻿@page
-@model QuizMakerDb.Pages.Subjects.IndexModel
 @using QuizMakerDb.Data.Identity
+@model QuizMakerDb.Pages.CourseYearSubjects.IndexModel
 @inject UserManager<AppUser> userManager
 @{
 	ViewData["Title"] = "Index";
@@ -9,30 +9,33 @@
 
 	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
 
-	var hasSubjects = Model.Subjects.Count > 0;
+	var hasCourseYearSubject = Model.CourseYearSubjects.Count > 0;
 
-	var firstDisabled = Model.Subjects.PageIndex == 1 ? "disabled" : "";
-	var lastDisabled = Model.Subjects.PageIndex == Model.Subjects.TotalPages ? "disabled" : "";
-	var prevDisabled = !Model.Subjects.HasPreviousPage ? "disabled" : "";
-	var nextDisabled = !Model.Subjects.HasNextPage ? "disabled" : "";
+	var firstDisabled = Model.CourseYearSubjects.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.CourseYearSubjects.PageIndex == Model.CourseYearSubjects.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.CourseYearSubjects.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.CourseYearSubjects.HasNextPage ? "disabled" : "";
 
 	int length = 3;
 	int start = 1;
 	int center = Math.Abs(length / 2) + 1;
-	if (Model.Subjects.PageIndex < center)
+
+	if (Model.CourseYearSubjects.PageIndex < center)
 	{
 		start = 1;
 	}
 	else
 	{
-		start = (Model.Subjects.PageIndex - center) + 1;
+		start = (Model.CourseYearSubjects.PageIndex - center) + 1;
 	}
+
 	int end = start + length;
-	if (Model.Subjects.TotalPages == 1)
+
+	if (Model.CourseYearSubjects.TotalPages == 1)
 		end = 1;
-	if (end > Model.Subjects.TotalPages)
+	if (end > Model.CourseYearSubjects.TotalPages)
 	{
-		end = Model.Subjects.TotalPages + 1;
+		end = Model.CourseYearSubjects.TotalPages + 1;
 		start = end - length;
 		if (start < 1)
 		{
@@ -42,20 +45,25 @@
 	}
 }
 
-<div class="container-fluid mb-3">
+<div class="container-fluid">
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item fs-3" aria-current="page">Subjects</li>
+			<li class="breadcrumb-item fs-3"><a href="/CourseYears/Index">Course Years</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">
+				@Model.CourseYearVM.CourseName
+			</li>
 		</ol>
 	</nav>
 	<form class="row justify-content-end mt-3" asp-page="./Index" method="get">
+		@Html.AntiForgeryToken()
+		<input type="hidden" name="CourseYearId" value="@Model.CourseYearVM.Id" />
 		<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
 		<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
 		<div class="col-5">
-			<a asp-page="Create" class="btn btn-outline-primary btn-block text-center">
+			<button type="button" class="btn btn-outline-primary btn-block text-center" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
 				<i class="bi bi-plus-lg"></i>
-				Create
-			</a>
+				Add Subject
+			</button>
 		</div>
 		<div class="col-7 text-end">
 			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
@@ -67,7 +75,8 @@
 			   asp-route-sortColumn=""
 			   asp-route-sortOrder=""
 			   asp-route-pageIndex="1"
-			   asp-route-searchTitle=""
+			   asp-route-courseYearId="@Model.CourseYearVM.Id"
+			   asp-route-searchSubject=""
 			   asp-route-searchCode=""
 			   asp-route-searchSemester="">
 				<i class="bi bi-arrow-clockwise"></i>
@@ -77,14 +86,14 @@
 	</form>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid mt-3">
 	<div class="row">
 		<div class="col-12">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="card-title fw-medium">Subjects</h3>
+					<h3 class="card-title fw-medium">@Model.CourseYearVM.CourseName - Subject</h3>
 				</div>
-				@if (hasSubjects)
+				@if (hasCourseYearSubject)
 				{
 					<div class="card-body">
 						<table class="table table-bordered">
@@ -95,7 +104,8 @@
 										   asp-page="./Index"
 										   asp-route-sortColumn="id"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester">
 											<div class="container-fluid">
@@ -121,18 +131,19 @@
 									<th class="bg-body-secondary bg-gradient">
 										<a class="text-decoration-none text-dark"
 										   asp-page="./Index"
-										   asp-route-sortColumn="title"
+										   asp-route-sortColumn="subject"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Subjects[0].Title)
+														@Html.DisplayNameFor(model => model.CourseYearSubjects[0].Subject)
 													</div>
 													<div class="col-2 text-end p-0">
-														@if (Model.SortColumn == "title")
+														@if (Model.SortColumn == "subject")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -146,18 +157,19 @@
 											</div>
 										</a>
 									</th>
-									<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient">
+									<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient" style="min-width: 305px; width: 310px;">
 										<a class="text-decoration-none text-dark"
 										   asp-page="./Index"
 										   asp-route-sortColumn="code"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Subjects[0].Code)
+														@Html.DisplayNameFor(model => model.CourseYearSubjects[0].Code)
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "code")
@@ -179,13 +191,14 @@
 										   asp-page="./Index"
 										   asp-route-sortColumn="semester"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Subjects[0].Semester)
+														@Html.DisplayNameFor(model => model.CourseYearSubjects[0].Semester)
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "semester")
@@ -204,24 +217,19 @@
 									</th>
 									@if (isAdmin)
 									{
-										<th class="bg-body-secondary bg-gradient" style="min-width: 125px; width: 130px;"></th>
-									}
-
-									else
-									{
-										<th class="bg-body-secondary bg-gradient" style="min-width: 90px; width: 90px;"></th>
+										<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
 									}
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (var item in Model.Subjects)
+								@foreach (var item in Model.CourseYearSubjects)
 								{
 									<tr class="align-middle">
 										<td class="d-none d-md-table-cell">
 											@Html.DisplayFor(modelItem => item.Id)
 										</td>
 										<td>
-											@Html.DisplayFor(modelItem => item.Title)
+											@Html.DisplayFor(modelItem => item.Subject)
 										</td>
 										<td class="d-none d-lg-table-cell">
 											@Html.DisplayFor(modelItem => item.Code)
@@ -230,17 +238,11 @@
 											@Html.DisplayFor(modelItem => item.Semester)
 										</td>
 										<td class="text-center">
-											<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">
-												<i class="bi bi-pencil-square"></i>
-											</a>
-											<a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm btn-block">
-												<i class="bi bi-eye"></i>
-											</a>
 											@if (isAdmin)
 											{
-												<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm btn-block">
-													<i class="bi bi-trash3"></i>
-												</a>
+												<button type="button" class="btn btn-danger btn-sm btn-block" onclick="removeSubject(@item.Id)">
+													<i class="bi bi-x-lg"></i>
+												</button>
 											}
 										</td>
 									</tr>
@@ -261,21 +263,23 @@
 										   asp-route-sortColumn="@Model.SortColumn"
 										   asp-route-sortOrder="@Model.SortOrder"
 										   asp-route-pageIndex="1"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester"
-										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == 1 ? "disabled" : "")">
+										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
 
 										<a asp-page="./Index"
 										   asp-route-sortColumn="@Model.SortColumn"
 										   asp-route-sortOrder="@Model.SortOrder"
-										   asp-route-pageIndex="@(Model.Subjects.PageIndex - 1)"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-pageIndex="@(Model.CourseYearSubjects.PageIndex - 1)"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester"
-										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex <= 1 ? "disabled" : "")">
+										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
 
@@ -285,10 +289,11 @@
 											   asp-route-sortColumn="@Model.SortColumn"
 											   asp-route-sortOrder="@Model.SortOrder"
 											   asp-route-pageIndex="@i"
-											   asp-route-searchTitle="@Model.SearchTitle"
+											   asp-route-courseYearId="@Model.CourseYearVM.Id"
+											   asp-route-searchSubject="@Model.SearchSubject"
 											   asp-route-searchCode="@Model.SearchCode"
 											   asp-route-searchSemester="@Model.SearchSemester"
-											   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == i ? "disabled" : "")">
+											   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
 										}
@@ -296,22 +301,24 @@
 										<a asp-page="./Index"
 										   asp-route-sortColumn="@Model.SortColumn"
 										   asp-route-sortOrder="@Model.SortOrder"
-										   asp-route-pageIndex="@(Model.Subjects.PageIndex + 1)"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-pageIndex="@(Model.CourseYearSubjects.PageIndex + 1)"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester"
-										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex >= Model.Subjects.TotalPages ? "disabled" : "")">
+										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex >= Model.CourseYearSubjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
 
 										<a asp-page="./Index"
 										   asp-route-sortColumn="@Model.SortColumn"
 										   asp-route-sortOrder="@Model.SortOrder"
-										   asp-route-pageIndex="@Model.Subjects.TotalPages"
-										   asp-route-searchTitle="@Model.SearchTitle"
+										   asp-route-pageIndex="@Model.CourseYearSubjects.TotalPages"
+										   asp-route-courseYearId="@Model.CourseYearVM.Id"
+										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
 										   asp-route-searchSemester="@Model.SearchSemester"
-										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == Model.Subjects.TotalPages ? "disabled" : "")">
+										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == Model.CourseYearSubjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
 									</div>
@@ -342,6 +349,43 @@
 	</div>
 </div>
 
+<div class="modal fade" id="addSubjectModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSubjectModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Add Subject</span>
+					<i class="bi bi-book"></i>
+				</h1>
+				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="input-group mb-3">
+								<input class="form-control" id="searchSubjectInput" type="search" placeholder="Search Subject Code" aria-label="SearchSubject" aria-describedby="searchSubject">
+								<button class="btn btn-outline-secondary" type="button" id="searchSubjectButton">Search</button>
+							</div>
+						</div>
+						<div class="col-12" id="searchLoading" style="display: none;">
+							<div class="d-flex align-items-center">
+								<strong role="status">Searching...</strong>
+								<div class="spinner-border ms-auto" aria-hidden="true"></div>
+							</div>
+						</div>
+						<div class="overflow-auto" id="resultContainer" style="max-height: 300px; display: none;">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer text-end" id="resultFooter" style="display: none;">
+				<button class="btn btn-primary" id="submitSubjectButton" type="button" onclick="submitSubjects();"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -354,19 +398,20 @@
 			</div>
 			<form asp-page="./Index" method="get">
 				@Html.AntiForgeryToken()
+				<input type="hidden" name="CourseYearId" value="@Model.CourseYearVM.Id" />
 				<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
 				<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row gap-3">
 							<div class="col-12">
-								<input class="form-control" type="text" name="searchTitle" value="@Model.SearchTitle" placeholder="Search Title" />
+								<input class="form-control" type="text" name="SearchSubject" value="@Model.SearchSubject" placeholder="Search Subject" />
 							</div>
 							<div class="col-12">
-								<input class="form-control" type="text" name="searchCode" value="@Model.SearchCode" placeholder="Search Code" />
+								<input class="form-control" type="text" name="SearchCode" value="@Model.SearchCode" placeholder="Search Code" />
 							</div>
 							<div class="col-12">
-								<select class="form-control form-select" asp-items="Html.GetEnumSelectList<Semester>()" name="SearchSemester" value="@Model.SearchSemester">
+								<select class="form-select" name="SearchSemester" asp-items="@Html.GetEnumSelectList<Semester>()" value="@Model.SearchSemester">
 									<option selected disabled>Select Semester</option>
 								</select>
 							</div>
@@ -381,3 +426,121 @@
 	</div>
 </div>
 
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('#searchSubjectButton').click(function () {
+				var subject = $('#searchSubjectInput').val();
+				searchSubject(subject);
+
+				$('#resultContainer').slideUp();
+				$('#resultFooter').slideUp();
+				$('#searchLoading').slideDown();
+			});
+
+			updateButton();
+		});
+
+		function updateButton() {
+			var checkedCount = $('input[name="selectedSubjectIds"]:checked').length;
+			var button = $('#submitSubjectButton');
+
+			if (checkedCount > 0) {
+				button.prop('disabled', false);
+				button.text('Add (' + checkedCount + ')');
+			} else {
+				button.prop('disabled', true);
+				button.text('Add');
+			}
+		}
+
+		function searchSubject(subject) {
+			$.ajax({
+				type: 'GET',
+				url: '/CourseYearSubjects/SearchSubject',
+				data: {
+					searchSubject: subject,
+					courseYearId: `${@Model.CourseYearVM.Id}`,
+				},
+				success: function (data) {
+					$('#searchLoading').slideUp(400, function () {
+						if (data.message === 'OK' && data.subjects.length != 0) {
+											var table = '';
+
+							$.each(data.subjects, function (index, item) {
+								table = `<table class="table table-light mb-0"><thead class="table-secondary sticky-top" style="border-top: 1px solid gray"><tr><th>Code</th><th style="min-width: 20px; width: 25px;"></th></tr></thead><tbody>`;
+
+								$.each(data.subjects, function (index, item) {
+									table += `<tr class="align-middle"><td>${item.code}</td><td><input class="form-check-input" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateButton()" /></td></tr>`;
+								});
+
+								table += `</tbody></table>`;
+							});
+
+							$('#resultContainer').html(table);
+							$('#resultFooter').slideDown();
+						} else {
+							$('#resultContainer').html('<p>No subjects found.</p><small>Please verify if the subject is already assigned for this course year.<br/>If it isn’t, <a href="/Subjects/Index">click here</a> to add it.</small>');
+						}
+
+						$('#resultContainer').slideDown(200);
+					});
+
+				},
+				error: function (xhr, status, error) {
+					$('#searchLoading').slideUp(function () {
+						$('#resultContainer').html('<p>Error retrieving data.</p>');
+						$('#resultContainer').slideDown(200);
+					});
+					console.error("Error: " + error);
+				}
+			});
+		}
+
+		function submitSubjects() {
+			var sectionSubject = [];
+			$("[name=selectedSubjectIds]:checked").each(function (i, elem) {
+				console.log(elem.value);
+				sectionSubject.push({
+					'subjectId': elem.value,
+					'courseYearId': `${@Model.CourseYearVM.Id}`
+				});
+			});
+
+			$.ajax({
+				type: 'POST',
+				url: '/CourseYearSubjects/Create',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+				},
+				data: JSON.stringify(sectionSubject),
+				success: function (data) {
+					var newUrl = `${window.location.pathname}?courseYearId=${@Model.CourseYearVM.Id}`;
+					window.location.href = newUrl;
+				}
+			});
+		}
+
+		function removeSubject(courseYearSubjectId) {
+			$.ajax({
+				type: 'POST',
+				url: '/CourseYearSubjects/Update',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+				},
+						data: JSON.stringify(courseYearSubjectId),
+				success: function (response) {
+					var newUrl = `${window.location.pathname}?courseYearId=${@Model.CourseYearVM.Id}`;
+					window.location.href = newUrl;
+				}
+			});
+		}
+	</script>
+}

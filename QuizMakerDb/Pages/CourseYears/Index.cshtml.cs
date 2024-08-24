@@ -63,7 +63,7 @@ namespace QuizMakerDb.Pages.CourseYears
 
 				if (!string.IsNullOrEmpty(searchCourse))
 				{
-					courseYears = courseYears.Where(m => m.CourseId == Int16.Parse(searchCourse));
+					courseYears = courseYears.Where(m => m.CourseId == int.Parse(searchCourse));
 				}
 
 				if (!string.IsNullOrEmpty(searchYear))
