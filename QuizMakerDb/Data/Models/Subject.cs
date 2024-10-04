@@ -14,8 +14,6 @@ namespace QuizMakerDb.Data.Models
 		[StringLength(30)]
 		public string Code { get; set; } = string.Empty!;
 
-        public byte Semester { get; set; }
-
         public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }

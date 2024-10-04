@@ -32,25 +32,6 @@ namespace QuizMakerDb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourseYearSubjects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SubjectId = table.Column<int>(type: "int", nullable: false),
-                    CourseYearId = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CourseYearSubjects", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "IdentityRoles",
                 columns: table => new
                 {
@@ -69,6 +50,7 @@ namespace QuizMakerDb.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
                     ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -116,7 +98,6 @@ namespace QuizMakerDb.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Semester = table.Column<byte>(type: "tinyint", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -273,6 +254,7 @@ namespace QuizMakerDb.Data.Migrations
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    isIrregular = table.Column<bool>(type: "bit", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -321,6 +303,37 @@ namespace QuizMakerDb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourseYearSubjects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubjectId = table.Column<int>(type: "int", nullable: false),
+                    CourseYearId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseYearSubjects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseYearSubjects_CourseYears_CourseYearId",
+                        column: x => x.CourseYearId,
+                        principalTable: "CourseYears",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseYearSubjects_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sections",
                 columns: table => new
                 {
@@ -364,6 +377,7 @@ namespace QuizMakerDb.Data.Migrations
                     ConclusionDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Minutes = table.Column<byte>(type: "tinyint", nullable: false),
                     Takes = table.Column<byte>(type: "tinyint", nullable: false),
+                    ShowResults = table.Column<bool>(type: "bit", nullable: false),
                     TeacherId = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -376,6 +390,44 @@ namespace QuizMakerDb.Data.Migrations
                     table.PrimaryKey("PK_Quizzes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Quizzes_Teachers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teachers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeacherSubjects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeacherId = table.Column<int>(type: "int", nullable: false),
+                    CourseYearId = table.Column<int>(type: "int", nullable: false),
+                    SubjectId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeacherSubjects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeacherSubjects_CourseYears_CourseYearId",
+                        column: x => x.CourseYearId,
+                        principalTable: "CourseYears",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeacherSubjects_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeacherSubjects_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
@@ -539,19 +591,19 @@ namespace QuizMakerDb.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("3a193220-b5eb-46bc-bd84-c756583c6887"), null, "Admin", "ADMIN" },
-                    { new Guid("6b0a0eb3-8514-43ff-9c2b-4b1b5b77c231"), null, "Student", "STUDENT" },
-                    { new Guid("f4bf64a4-5b11-4099-8639-cd905362b963"), null, "Teacher", "TEACHER" }
+                    { new Guid("5617a662-7420-44ab-9ff3-76bfa67b2c52"), null, "Admin", "ADMIN" },
+                    { new Guid("5cde413c-fc3c-4cd5-8d97-5fee8ca28e0d"), null, "Teacher", "TEACHER" },
+                    { new Guid("c1623f62-f123-4e06-841e-87449daa44f6"), null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "IdentityUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePicture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePicture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("80869283-ea00-44c1-8cad-ef41850851b7"), 0, "e05028d6-d1d0-486b-bcd9-99c40f8ed796", "sysadmin@domain.com", true, false, null, "SYSADMIN@DOMAIN.COM", "SYSADMIN", "AQAAAAIAAYagAAAAEOJY4GW13Uq/ud0lDp18yJoVa4K7Lz9EjgBjG5sfElJhfz7uT15V9jKVva7ALZfkMw==", null, false, null, "fa6bc9ba-ddf5-4a66-94ad-bb3f496a1947", false, "SysAdmin" },
-                    { new Guid("99e8f98f-f7b7-4f6e-9d4c-01b7aabee16b"), 0, "4a56b01a-5a28-48a6-a79b-551623c25aa5", "student@domain.com", true, false, null, "STUDENT@DOMAIN.COM", "STUDENT", "AQAAAAIAAYagAAAAEDkHlFRKsQJ5uf90OmxyzE08CemQbfrVppAxEDT2yDG7jqsm3MK1j04XKL8Aj1qO4Q==", null, false, null, "f96b9b84-513b-4262-85f0-db694f6669fc", false, "Student" },
-                    { new Guid("ed501a42-91cf-4910-929d-18f08d6a3909"), 0, "d6120998-2321-45c6-854a-afef7f2ad5f9", "teacher@domain.com", true, false, null, "TEACHER@DOMAIN.COM", "TEACHER", "AQAAAAIAAYagAAAAEPassVwBX9WqIJT9WPcJh9EOdo0ziH48EzL6WbojeZr4R7ODhsRKkS3EPK/FCeZvNw==", null, false, null, "7a634bc5-460c-43ae-a627-a1d3e58a4bfc", false, "Teacher" }
+                    { new Guid("2dbe676c-4deb-41f5-bdc1-45c47c1167ef"), 0, true, "1bc8c3ed-07ac-4748-9cf2-4231b3a8cae2", "sysadmin@domain.com", true, false, null, "SYSADMIN@DOMAIN.COM", "SYSADMIN", "AQAAAAIAAYagAAAAENGzJHyipASbwNgzY1bjH5uV5xBMA94ECIxrBzwkPHAuy7PPtsApV9z8PKZz7BZdTw==", null, false, null, "92286580-3bfb-471e-8445-cc426cb4fd63", false, "SysAdmin" },
+                    { new Guid("8f5be169-bd02-4f0d-8501-5a1d5e11d97a"), 0, true, "7cb69e03-e584-4dba-9b26-70bdfc7201b4", "student@domain.com", true, false, null, "STUDENT@DOMAIN.COM", "STUDENT", "AQAAAAIAAYagAAAAEJb4zc7mx1rGgnTmdlPNWJMJQx444LuEniN10iIiryV/RmmNIlBedRMOJ5mjLuT36Q==", null, false, null, "9e21a665-484a-4eff-b585-5f7103c0615d", false, "Student" },
+                    { new Guid("9a3b29f8-4f1d-41c8-973b-f3e38f8bce26"), 0, true, "73266ad0-445a-433c-b77e-54d29b0762d7", "teacher@domain.com", true, false, null, "TEACHER@DOMAIN.COM", "TEACHER", "AQAAAAIAAYagAAAAED8ywIjHxFS2xJoNBU+6jGJOCw2Ne1hIluArPKxvfRMabAnaC+Z03yiQR2jwAUQ6ew==", null, false, null, "a4861005-4ade-4d30-8e96-90e4208ea8fb", false, "Teacher" }
                 });
 
             migrationBuilder.InsertData(
@@ -559,9 +611,9 @@ namespace QuizMakerDb.Data.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("3a193220-b5eb-46bc-bd84-c756583c6887"), new Guid("80869283-ea00-44c1-8cad-ef41850851b7") },
-                    { new Guid("6b0a0eb3-8514-43ff-9c2b-4b1b5b77c231"), new Guid("99e8f98f-f7b7-4f6e-9d4c-01b7aabee16b") },
-                    { new Guid("f4bf64a4-5b11-4099-8639-cd905362b963"), new Guid("ed501a42-91cf-4910-929d-18f08d6a3909") }
+                    { new Guid("5617a662-7420-44ab-9ff3-76bfa67b2c52"), new Guid("2dbe676c-4deb-41f5-bdc1-45c47c1167ef") },
+                    { new Guid("c1623f62-f123-4e06-841e-87449daa44f6"), new Guid("8f5be169-bd02-4f0d-8501-5a1d5e11d97a") },
+                    { new Guid("5cde413c-fc3c-4cd5-8d97-5fee8ca28e0d"), new Guid("9a3b29f8-4f1d-41c8-973b-f3e38f8bce26") }
                 });
 
             migrationBuilder.CreateIndex(
@@ -580,6 +632,16 @@ namespace QuizMakerDb.Data.Migrations
                 name: "IX_CourseYears_CourseId",
                 table: "CourseYears",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseYearSubjects_CourseYearId",
+                table: "CourseYearSubjects",
+                column: "CourseYearId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseYearSubjects_SubjectId",
+                table: "CourseYearSubjects",
+                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentityRoleClaims_RoleId",
@@ -674,6 +736,21 @@ namespace QuizMakerDb.Data.Migrations
                 name: "IX_Teachers_UserId",
                 table: "Teachers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherSubjects_CourseYearId",
+                table: "TeacherSubjects",
+                column: "CourseYearId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherSubjects_SubjectId",
+                table: "TeacherSubjects",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherSubjects_TeacherId",
+                table: "TeacherSubjects",
+                column: "TeacherId");
         }
 
         /// <inheritdoc />
@@ -710,7 +787,7 @@ namespace QuizMakerDb.Data.Migrations
                 name: "SectionStudents");
 
             migrationBuilder.DropTable(
-                name: "Subjects");
+                name: "TeacherSubjects");
 
             migrationBuilder.DropTable(
                 name: "IdentityRoles");
@@ -723,6 +800,9 @@ namespace QuizMakerDb.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Subjects");
 
             migrationBuilder.DropTable(
                 name: "Quizzes");

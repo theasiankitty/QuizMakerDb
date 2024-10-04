@@ -72,7 +72,23 @@ namespace QuizMakerDb.Pages.Subjects
             subject.UpdatedDate = DateTime.Now;
 
             _context.Subjects.Update(subject);
-            await _context.SaveChangesAsync();
+
+            var courseYearSubject = await _context.CourseYearSubjects
+                .Where(m => m.SubjectId == subject.Id && m.Active).ToListAsync();
+
+            if (courseYearSubject != null)
+            {
+
+                foreach (var courseYear in courseYearSubject) {
+					courseYear.Active = false;
+					courseYear.UpdatedBy = updater.Id;
+					courseYear.UpdatedDate = DateTime.Now;
+
+					_context.CourseYearSubjects.Update(courseYear);
+				}
+			}
+
+			await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

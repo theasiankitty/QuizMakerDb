@@ -84,6 +84,18 @@ namespace QuizMakerDb.Pages.Teachers
                 teacher.UpdatedDate = DateTime.Now;
             }
 
+            var teacherIdentity = await _userManager.FindByIdAsync(teacher.UserId.ToString());
+
+            if (teacherIdentity == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                teacherIdentity.Active = false;
+                await _userManager.UpdateAsync(teacherIdentity);
+            }
+
             _context.Teachers.Update(teacher);
             await _context.SaveChangesAsync();
 

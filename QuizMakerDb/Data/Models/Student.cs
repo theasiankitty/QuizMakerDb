@@ -27,6 +27,8 @@ namespace QuizMakerDb.Data.Models
 
         public Guid UserId { get; set; }
 
+        public bool isIrregular { get; set; }
+
         public bool Active { get; set; }
 
         public Guid CreatedBy { get; set; }

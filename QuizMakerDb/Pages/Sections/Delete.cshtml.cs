@@ -84,7 +84,8 @@ namespace QuizMakerDb.Pages.Sections
 			_context.Sections.Update(section);
 
 			// get section student by their section id
-			var sectionStudents = await _context.SectionStudents.Where(m => m.SectionId == id).ToListAsync();
+			var sectionStudents = await _context.SectionStudents
+				.Where(m => m.SectionId == id && m.Active == true).ToListAsync();
 
 			if (sectionStudents.Any())
 			{

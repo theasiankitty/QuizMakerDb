@@ -2,51 +2,125 @@
 @model QuizMakerDb.Pages.SchoolYears.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
 }
 
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item fs-3"><a asp-page="Index">School Years</a></li>
-            <li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
-        </ol>
-    </nav>
-    <form class="row justify-content-center mt-3" method="post">
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="SchoolYearVM.Active" type="hidden" />
-        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
-            <div class="card card-primary card-outline mb-4">
-                <div class="card-header">
-                    <div class="card-title fw-medium">Create School Year</div>
-                </div>
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SchoolYearVM.Name" class="form-label"></label>
-                                    <input asp-for="SchoolYearVM.Name" class="form-control" placeholder="Name" maxlength="30" />
-                                    <span asp-validation-for="SchoolYearVM.Name" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-12 text-end">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">School Years</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="SchoolYearVM.Name" type="hidden" />
+		<input asp-for="SchoolYearVM.Active" type="hidden" />
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Create School Year</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="startYear" class="form-label">Start Year</label>
+									<div class="position-relative" id="startYearContainer">
+										<input class="form-control" type="text" id="startYear" onchange="setYears()" />
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="" class="form-label">End Year</label>
+									<input class="form-control" type="text" id="endYear" readonly />
+								</div>
+							</div>
+							<span for="startYear" class="text-danger field-validation-error" id="invalidStartYear"></span>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-12 text-end">
+							<input type="submit" value="Create" class="btn btn-primary" id="submitBtn" />
+							<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		function initializeStartYear() {
+			var currentYear = new Date().getFullYear();
+
+			$('#startYear').datepicker({
+				container: '#startYearContainer',
+				format: 'yyyy',
+				autoclose: true,
+				viewMode: 'years',
+				minViewMode: 'years'
+			});
+
+			$('#startYear').val(currentYear);
+
+			setYears();
+
+			$('#startYear').on('blur', function () {
+				if ($(this).val() === '') {
+					$(this).val(currentYear);
+				}
+			});
+		}
+
+		function setYears() {
+			var startYear = $('#startYear').val();
+			var date = new Date(startYear, 0);
+
+			date.setFullYear(date.getFullYear() + 1);
+
+			var endYear = date.getFullYear();
+
+			$('#endYear').val(endYear);
+
+			var schoolYear = `${startYear}-${endYear}`;
+
+			$('#SchoolYearVM_Name').val(schoolYear);
+
+			if (startYear !== '') {
+				$.ajax({
+					type: 'GET',
+					url: '/SchoolYears/CheckSchoolYear?handler=CheckSchoolYear',
+					data: { name: $('#SchoolYearVM_Name').val() },
+					success: function (result) {
+						if (result === 'OK') {
+							$('#submitBtn').prop('disabled', false);
+							$('#startYear').removeClass('is-invalid');
+							$('#invalidStartYear').text('');
+						} else {
+							$('#submitBtn').prop('disabled', true);
+							$('#startYear').addClass('is-invalid');
+							$('#invalidStartYear').text('Start Year may be invalid or is already in use.');
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error: " + error);
+					}
+				});
+			}
+		}
+
+		initializeStartYear();
+	</script>
 }

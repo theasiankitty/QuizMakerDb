@@ -69,7 +69,8 @@
 			   asp-route-pageIndex="1"
 			   asp-route-searchStudent=""
 			   asp-route-searchUserName=""
-			   asp-route-searchSex="">
+			   asp-route-searchSex=""
+			   asp-route-searchStatus="">
 				<i class="bi bi-arrow-clockwise"></i>
 				Refresh
 			</a>
@@ -97,7 +98,8 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
-										   asp-route-searchSex="@Model.SearchSex">
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -125,7 +127,8 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
-										   asp-route-searchSex="@Model.SearchSex">
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -153,7 +156,8 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
-										   asp-route-searchSex="@Model.SearchSex">
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -181,7 +185,8 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
-										   asp-route-searchSex="@Model.SearchSex">
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -209,7 +214,8 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
-										   asp-route-searchSex="@Model.SearchSex">
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -217,6 +223,35 @@
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "email")
+														{
+															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+														}
+														else
+														{
+															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+														}
+													</div>
+												</div>
+											</div>
+										</a>
+									</th>
+									<th class="bg-body-secondary bg-gradient">
+										<a class="text-decoration-none text-dark"
+										   asp-page="./Index"
+										   asp-route-sortColumn="email"
+										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+										   asp-route-searchStudent="@Model.SearchStudent"
+										   asp-route-searchUserName="@Model.SearchUserName"
+										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-10">
+														@Html.DisplayNameFor(model => model.Students[0].Active)
+													</div>
+													<div class="col-2 text-end p-0">
+														@if (Model.SortColumn == "status")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -260,6 +295,16 @@
 										<td class="d-none d-xl-table-cell">
 											@Html.DisplayFor(modelItem => item.Email)
 										</td>
+										<td>
+											@if (item.Active)
+											{
+												<span class="text-success">Active</span>
+											}
+											else
+											{
+												<span class="text-danger">Inactive</span>
+											}
+										</td>
 										<td class="text-center">
 											<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">
 												<i class="bi bi-pencil-square"></i>
@@ -269,9 +314,18 @@
 											</a>
 											@if (isAdmin)
 											{
-												<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm btn-block">
-													<i class="bi bi-trash3"></i>
-												</a>
+												@if (item.Active)
+												{
+													<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm btn-block">
+														<i class="bi bi-trash3"></i>
+													</a>
+												}
+												else
+												{
+													<a asp-page="./Retrieve" asp-route-id="@item.Id" class="btn btn-success btn-sm btn-block">
+														<i class="bi bi-arrow-clockwise"></i>
+													</a>
+												}
 											}
 										</td>
 									</tr>
@@ -295,6 +349,7 @@
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
 										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus"
 										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
@@ -306,6 +361,7 @@
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
 										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus"
 										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
@@ -319,6 +375,7 @@
 											   asp-route-searchStudent="@Model.SearchStudent"
 											   asp-route-searchUserName="@Model.SearchUserName"
 											   asp-route-searchSex="@Model.SearchSex"
+											   asp-route-searchStatus="@Model.SearchStatus"
 											   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
@@ -331,6 +388,7 @@
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
 										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus"
 										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex >= Model.Students.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
@@ -342,6 +400,7 @@
 										   asp-route-searchStudent="@Model.SearchStudent"
 										   asp-route-searchUserName="@Model.SearchUserName"
 										   asp-route-searchSex="@Model.SearchSex"
+										   asp-route-searchStatus="@Model.SearchStatus"
 										   class="btn btn-sm btn-secondary @(Model.Students.PageIndex == Model.Students.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
@@ -399,6 +458,13 @@
 							<div class="col-12">
 								<select class="form-select" name="SearchSex" asp-items="@Html.GetEnumSelectList<Sex>()" value="@Model.SearchSex">
 									<option selected disabled>Select Sex</option>
+								</select>
+							</div>
+							<div class="col-12">
+								<select class="form-select" name="SearchStatus" value="@Model.SearchStatus">
+									<option selected disabled>Select Status</option>
+									<option value="active">Active</option>
+									<option value="inactive">Inactive</option>
 								</select>
 							</div>
 						</div>

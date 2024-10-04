@@ -38,7 +38,7 @@ namespace QuizMakerDb.Pages.CourseYears
 
 		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchName, string? searchCourse, string? searchYear)
 		{
-			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
 			SearchName = string.IsNullOrEmpty(searchName) ? "" : searchName;

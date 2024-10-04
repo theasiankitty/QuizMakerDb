@@ -33,8 +33,8 @@ namespace QuizMakerDb.Pages.Sections
 
         public IActionResult OnGet()
         {
-            ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
-            ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
+            ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
+            ViewData["CourseYears"] = new SelectList(_context.CourseYears.Where(m => m.Active == true), "Id", "Name");
 
             return Page();
         }
