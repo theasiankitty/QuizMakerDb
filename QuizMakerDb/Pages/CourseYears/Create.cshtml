@@ -2,101 +2,133 @@
 @model QuizMakerDb.Pages.CourseYears.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
 
-    var message = TempData["Message"] as string;
-    var messageType = TempData["MessageType"] as string;
-    var courseYearId = TempData["CourseYearId"] as int?;
+	var message = TempData["Message"] as string;
+	var messageType = TempData["MessageType"] as string;
+	var courseYearId = TempData["CourseYearId"] as int?;
 }
 
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item fs-3"><a asp-page="Index">Courses</a></li>
-            <li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
-        </ol>
-    </nav>
-    <form class="row justify-content-center mt-3" method="post">
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="CourseYearVM.Active" type="hidden" />
-        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
-            <div class="card card-primary card-outline mb-4">
-                <div class="card-header">
-                    <div class="card-title fw-medium">Create Course Year</div>
-                </div>
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="CourseYearVM.Name" class="form-label"></label>
-                                    <input asp-for="CourseYearVM.Name" class="form-control" placeholder="Name" maxlength="30" />
-                                    <span asp-validation-for="CourseYearVM.Name" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="CourseYearVM.CourseId" class="form-label"></label>
-                                    <select asp-for="CourseYearVM.CourseId" asp-items="ViewBag.Courses" class="form-select"></select>
-                                    <span asp-validation-for="CourseYearVM.CourseId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="CourseYearVM.Year" class="form-label"></label>
-                                    <select asp-for="CourseYearVM.Year" asp-items="Html.GetEnumSelectList<YearLevel>()" class="form-select"></select>
-                                    <span asp-validation-for="CourseYearVM.Year" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-12 text-end">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">Courses</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="CourseYearVM.Active" type="hidden" />
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Create Course Year</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="CourseYearVM.Name" class="form-label"></label>
+									<input asp-for="CourseYearVM.Name" class="form-control" placeholder="Name" maxlength="30" readonly />
+									<span asp-validation-for="CourseYearVM.Name" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="CourseYearVM.CourseId" class="form-label"></label>
+									<select asp-for="CourseYearVM.CourseId"
+											asp-items="ViewBag.Courses"
+											class="form-select"
+											onchange="setCourseYearName()">
+									</select>
+									<span asp-validation-for="CourseYearVM.CourseId" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="CourseYearVM.Year" class="form-label"></label>
+									<select asp-for="CourseYearVM.Year"
+											asp-items="Html.GetEnumSelectList<YearLevel>()"
+											class="form-select"
+											onchange="setCourseYearName()">
+									</select>
+									<span asp-validation-for="CourseYearVM.Year" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-12 text-end">
+							<input type="submit" value="Create" class="btn btn-primary" />
+							<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 
 <div class="modal fade" id="messageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="messageModalLabel">Course Year</h5>
-            </div>
-            <div class="modal-body">
-                <p id="modalMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-                @if (courseYearId.HasValue)
-                {
-                    <a href="/CourseYearSubjects?courseYearId=@courseYearId" class="btn btn-primary" id="addSubjectButton">Add Subject</a>
-                }
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="messageModalLabel">Course Year</h5>
+			</div>
+			<div class="modal-body">
+				<p id="modalMessage"></p>
+			</div>
+			<div class="modal-footer">
+				<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+				@if (courseYearId.HasValue)
+				{
+					<a href="/CourseYearSubjects?courseYearId=@courseYearId" class="btn btn-primary" id="addSubjectButton">Add Subject</a>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 
-    <script>
-        $(document).ready(function () {
-            var message = "@message";
-            var sectionId = "@courseYearId";
+	<script>
+		$(document).ready(function () {
+			var message = "@message";
+			var sectionId = "@courseYearId";
 
-            if (message) {
-                $('#modalMessage').text(message);
-                $('#messageModal').modal('show');
-            }
-        });
-    </script>
+			if (message) {
+				$('#modalMessage').text(message);
+				$('#messageModal').modal('show');
+			}
+
+			setCourseYearName();
+		});
+
+		function setCourseYearName() {
+			var courseName = $('#CourseYearVM_CourseId option:selected').text();
+			var yearName = $('#CourseYearVM_Year option:selected').text();
+
+			switch (yearName) {
+				case 'First':
+					$('#CourseYearVM_Name').val(`${courseName} 1`);
+					break;
+				case 'Second':
+					$('#CourseYearVM_Name').val(`${courseName} 2`);
+					break;
+				case 'Third':
+					$('#CourseYearVM_Name').val(`${courseName} 3`);
+					break;
+				case 'Fourth':
+					$('#CourseYearVM_Name').val(`${courseName} 4`);
+					break;
+			}
+		}
+	</script>
 }

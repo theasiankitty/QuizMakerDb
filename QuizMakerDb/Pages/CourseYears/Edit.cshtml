@@ -30,21 +30,29 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label asp-for="CourseYearVM.Name" class="form-label"></label>
-                                    <input asp-for="CourseYearVM.Name" class="form-control" placeholder="Name" maxlength="30" />
+                                    <input asp-for="CourseYearVM.Name" class="form-control" placeholder="Name" maxlength="30" readonly />
                                     <span asp-validation-for="CourseYearVM.Name" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label asp-for="CourseYearVM.CourseId" class="form-label"></label>
-                                    <select asp-for="CourseYearVM.CourseId" asp-items="ViewBag.Courses" class="form-select"></select>
+                                    <select asp-for="CourseYearVM.CourseId"
+                                            asp-items="ViewBag.Courses"
+                                            class="form-select"
+                                            onchange="setCourseYearName()">
+                                    </select>
                                     <span asp-validation-for="CourseYearVM.CourseId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label asp-for="CourseYearVM.Year" class="form-label"></label>
-                                    <select asp-for="CourseYearVM.Year" asp-items="Html.GetEnumSelectList<YearLevel>()" class="form-select"></select>
+                                    <select asp-for="CourseYearVM.Year"
+                                            asp-items="Html.GetEnumSelectList<YearLevel>()"
+                                            class="form-select"
+                                            onchange="setCourseYearName()">
+                                    </select>
                                     <span asp-validation-for="CourseYearVM.Year" class="text-danger"></span>
                                 </div>
                             </div>
@@ -66,4 +74,30 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            setCourseYearName();
+        });
+
+        function setCourseYearName() {
+            var courseName = $('#CourseYearVM_CourseId option:selected').text();
+            var yearName = $('#CourseYearVM_Year option:selected').text();
+
+            switch (yearName) {
+                case 'First':
+                    $('#CourseYearVM_Name').val(`${courseName} 1`);
+                    break;
+                case 'Second':
+                    $('#CourseYearVM_Name').val(`${courseName} 2`);
+                    break;
+                case 'Third':
+                    $('#CourseYearVM_Name').val(`${courseName} 3`);
+                    break;
+                case 'Fourth':
+                    $('#CourseYearVM_Name').val(`${courseName} 4`);
+                    break;
+            }
+        }
+    </script>
 }

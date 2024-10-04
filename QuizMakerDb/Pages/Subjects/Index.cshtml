@@ -69,6 +69,7 @@
 			   asp-route-pageIndex="1"
 			   asp-route-searchTitle=""
 			   asp-route-searchCode=""
+			   asp-route-searchYear=""
 			   asp-route-searchSemester="">
 				<i class="bi bi-arrow-clockwise"></i>
 				Refresh
@@ -96,8 +97,7 @@
 										   asp-route-sortColumn="id"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchTitle="@Model.SearchTitle"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -124,8 +124,7 @@
 										   asp-route-sortColumn="title"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchTitle="@Model.SearchTitle"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -152,8 +151,7 @@
 										   asp-route-sortColumn="code"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchTitle="@Model.SearchTitle"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -161,34 +159,6 @@
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "code")
-														{
-															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
-															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
-														}
-														else
-														{
-															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
-														}
-													</div>
-												</div>
-											</div>
-										</a>
-									</th>
-									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 150px; width: 155px;">
-										<a class="text-decoration-none text-dark"
-										   asp-page="./Index"
-										   asp-route-sortColumn="semester"
-										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-searchTitle="@Model.SearchTitle"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
-											<div class="container-fluid">
-												<div class="row">
-													<div class="col-10">
-														@Html.DisplayNameFor(model => model.Subjects[0].Semester)
-													</div>
-													<div class="col-2 text-end p-0">
-														@if (Model.SortColumn == "semester")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -226,9 +196,6 @@
 										<td class="d-none d-lg-table-cell">
 											@Html.DisplayFor(modelItem => item.Code)
 										</td>
-										<td class="d-none d-md-table-cell">
-											@Html.DisplayFor(modelItem => item.Semester)
-										</td>
 										<td class="text-center">
 											<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">
 												<i class="bi bi-pencil-square"></i>
@@ -263,7 +230,6 @@
 										   asp-route-pageIndex="1"
 										   asp-route-searchTitle="@Model.SearchTitle"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
@@ -274,7 +240,6 @@
 										   asp-route-pageIndex="@(Model.Subjects.PageIndex - 1)"
 										   asp-route-searchTitle="@Model.SearchTitle"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
@@ -287,7 +252,6 @@
 											   asp-route-pageIndex="@i"
 											   asp-route-searchTitle="@Model.SearchTitle"
 											   asp-route-searchCode="@Model.SearchCode"
-											   asp-route-searchSemester="@Model.SearchSemester"
 											   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
@@ -299,7 +263,6 @@
 										   asp-route-pageIndex="@(Model.Subjects.PageIndex + 1)"
 										   asp-route-searchTitle="@Model.SearchTitle"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex >= Model.Subjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
@@ -310,7 +273,6 @@
 										   asp-route-pageIndex="@Model.Subjects.TotalPages"
 										   asp-route-searchTitle="@Model.SearchTitle"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.Subjects.PageIndex == Model.Subjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
@@ -364,11 +326,6 @@
 							</div>
 							<div class="col-12">
 								<input class="form-control" type="text" name="searchCode" value="@Model.SearchCode" placeholder="Search Code" />
-							</div>
-							<div class="col-12">
-								<select class="form-control form-select" asp-items="Html.GetEnumSelectList<Semester>()" name="SearchSemester" value="@Model.SearchSemester">
-									<option selected disabled>Select Semester</option>
-								</select>
 							</div>
 						</div>
 					</div>

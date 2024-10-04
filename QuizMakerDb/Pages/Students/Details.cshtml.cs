@@ -41,6 +41,7 @@ namespace QuizMakerDb.Pages.Students
                 Email = student.Email,
                 UserName = student.UserName,
                 UserId = student.UserId,
+                isIrregular = student.isIrregular,
                 Active = student.Active,
                 CreatedBy = student.CreatedBy,
                 CreatedDate = student.CreatedDate,

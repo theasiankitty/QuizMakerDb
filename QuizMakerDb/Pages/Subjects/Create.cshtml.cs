@@ -24,7 +24,7 @@ namespace QuizMakerDb.Pages.Subjects
 		{
 			ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
 
-			return Page();
+            return Page();
 		}
 
 		[BindProperty]
@@ -50,7 +50,6 @@ namespace QuizMakerDb.Pages.Subjects
 			{
 				Title = SubjectVM.Title,
 				Code = SubjectVM.Code,
-				Semester = byte.Parse(SubjectVM.Semester),
 				Active = true,
 				CreatedBy = creator.Id,
 				CreatedDate = DateTime.Now

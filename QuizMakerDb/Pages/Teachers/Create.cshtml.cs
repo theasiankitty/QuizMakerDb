@@ -6,6 +6,7 @@ using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
 using QuizMakerDb.Data.ViewModels;
+using static System.Collections.Specialized.BitVector32;
 
 namespace QuizMakerDb.Pages.Teachers
 {
@@ -50,7 +51,8 @@ namespace QuizMakerDb.Pages.Teachers
 				Email = TeacherVM.Email,
 				NormalizedEmail = TeacherVM.Email.ToUpper(),
 				EmailConfirmed = true,
-				SecurityStamp = Guid.NewGuid().ToString()
+				SecurityStamp = Guid.NewGuid().ToString(),
+				Active = true,
 			};
 			user.PasswordHash = hasher.HashPassword(user, TeacherVM.UserName);
 			await _userManager.CreateAsync(user);
@@ -60,29 +62,45 @@ namespace QuizMakerDb.Pages.Teachers
 
 			if (creator == null)
 			{
-				return NotFound();
+				TempData["Message"] = "User not found. Section could not be created.";
+				TempData["MessageType"] = "error";
+				return RedirectToPage("./Index");
 			}
 
-			var teacher = new Teacher
+			try
 			{
-				FirstName = TeacherVM.FirstName,
-				MiddleName = TeacherVM.MiddleName,
-				LastName = TeacherVM.LastName,
-				Sex = TeacherVM.Sex,
-				Email = TeacherVM.Email,
-				UserName = TeacherVM.UserName,
-				UserId = userId,
-				Active = true,
-				CreatedBy = creator.Id,
-				CreatedDate = DateTime.Now,
-				UpdatedBy = null,
-				UpdatedDate = null
-			};
+				var teacher = new Teacher
+				{
+					FirstName = TeacherVM.FirstName,
+					MiddleName = TeacherVM.MiddleName,
+					LastName = TeacherVM.LastName,
+					Sex = TeacherVM.Sex,
+					Email = TeacherVM.Email,
+					UserName = TeacherVM.UserName,
+					UserId = userId,
+					Active = true,
+					CreatedBy = creator.Id,
+					CreatedDate = DateTime.Now,
+					UpdatedBy = null,
+					UpdatedDate = null
+				};
 
-			_context.Teachers.Add(teacher);
-			await _context.SaveChangesAsync();
+				_context.Teachers.Add(teacher);
+				await _context.SaveChangesAsync();
 
-			return RedirectToPage("./Index");
+				TempData["Message"] = "Teacher successfully created!";
+				TempData["MessageType"] = "success";
+				TempData["TeacherId"] = teacher.Id;
+
+				return RedirectToPage();
+			}
+			catch (Exception)
+			{
+				TempData["Message"] = "An error occurred while creating the teacher. Please try again.";
+				TempData["MessageType"] = "error";
+
+				return RedirectToPage();
+			}
 		}
 	}
 }

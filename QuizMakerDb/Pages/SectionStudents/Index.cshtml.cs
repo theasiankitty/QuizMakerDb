@@ -29,13 +29,12 @@ namespace QuizMakerDb.Pages.SectionStudents
 		public PaginatedList<SectionStudentVM> StudentSections { get; set; } = default!;
 		public SectionVM SectionVM { get; set; } = default!;
 		public IList<Student> Students { get; set; } = new List<Student>();
-		public string SearchStudent { get; set; } = string.Empty!;
 		public string SortColumn { get; set; } = string.Empty!;
 		public string SortOrder { get; set; } = string.Empty!;
 		public string SearchStudentInSection { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
-		public async Task<IActionResult> OnGetAsync(int? sectionId, string searchStudent, string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudentInSection)
+		public async Task<IActionResult> OnGetAsync(int? sectionId, string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudentInSection)
 		{
 			if (sectionId == null)
 			{
@@ -57,63 +56,9 @@ namespace QuizMakerDb.Pages.SectionStudents
 				Id = section.Id,
 				Name = section.Name + " - " + section.CourseYearInfo.Name,
 				SchoolYearId = section.SchoolYearId,
-				SchoolYearName = section.SchoolYearInfo.Name
+				SchoolYearName = section.SchoolYearInfo.Name,
+				Year = section.CourseYearInfo.Year.ToString()
 			};
-
-			if (!string.IsNullOrEmpty(searchStudent))
-			{
-				IQueryable<Student> unassignedStudents = _context.Students.AsQueryable();
-
-				unassignedStudents = unassignedStudents
-					.Where(m => m.Active == true)
-					.OrderByDescending(o => o.Id);
-
-				bool isNumeric = int.TryParse(searchStudent, out int studentNumber);
-
-				if (isNumeric)
-				{
-					unassignedStudents = unassignedStudents
-						.Where(m => m.UserName == searchStudent);
-				}
-				else
-				{
-					string searchLower = searchStudent.ToLower();
-					unassignedStudents = unassignedStudents
-						.Where(m => (m.FirstName + " " + m.LastName).ToLower().Contains(searchLower));
-				}
-
-				if (sectionId.HasValue)
-				{
-					if (SectionVM.SchoolYearId != 0)
-					{
-						var assignedStudents = await _context.SectionStudents
-							.Where(m => m.SectionId != 0
-								&& m.SchoolYearId == SectionVM.SchoolYearId
-								&& m.Active == true)
-							.Select(m => m.StudentId)
-							.ToListAsync();
-
-						unassignedStudents = unassignedStudents
-							.Where(m => !assignedStudents.Contains(m.Id));
-					}
-				}
-
-				Students = await unassignedStudents.ToListAsync();
-
-				var studentCount = Students.Count();
-
-				if (studentCount == 0)
-				{
-					TempData["HasStudent"] = "false";
-				}
-
-				else
-				{
-					TempData["HasStudent"] = "true";
-				}
-			}
-
-			SearchStudent = searchStudent;
 
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;

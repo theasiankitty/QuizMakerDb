@@ -23,12 +23,11 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 		public IList<Subject> Subjects { get; set; } = new List<Subject>();
 		public string SearchSubject { get; set; } = string.Empty!;
         public string SearchCode { get; set; } = string.Empty!;
-        public string SearchSemester { get; set; } = string.Empty!;
 		public string SortColumn { get; set; } = string.Empty!;
 		public string SortOrder { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
-		public async Task<IActionResult> OnGetAsync(int? courseYearId, string? sortColumn, string? sortOrder, int? pageIndex, string? searchSubject, string? searchCode, string? searchSemester)
+		public async Task<IActionResult> OnGetAsync(int? courseYearId, string? sortColumn, string? sortOrder, int? pageIndex, string? searchSubject, string? searchCode)
 		{
 			if (courseYearId == null)
 			{
@@ -48,6 +47,7 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 			CourseYearVM = new CourseYearVM
 			{
 				Id = courseYear.Id,
+				Year = courseYear.Year.ToString(),
 				CourseName = courseYear.Name
 			};
 
@@ -80,11 +80,6 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 					.Contains(searchCode.ToLower()));
 				}
 
-				if (!string.IsNullOrEmpty(searchSemester))
-				{
-					courseYearSubject = courseYearSubject.Where(m => m.SubjectInfo.Semester == byte.Parse(searchSemester));
-				}
-
 				switch (sortColumn)
 				{
 					case "id":
@@ -99,10 +94,6 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 						courseYearSubject = SortOrder == "asc" ? courseYearSubject.OrderBy(o => o.SubjectInfo.Code)
 							: courseYearSubject.OrderByDescending(o => o.SubjectInfo.Code);
 						break;
-					case "semester":
-						courseYearSubject = SortOrder == "asc" ? courseYearSubject.OrderBy(o => o.SubjectInfo.Semester)
-							: courseYearSubject.OrderByDescending(o => o.SubjectInfo.Semester);
-						break;
 				}
 
 				int pageSize = 10;
@@ -115,7 +106,6 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 						Id = m.Id,
 						Subject = m.SubjectInfo.Title,
 						Code = m.SubjectInfo.Code,
-						Semester = ((Semester)m.SubjectInfo.Semester).ToString()
 					}).AsNoTracking(),
 					pageIndex ?? 1,
 					pageSize

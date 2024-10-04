@@ -8,6 +8,7 @@ using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
 using QuizMakerDb.Data.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QuizMakerDb.Pages.Sections
 {
@@ -28,8 +29,8 @@ namespace QuizMakerDb.Pages.Sections
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
-			ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
+			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
+			ViewData["CourseYears"] = new SelectList(_context.CourseYears.Where(m => m.Active == true), "Id", "Name");
 
 			if (id == null)
 			{
@@ -87,6 +88,23 @@ namespace QuizMakerDb.Pages.Sections
 				UpdatedBy = editor.Id,
 				UpdatedDate = DateTime.Now,
 			};
+
+			// get section student by their section id
+			var sectionStudents = await _context.SectionStudents
+				.Where(m => m.SectionId == SectionVM.Id 
+					&& m.Active)
+				.ToListAsync();
+
+			if (sectionStudents.Any())
+			{
+				foreach (var sectionStudent in sectionStudents)
+				{
+					sectionStudent.SchoolYearId = SectionVM.SchoolYearId;
+					sectionStudent.UpdatedBy = editor.Id;
+					sectionStudent.UpdatedDate = DateTime.Now;
+					_context.SectionStudents.Update(sectionStudent);
+				}
+			}
 
 			_context.Attach(section).State = EntityState.Modified;
 

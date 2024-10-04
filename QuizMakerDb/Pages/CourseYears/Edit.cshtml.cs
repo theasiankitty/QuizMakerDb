@@ -28,7 +28,7 @@ namespace QuizMakerDb.Pages.CourseYears
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
 
 			if (id == null)
 			{

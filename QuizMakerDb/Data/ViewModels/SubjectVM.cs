@@ -7,11 +7,14 @@ namespace QuizMakerDb.Data.ViewModels
         [DisplayFormat(DataFormatString = "{0:000000000#}")]
         public int Id { get; set; }
 
-		public string Title { get; set; } = string.Empty;
+		public string Title { get; set; } = string.Empty!;
 
-		public string Code { get; set; } = string.Empty;
+		public string Code { get; set; } = string.Empty!;
 
-		public string Semester { get; set; } = string.Empty;
+		[Display(Name = "Course Year")]
+		public string CourseYear { get; set; } = string.Empty!;
+
+		public int CourseYearId { get; set; }
 
 		public bool Active { get; set; }
 

@@ -29,12 +29,14 @@ namespace QuizMakerDb.Data.ViewModels
 		public string Email { get; set; } = string.Empty!;
 
 		[Required(ErrorMessage = "Username is required.")]
-		[Display(Name = "Username")]
+		[Display(Name = "User Name")]
 		public string UserName { get; set; } = string.Empty!;
 
 		public Guid UserId { get; set; }
 
-		public bool Active { get; set; }
+        public bool isIrregular { get; set; }
+
+        public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }
 

@@ -2,68 +2,63 @@
 @model QuizMakerDb.Pages.Subjects.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+	ViewData["Title"] = "Edit";
 }
 
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item fs-3"><a asp-page="Index">Subjects</a></li>
-            <li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
-        </ol>
-    </nav>
-    <form class="row justify-content-center mt-3" method="post">
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="SubjectVM.Id" type="hidden" />
-        <input asp-for="SubjectVM.CreatedBy" type="hidden" />
-        <input asp-for="SubjectVM.CreatedDate" type="hidden" />
-        <input asp-for="SubjectVM.Active" type="hidden" />
-        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
-            <div class="card card-primary card-outline mb-4">
-                <div class="card-header">
-                    <div class="card-title fw-medium">Create Subject</div>
-                </div>
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SubjectVM.Title" class="form-label"></label>
-                                    <input asp-for="SubjectVM.Title" class="form-control" placeholder="Title" maxlength="100" />
-                                    <span asp-validation-for="SubjectVM.Title" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SubjectVM.Code" class="form-label"></label>
-                                    <input asp-for="SubjectVM.Code" class="form-control" placeholder="Code" maxlength="30" />
-                                    <span asp-validation-for="SubjectVM.Code" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label asp-for="SubjectVM.Semester" class="form-label"></label>
-                                    <select asp-for="SubjectVM.Semester" class="form-select" asp-items="@Html.GetEnumSelectList<Semester>()"></select>
-                                    <span asp-validation-for="SubjectVM.Semester" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-12 text-end">
-                            <input type="submit" value="Save" class="btn btn-primary" />
-                            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a asp-page="Index">Subjects</a></li>
+			<li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-center mt-3" method="post">
+		@Html.AntiForgeryToken()
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="SubjectVM.Id" type="hidden" />
+		<input asp-for="SubjectVM.CreatedBy" type="hidden" />
+		<input asp-for="SubjectVM.CreatedDate" type="hidden" />
+		<input asp-for="SubjectVM.Active" type="hidden" />
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 col-xxl-4">
+			<div class="card card-primary card-outline mb-4">
+				<div class="card-header">
+					<div class="card-title fw-medium">Create Subject</div>
+				</div>
+				<div class="card-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SubjectVM.Title" class="form-label"></label>
+									<input asp-for="SubjectVM.Title" class="form-control" placeholder="Title" maxlength="100" />
+									<span asp-validation-for="SubjectVM.Title" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label asp-for="SubjectVM.Code" class="form-label"></label>
+									<input asp-for="SubjectVM.Code" class="form-control" placeholder="Code" maxlength="30" />
+									<span asp-validation-for="SubjectVM.Code" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="row">
+						<div class="col-12 text-end">
+							<input type="submit" value="Save" class="btn btn-primary" />
+							<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

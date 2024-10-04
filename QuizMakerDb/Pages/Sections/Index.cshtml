@@ -69,8 +69,7 @@
 			   asp-route-pageIndex="1"
 			   asp-route-searchSection=""
 			   asp-route-searchSchoolYear=""
-			   asp-route-searchCourse=""
-			   asp-route-searchYear="">
+			   asp-route-searchCourse="">
 				<i class="bi bi-arrow-clockwise"></i>
 				Refresh
 			</a>
@@ -98,8 +97,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
-										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear">
+										   asp-route-searchCourse="@Model.SearchCourse">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -127,8 +125,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
-										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear">
+										   asp-route-searchCourse="@Model.SearchCourse">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -156,8 +153,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
-										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear">
+										   asp-route-searchCourse="@Model.SearchCourse">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -185,8 +181,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
-										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear">
+										   asp-route-searchCourse="@Model.SearchCourse">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -272,7 +267,6 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
@@ -284,7 +278,6 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
@@ -298,7 +291,6 @@
 											   asp-route-searchSection="@Model.SearchSection"
 											   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 											   asp-route-searchCourse="@Model.SearchCourse"
-											   asp-route-searchYear="@Model.SearchYear"
 											   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
@@ -311,7 +303,6 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex >= Model.Sections.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
@@ -323,7 +314,6 @@
 										   asp-route-searchSection="@Model.SearchSection"
 										   asp-route-searchSchoolYear="@Model.SearchSchoolYear"
 										   asp-route-searchCourse="@Model.SearchCourse"
-										   asp-route-searchYear="@Model.SearchYear"
 										   class="btn btn-sm btn-secondary @(Model.Sections.PageIndex == Model.Sections.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
@@ -386,11 +376,6 @@
 							<div class="col-12">
 								<select class="form-select" asp-items="ViewBag.CourseYears" name="SearchCourse" value="@Model.SearchCourse">
 									<option selected disabled>Select Course</option>
-								</select>
-							</div>
-							<div class="col-12">
-								<select class="form-control form-select" asp-items="Html.GetEnumSelectList<YearLevel>()" name="SearchYear" value="@Model.SearchYear">
-									<option selected disabled>Select Year</option>
 								</select>
 							</div>
 						</div>

@@ -25,7 +25,7 @@ namespace QuizMakerDb.Pages.CourseYears
 		public IActionResult OnGet()
 		{
 
-			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
 
 			return Page();
 		}

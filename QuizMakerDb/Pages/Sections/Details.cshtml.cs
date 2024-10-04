@@ -54,7 +54,7 @@ namespace QuizMakerDb.Pages.Sections
 				.Where(m => m.StudentInfo.Sex == (byte)Sex.Male
 					&& m.Active == true
 					&& m.SectionId == SectionVM.Id)
-				.OrderByDescending(o => o.StudentInfo.LastName);
+				.OrderBy(o => o.StudentInfo.LastName + " " + o.StudentInfo.FirstName);
 
 			MaleStudents = await maleStudents.ToListAsync();
 
@@ -65,7 +65,7 @@ namespace QuizMakerDb.Pages.Sections
 				.Where(m => m.StudentInfo.Sex == (byte)Sex.Female
 					&& m.Active == true
 					&& m.SectionId == SectionVM.Id)
-				.OrderByDescending(o => o.StudentInfo.LastName);
+				.OrderBy(o => o.StudentInfo.LastName + " " + o.StudentInfo.FirstName);
 
 			FemaleStudents = await femaleStudents.ToListAsync();
 

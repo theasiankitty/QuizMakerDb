@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
+using QuizMakerDb.Data.Models;
 using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Students
@@ -82,6 +83,18 @@ namespace QuizMakerDb.Pages.Students
                 student.Active = false;
                 student.UpdatedBy = updater.Id;
                 student.UpdatedDate = DateTime.Now;
+            }
+
+            var studentIdentity = await _userManager.FindByIdAsync(student.UserId.ToString());
+
+            if (studentIdentity == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                studentIdentity.Active = false;
+                await _userManager.UpdateAsync(studentIdentity);
             }
 
             _context.Students.Update(student);

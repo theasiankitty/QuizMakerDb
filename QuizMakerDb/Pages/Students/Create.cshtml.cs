@@ -50,7 +50,8 @@ namespace QuizMakerDb.Pages.Students
 				Email = StudentVM.Email,
 				NormalizedEmail = StudentVM.Email.ToUpper(),
 				EmailConfirmed = true,
-				SecurityStamp = Guid.NewGuid().ToString()
+				SecurityStamp = Guid.NewGuid().ToString(),
+				Active = true,
 			};
 			user.PasswordHash = hasher.HashPassword(user, StudentVM.UserName);
 			await _userManager.CreateAsync(user);
@@ -72,6 +73,7 @@ namespace QuizMakerDb.Pages.Students
 				Email = StudentVM.Email,
 				UserName = StudentVM.UserName,
 				UserId = userId,
+				isIrregular = StudentVM.isIrregular,
 				Active = true,
 				CreatedBy = creator.Id,
 				CreatedDate = DateTime.Now,

@@ -28,7 +28,6 @@ namespace QuizMakerDb.Pages.Sections
 		public string SearchSection { get; set; } = string.Empty!;
 		public string SearchSchoolYear { get; set; } = string.Empty!;
 		public string SearchCourse { get; set; } = string.Empty!;
-		public string SearchYear { get; set; } = string.Empty!;
 		public string SearchStudentUserName { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
@@ -39,17 +38,16 @@ namespace QuizMakerDb.Pages.Sections
 			return attribute?.Name ?? value.ToString();
 		}
 
-		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchYear, string? searchStudentUserName)
+		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchSection, string? searchSchoolYear, string? searchCourse, string? searchStudentUserName)
 		{
-			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears, "Id", "Name");
-			ViewData["CourseYears"] = new SelectList(_context.CourseYears, "Id", "Name");
+			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
+			ViewData["CourseYears"] = new SelectList(_context.CourseYears.Where(m => m.Active == true), "Id", "Name");
 
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
 			SearchSection = string.IsNullOrEmpty(searchSection) ? "" : searchSection;
 			SearchSchoolYear = string.IsNullOrEmpty(searchSchoolYear) ? "" : searchSchoolYear;
 			SearchCourse = string.IsNullOrEmpty(searchCourse) ? "" : searchCourse;
-			SearchYear = string.IsNullOrEmpty(searchYear) ? "" : searchYear;
 			SearchStudentUserName = string.IsNullOrEmpty(searchStudentUserName) ? "" : searchStudentUserName;
 
 			if (_context.Sections != null)
