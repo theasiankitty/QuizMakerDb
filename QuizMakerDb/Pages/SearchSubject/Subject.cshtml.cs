@@ -38,7 +38,7 @@ namespace QuizMakerDb.Pages.SearchSubject
 			if (unassignedSubjects.Any())
 			{
 				unassignedSubjects = unassignedSubjects
-							.Where(m => !assignedSubject.Contains(m.Id)).ToList();
+					.Where(m => !assignedSubject.Contains(m.Id)).ToList();
 			}
 
 			if (unassignedSubjects == null)
@@ -88,24 +88,24 @@ namespace QuizMakerDb.Pages.SearchSubject
 		public async Task<JsonResult> OnGetAllSubjects([FromQuery] int teacherId, int currentPage, int pageSize)
 		{
 			var unassignedSubjects = await _context.CourseYearSubjects
+					.Include(m => m.SubjectInfo)
 					.Where(m => m.Active)
-					.Select(m => new SubjectVM
+					.Select(m => new CourseYearSubjectVM
 					{
 						Id = m.Id,
-						Title = m.SubjectInfo.Title,
+						Subject = m.SubjectInfo.Title,
 						Code = m.SubjectInfo.Code,
+						SubjectId = m.SubjectId,
 						CourseYearId = m.CourseYearId,
 						CourseYear = m.CourseYearInfo.Name,
 					})
 					.OrderBy(m => m.Code)
 					.ToListAsync();
 
-			var dataCount = unassignedSubjects.Count;
-
 			var assignedSubject = await _context.TeacherSubjects
 					.Where(m => m.TeacherId == teacherId
 					&& m.Active)
-					.Select(m => m.SubjectId)
+					.Select(m => m.CourseYearSubjectId)
 					.ToListAsync();
 
 			if (unassignedSubjects.Any())
@@ -116,6 +116,8 @@ namespace QuizMakerDb.Pages.SearchSubject
 					.Take(pageSize)
 					.ToList();
 			}
+
+			var dataCount = unassignedSubjects.Count;
 
 			if (unassignedSubjects == null)
 			{
@@ -128,14 +130,17 @@ namespace QuizMakerDb.Pages.SearchSubject
 		public async Task<JsonResult> OnGetSearchSubjectByCourseYearAsync([FromQuery] int teacherId, int courseYearId)
 		{
 			var unassignedSubjects = await _context.CourseYearSubjects
+					.Include(m => m.SubjectInfo)
 					.Where(m => m.CourseYearId == courseYearId
 					&& m.Active)
-					.Select(m => new SubjectVM
+					.Select(m => new CourseYearSubjectVM
 					{
 						Id = m.Id,
-						Title = m.SubjectInfo.Title,
+						Subject = m.SubjectInfo.Title,
 						Code = m.SubjectInfo.Code,
+						SubjectId = m.SubjectId,
 						CourseYearId = m.CourseYearId,
+						CourseYear = m.CourseYearInfo.Name,
 					})
 					.OrderBy(m => m.Code)
 					.ToListAsync();
@@ -143,8 +148,8 @@ namespace QuizMakerDb.Pages.SearchSubject
 			var assignedSubject = await _context.TeacherSubjects
 					.Where(m => m.Active
 					&& m.TeacherId == teacherId
-					&& m.CourseYearId == courseYearId)
-					.Select(m => m.SubjectId)
+					&& m.CourseYearSubjectId == courseYearId)
+					.Select(m => m.CourseYearSubjectId)
 					.ToListAsync();
 
 

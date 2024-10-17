@@ -52,8 +52,7 @@ namespace QuizMakerDb.Pages.TeacherSubjects
 							var courseYearSubject = new TeacherSubject
 							{
 								TeacherId = subject.TeacherId,
-								SubjectId = subject.SubjectId,
-								CourseYearId = subject.CourseYearId,
+								CourseYearSubjectId = subject.CourseYearSubjectId,
 								Active = true,
 								CreatedBy = creator.Id,
 								CreatedDate = DateTime.Now

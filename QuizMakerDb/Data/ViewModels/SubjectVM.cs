@@ -10,6 +10,8 @@ namespace QuizMakerDb.Data.ViewModels
 		public string Title { get; set; } = string.Empty!;
 
 		public string Code { get; set; } = string.Empty!;
+		
+		public int SubjectId { get; set; }
 
 		[Display(Name = "Course Year")]
 		public string CourseYear { get; set; } = string.Empty!;

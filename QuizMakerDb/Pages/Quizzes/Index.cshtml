@@ -1,0 +1,144 @@
+﻿@page
+@using QuizMakerDb.Data.Identity
+@model QuizMakerDb.Pages.Quizzes.IndexModel
+@inject UserManager<AppUser> userManager
+@{
+	ViewData["Title"] = "Index";
+
+	var user = await userManager.GetUserAsync(User);
+
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+
+	var hasQuizzes = Model.Quizzes.Count > 0;
+
+	var firstDisabled = Model.Quizzes.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.Quizzes.PageIndex == Model.Quizzes.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.Quizzes.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.Quizzes.HasNextPage ? "disabled" : "";
+
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+
+	if (Model.Quizzes.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.Quizzes.PageIndex - center) + 1;
+	}
+
+	int end = start + length;
+
+	if (Model.Quizzes.TotalPages == 1)
+		end = 1;
+
+	if (end > Model.Quizzes.TotalPages)
+	{
+		end = Model.Quizzes.TotalPages + 1;
+		start = end - length;
+
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
+}
+
+<div class="container-fluid mb-3">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3" aria-current="page">Quizzes</li>
+		</ol>
+	</nav>
+	<form class="row justify-content-end mt-3" asp-page="./Index" method="get">
+		<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
+		<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
+		<div class="col-5">
+			<a asp-page="Create" class="btn btn-outline-primary btn-block text-center">
+				<i class="bi bi-plus-lg"></i>
+				Create
+			</a>
+		</div>
+		<div class="col-7 text-end">
+			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
+				<i class="bi bi-search"></i>
+				Search
+			</button>
+			<a class="btn btn-primary btn-block"
+			   asp-page="./Index"
+			   asp-route-sortColumn=""
+			   asp-route-sortOrder=""
+			   asp-route-pageIndex="1"
+			   asp-route-searchName="">
+				<i class="bi bi-arrow-clockwise"></i>
+				Refresh
+			</a>
+		</div>
+	</form>
+</div>
+
+<div class="container-fluid">
+	<div class="row d-flex flex-column justify-content-center align-items-center mt-4">
+		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xl-9 col-xxl-8">
+			@if (hasQuizzes)
+			{
+				@foreach (var item in Model.Quizzes)
+				{
+					<div class="card custom-card mb-3 z-0" onclick="goToQuizQuestions(@item.Id)" style="cursor: pointer;">
+						<div class="card-body p-4">
+							<div class="row">
+								<div class="col-10">
+									<div class="row">
+										<div class="col-12">
+											<h4>
+												@Html.DisplayFor(modelItem => item.Title)
+											</h4>
+										</div>
+										<div class="col-12 fs-5 d-flex gap-3">
+											<i class="bi bi-stopwatch"></i>
+											<span>
+												@Html.DisplayFor(modelItem => item.Minutes) minutes
+											</span>
+										</div>
+										<div class="col-12 fs-5 d-flex gap-3">
+											<i class="bi bi-clipboard2-check"></i>
+											<span>
+												@Html.DisplayFor(modelItem => item.Takes) take
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-2 d-flex align-items-center justify-content-end z-3">
+									<div class="dropup-center dropup" style="cursor: pointer">
+										<i class="bi bi-three-dots-vertical fs-4" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation();"></i>
+										<ul class="dropdown-menu">
+											<li>
+												<a class="dropdown-item" asp-page="/Quizzes/Edit" asp-route-id="@item.Id">
+													Edit
+												</a>
+												<a class="dropdown-item" asp-page="/Quizzes/Delete" asp-route-id="@item.Id">
+													Delete
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		function goToQuizQuestions(id) {
+			window.location.href = '/QuizQuestions/Index?quizId=' + id;
+		}
+	</script>
+}

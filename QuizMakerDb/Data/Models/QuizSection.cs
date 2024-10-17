@@ -12,7 +12,9 @@ namespace QuizMakerDb.Data.Models
 
 		public int SectionId { get; set; }
 
-		public bool Active { get; set; }
+        public Guid Code { get; set; }
+
+        public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }
 

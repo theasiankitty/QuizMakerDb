@@ -26,4 +26,21 @@ namespace QuizMakerDb.Data
 
 		Second = 1
     }
+
+    public enum QuestionType : byte
+    {
+        [Display(Name = "Multiple Choice")]
+        MultipleChoice = 0,
+
+        [Display(Name = "True Or False")]
+        TrueOrFalse = 1,
+
+        [Display(Name = "Matching Or Ordering")]
+		MatchingOrOrdering = 2,
+
+        Numeric = 3,
+
+        [Display(Name = "Fill In The Blank")]
+        FillInTheBlank = 4
+    }
 }

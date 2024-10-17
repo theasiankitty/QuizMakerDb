@@ -10,7 +10,7 @@ namespace QuizMakerDb.Data.Configurations
 		{
 			builder.HasKey(e => e.Id);
 
-			builder.HasOne(m => m.QuizQuestionInfo)
+			builder.HasOne(m => m.QuestionAnswerInfo)
 				.WithOne()
 				.OnDelete(DeleteBehavior.NoAction);
 

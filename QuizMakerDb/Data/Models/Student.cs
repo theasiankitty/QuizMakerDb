@@ -29,6 +29,8 @@ namespace QuizMakerDb.Data.Models
 
         public bool isIrregular { get; set; }
 
+        public int? CurrentCourseYearId { get; set; }
+
         public bool Active { get; set; }
 
         public Guid CreatedBy { get; set; }

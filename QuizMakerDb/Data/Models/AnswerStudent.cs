@@ -13,7 +13,7 @@ namespace QuizMakerDb.Data.Models
 
         public bool isCorrect { get; set; }
 
-        public int QuizQuestionId { get; set; }
+        public int QuestionAnswerId { get; set; }
 
         public int StudentId { get; set; }
 
@@ -27,8 +27,8 @@ namespace QuizMakerDb.Data.Models
 
 		public DateTime? UpdatedDate { get; set; }
 
-		[ForeignKey(nameof(QuizQuestionId))]
-		public QuizQuestion QuizQuestionInfo { get; set; } = null!;
+		[ForeignKey(nameof(QuestionAnswerId))]
+		public QuestionAnswer QuestionAnswerInfo { get; set; } = null!;
 
 		[ForeignKey(nameof(StudentId))]
 		public Student StudentInfo { get; set; } = null!;

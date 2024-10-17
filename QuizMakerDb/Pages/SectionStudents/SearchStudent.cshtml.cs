@@ -144,7 +144,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 			return new JsonResult(new { message = "OK", students = unassignedStudents });
 		}
 
-		public async Task<JsonResult> OnGetAllStudentAsync([FromQuery] int sectionId, int schoolYearId, byte year, int currentPage, int pageSize)
+		public async Task<JsonResult> OnGetAllStudentAsync([FromQuery] int sectionId, int schoolYearId, byte? year, int currentPage, int pageSize)
 		{
 			var unassignedStudents = await _context.Students
 					.Where(m => m.Active)
@@ -155,7 +155,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 			if (sectionId != 0)
 			{
-				if (year != 0)
+				if (year != null)
 				{
 					List<int> assignedIrregularStudents;
 					List<int> assignedStudents;
