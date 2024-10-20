@@ -35,8 +35,7 @@ namespace QuizMakerDb.Pages.Subjects
             {
                 Id = subject.Id,
                 Title = subject.Title,
-                Code = subject.Code,
-                Semester = ((Semester)subject.Semester).ToString(),
+                Code = subject.Code
             };
 
             return Page();

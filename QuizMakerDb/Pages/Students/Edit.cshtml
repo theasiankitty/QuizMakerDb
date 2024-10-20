@@ -16,6 +16,7 @@
         @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input asp-for="StudentVM.Id" type="hidden" />
+        <input asp-for="StudentVM.UserName" type="hidden" />
         <input asp-for="StudentVM.UserId" type="hidden" />
         <input asp-for="StudentVM.CreatedBy" type="hidden" />
         <input asp-for="StudentVM.CreatedDate" type="hidden" />
@@ -67,13 +68,21 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label asp-for="StudentVM.UserName" class="form-label"></label>
-                                    <input asp-for="StudentVM.UserName" class="form-control" placeholder="Username" maxlength="20" />
+                                    <div class="input-group mb-3">
+                                        <input type="search" class="form-control" id="userNameInput" aria-label="User Name" placeholder="User Name" maxlength="20" onchange="checkValidUserName()" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+                                        <div class="input-group-text" id="iconContainer">
+                                        </div>
+                                    </div>
                                     <span asp-validation-for="StudentVM.UserName" class="text-danger"></span>
                                 </div>
                             </div>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
                             <div class="col-md-12 mb-4">
+=======
+                            <div class="col-md-12">
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
                                 <div class="form-check">
                                     <input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox">
                                     <label asp-for="StudentVM.isIrregular" class="form-check-label">
@@ -81,6 +90,7 @@
                                     </label>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             <div class="col-md-12" id="showCourseYearSelection" style="display: none;">
 								<div class="row p-2 border rounded">
 									<div class="col-12 mt-2 mb-4">
@@ -101,13 +111,15 @@
 								</div>
 							</div>
 >>>>>>> Stashed changes
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-12 text-end">
-                            <input type="submit" value="Save" class="btn btn-primary" />
+                            <input type="submit" value="Save" class="btn btn-primary" id="submitBtn" />
                             <a asp-page="Index" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
@@ -123,9 +135,64 @@
     }
 
     <script>
+        function initializeUserName() {
+            $('#userNameInput').val("@Model.StudentVM.UserName");
+            $('#iconContainer').append('<i class="bi bi-person-x-fill text-danger" id="iconFalse"></i>');
+            $('#submitBtn').prop('disabled', true);
+            checkValidUserName();
+        }
+
+        function checkValidUserName() {
+            var userName = $('#userNameInput').val();
+            $('#iconFalse').remove();
+            $('#iconTrue').remove();
+            $('#loadingSpinner').remove();
+
+            $('#iconContainer').append('<div class="spinner-border spinner-border-sm text-primary" id="loadingSpinner" role="status"><span class="visually-hidden"></span></div>');
+
+            if (userName !== '') {
+                $('#userNameInput').removeClass('is-invalid');
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/CheckUserName/UserName?handler=UserNameByStudentId',
+                    data: {
+                        studentId: "@Model.StudentVM.Id",
+                        userName: userName
+                    },
+                    success: function (result) {
+                        $('#loadingSpinner').remove();
+
+                        if (result === 'OK') {
+                            $('#iconContainer').append('<i class="bi bi-person-check-fill text-success" id="iconTrue"></i>');
+                            $('#submitBtn').prop('disabled', false);
+                            $('#userNameInput').removeClass('is-invalid');
+                            $('#StudentVM_UserName').val(userName);
+                        } else {
+                            handleInvalidUserName();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                        handleInvalidUserName();
+                    }
+                });
+            } else {
+                handleInvalidUserName();
+            }
+        }
+
+        function handleInvalidUserName() {
+            $('#loadingSpinner').remove();
+            $('#iconContainer').append('<i class="bi bi-person-x-fill text-danger" id="iconFalse"></i>');
+            $('#submitBtn').prop('disabled', true);
+            $('#userNameInput').addClass('is-invalid');
+        }
+
         function onChangeSex() {
             var value = event.srcElement.value;
         }
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
@@ -190,5 +257,9 @@
         initializeUserName();
         toggleCourseYearSelection();
 >>>>>>> Stashed changes
+=======
+
+        initializeUserName();
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
     </script>
 }

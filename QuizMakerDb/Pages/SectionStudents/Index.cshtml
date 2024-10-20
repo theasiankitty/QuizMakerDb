@@ -43,8 +43,6 @@
 			end = length;
 		}
 	}
-
-	var hasStudent = TempData["HasStudent"] as string;
 }
 
 <div class="container-fluid">
@@ -58,7 +56,13 @@
 	</nav>
 	<p class="fs-5 text-secondary">(S.Y. @Model.SectionVM.SchoolYearName)</p>
 	<div class="row justify-content-end mt-3">
-		<form class="col-12 text-end" asp-page="./Index" method="get">
+		<div class="col-5">
+			<button type="button" class="btn btn-outline-primary btn-block text-center" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+				<i class="bi bi-plus-lg"></i>
+				Add Students
+			</button>
+		</div>
+		<form class="col-7 text-end" asp-page="./Index" method="get">
 			@Html.AntiForgeryToken()
 			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
 				<i class="bi bi-search"></i>
@@ -76,23 +80,6 @@
 				Refresh
 			</a>
 		</form>
-	</div>
-</div>
-
-<div class="container-fluid mt-3">
-	<div class="row">
-		<div class="col-md-6 col-lg-6 col-xl-5">
-			<form asp-page="./Index" method="get" class="row">
-				@Html.AntiForgeryToken()
-				<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
-				<input type="hidden" name="SortColumn" value="@Model.SortColumn" />
-				<input type="hidden" name="SortOrder" value="@Model.SortOrder" />
-				<div class="input-group">
-					<input class="form-control" id="searchStudentId" type="search" name="SearchStudent" value="@Model.SearchStudent" placeholder="Student" maxlength="100" />
-					<button class="btn btn-secondary" value="Add" type="submit">Add</button>
-				</div>
-			</form>
-		</div>
 	</div>
 </div>
 
@@ -273,7 +260,6 @@
 												   asp-route-sortOrder="@Model.SortOrder"
 												   asp-route-pageIndex="1"
 												   asp-route-sectionId="@Model.SectionVM.Id"
-												   asp-route-searchStudent="@Model.SearchStudent"
 												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == 1 ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-double-left"></i>
@@ -284,7 +270,6 @@
 												   asp-route-sortOrder="@Model.SortOrder"
 												   asp-route-pageIndex="@(Model.StudentSections.PageIndex - 1)"
 												   asp-route-sectionId="@Model.SectionVM.Id"
-												   asp-route-searchStudent="@Model.SearchStudent"
 												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex <= 1 ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-left"></i>
@@ -297,7 +282,6 @@
 													   asp-route-sortOrder="@Model.SortOrder"
 													   asp-route-pageIndex="@i"
 													   asp-route-sectionId="@Model.SectionVM.Id"
-													   asp-route-searchStudent="@Model.SearchStudent"
 													   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 													   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == i ? "disabled" : "")">
 														@i
@@ -309,7 +293,6 @@
 												   asp-route-sortOrder="@Model.SortOrder"
 												   asp-route-pageIndex="@(Model.StudentSections.PageIndex + 1)"
 												   asp-route-sectionId="@Model.SectionVM.Id"
-												   asp-route-searchStudent="@Model.SearchStudent"
 												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex >= Model.StudentSections.TotalPages ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-right"></i>
@@ -320,7 +303,6 @@
 												   asp-route-sortOrder="@Model.SortOrder"
 												   asp-route-pageIndex="@Model.StudentSections.TotalPages"
 												   asp-route-sectionId="@Model.SectionVM.Id"
-												   asp-route-searchStudent="@Model.SearchStudent"
 												   asp-route-searchStudentInSection="@Model.SearchStudentInSection"
 												   class="btn btn-sm btn-secondary @(Model.StudentSections.PageIndex == Model.StudentSections.TotalPages ? "disabled" : "")">
 													<i class="nav-icon bi bi-chevron-double-right"></i>
@@ -355,8 +337,11 @@
 	</div>
 </div>
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 <div class="modal fade" id="addStudentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content">
@@ -404,7 +389,11 @@
 	</div>
 </div>
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 <div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -437,124 +426,281 @@
 	</div>
 </div>
 
-<div class="modal fade" id="addStudentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="modalHeaderTitle">
-					<span class="pe-1">Add Student</span>
-					<i class="bi bi-person-plus"></i>
-				</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				@if (Model.Students.Any())
-				{
-					<div class="card-body">
-						<input type="hidden" name="SectionId" value="@Model.SectionVM.Id" />
-						<div class="overflow-auto" style="max-height: 300px;">
-							<table class="table table-success mb-0">
-								<thead class="table-primary sticky-top">
-									<tr>
-										<th>Name</th>
-										<th>Username</th>
-										<th style="min-width: 20px; width: 25px;"></th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var student in Model.Students)
-									{
-										<tr class="align-middle">
-											<td>@student.FirstName @student.LastName</td>
-											<td>@student.UserName</td>
-											<td>
-												<input class="form-check-input" type="checkbox" name="selectedStudentIds" value="@student.Id" />
-											</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				}
-			</div>
-			<div class="modal-footer text-end">
-				<button class="btn btn-primary" id="submitStudentButton" type="button" onclick="submitStudents();"></button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="notFoundModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="notFoundModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="modalHeaderTitle">
-					<span class="pe-1">Student Not Found</span>
-					<i class="bi bi-exclamation-triangle"></i>
-				</h1>
-				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<p>The student may already be assigned to a section or might not be registered/enrolled yet.</p>
-				<p>To check the student's section, <a type="button" href="/Sections/Index" target="_blank" rel="noopener noreferrer">click here</a>.</p>
-				<p>To verify if the student is enrolled, <a type="button" href="/Students/Index" target="_blank" rel="noopener noreferrer">click here</a>.</p>
-			</div>
-		</div>
-	</div>
-</div>
-
 @section Scripts {
 	<script>
+		var currentPage = 0;
+		var pageSize = 10;
+		var loadedRecords = 0;
+		var submitButton = $('#submitStudentBtn');
+		var searchButton = $('#searchStudentButton');
+		var searchStudentInput = $('#searchStudentInput');
+		var selectAllbutton = $('#selectAllBtn');
+
 		$('#clearButton').hide();
 
 		$(document).ready(function () {
-			function toggleClearButton() {
-				if ($('#searchStudentId').val().trim() !== '') {
-					$('#clearButton').show();
-				} else {
-					$('#clearButton').hide();
-				}
-			}
+			searchButton.click(function () {
+				var student = searchStudentInput.val();
+				searchStudent(student);
 
-			toggleClearButton();
-
-			var hasStudent = "@hasStudent";
-
-			if (hasStudent == 'true') {
-				$('#addStudentModal').modal('show');
-			} else if (hasStudent == 'false') {
-				$('#notFoundModal').modal('show');
-				console.log(false);
-			}
-
-			function updateButton() {
-				var checkedCount = $('input[name="selectedStudentIds"]:checked').length;
-				var button = $('#submitStudentButton');
-
-				if (checkedCount > 0) {
-					button.prop('disabled', false);
-					button.text('Add (' + checkedCount + ')');
-				} else {
-					button.prop('disabled', true);
-					button.text('Add');
-				}
-			}
-
-			updateButton();
-
-			$('input[name="selectedStudentIds"]').on('change', function () {
-				updateButton();
+				$('#resultContainer').slideUp();
+				$('#resultFooter').slideUp();
+				$('#searchLoading').slideDown();
 			});
+
+			searchButton.text('Search All');
+
+			searchStudentInput.on('input', function () {
+				var inputValue = $(this).val().trim();
+
+				if (inputValue !== '') {
+					searchButton.text('Search');
+				} else {
+					searchButton.text('Search All');
+				}
+			});
+
+			selectAllbutton.on('click', function () {
+				var allChecked = $('input[name="selectedStudentIds"]:checked').length === $('input[name="selectedStudentIds"]').length;
+
+				$('input[name="selectedStudentIds"]').prop('checked', !allChecked);
+
+				$('.student-card').each(function () {
+					var checkbox = $(this).find('input[name="selectedStudentIds"]');
+					if (allChecked) {
+						$(this).removeClass('bg-primary text-light');
+					} else {
+						$(this).addClass('bg-primary text-light');
+					}
+				});
+
+				$(this).text(allChecked ? 'Select All' : 'Deselect All');
+				updateAddButton();
+			});
+
+			updateAddButton();
+			getAllStudents();
 		});
+
+		function toggleCheckbox(card) {
+			var checkbox = $(card).find('input[type="checkbox"]');
+			var isChecked = checkbox.prop('checked');
+
+			checkbox.prop('checked', !isChecked);
+
+			if (!isChecked) {
+				$(card).addClass('bg-primary text-light');
+			} else {
+				$(card).removeClass('bg-primary text-light');
+			}
+
+			updateAddButton();
+		}
+
+		function updateAddButton() {
+			var checkedCount = $('input[name="selectedStudentIds"]:checked').length;
+			var allCheckBox = $('input[name="selectedStudentIds"]').length;
+
+			if (checkedCount === allCheckBox) {
+				selectAllbutton.text('Deselect All');
+			} else {
+				selectAllbutton.text('Select All');
+			}
+
+			if (checkedCount > 0) {
+				submitButton.prop('disabled', false);
+				submitButton.text('Add (' + checkedCount + ')');
+			} else {
+				resetButton();
+			}
+		}
+
+		function resetButton() {
+			submitButton.prop('disabled', true);
+			submitButton.text('Add');
+		}
+
+		function searchStudent(student) {
+			resetButton();
+
+			$('#resultContainer .card').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			$('#resultContainer .errorMessage').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			if (student != '') {
+				$('#loadMoreBtn').hide();
+				getSearchStudent(student);
+			} else {
+				currentPage = 0;
+				pageSize = 10;
+				loadedRecords = 0;
+				getAllStudents();
+			}
+		}
+
+		function showErrorMessage(message) {
+			var errorMessage = '';
+
+			if (message === 'empty student') {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>No students found.</p>
+						<small>Please verify if the student is already assigned for this section.<br/>If it isn’t, <a href="/Students/Index">click here</a> to add it.</small>
+					</div>
+					`;
+			} else {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>Error Retrieving Data.</p>
+					</div>
+					`;
+			}
+
+			$('#resultContainer').append(errorMessage);
+		}
+
+		function getAllStudents() {
+			selectAllbutton.text('Select All');
+			$('#loadMoreBtn').hide();
+
+			$.ajax({
+				type: 'GET',
+				url: '/SectionStudents/SearchStudent?handler=AllStudent',
+				data: {
+					sectionId: "@Model.SectionVM.Id",
+					schoolYearId: "@Model.SectionVM.SchoolYearId",
+					year: "@Model.SectionVM.Year",
+					currentPage: currentPage,
+					pageSize: pageSize
+				},
+				success: function (data) {
+					$('#searchLoading').slideUp(400, function () {
+						if (data.message === 'OK' && data.students.length != 0) {
+							var cards = '';
+
+							$.each(data.students, function (index, item) {
+								cards += `
+									<div class="card student-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-11">
+													<h5 class="card-title"><strong>${item.lastName}, ${item.firstName}</strong></h5>
+													<br />
+													<p class="card-text">${item.userName}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedStudentIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+												</div>
+											</div>
+										</div>
+									</div>
+								`;
+							});
+
+							$('#resultContainer').append(cards);
+
+							$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+							loadedRecords += data.students.length;
+							currentPage++;
+
+							console.log(loadedRecords);
+
+							if (loadedRecords < data.count) {
+								$('#loadMoreBtn').show();
+							} else {
+								$('#loadMoreBtn').hide();
+							}
+
+							$('#resultFooter').slideDown();
+						} else {
+							showErrorMessage('empty student');
+						}
+
+						$('#resultContainer').slideDown(200);
+					});
+
+				},
+				error: function (xhr, status, error) {
+					$('#searchLoading').slideUp(function () {
+						showErrorMessage('error retrieving');
+
+						$('#resultContainer').slideDown(200);
+					});
+					console.error("Error: " + error);
+				}
+			});
+		}
+
+		function getSearchStudent(student) {
+			$.ajax({
+				type: 'GET',
+				url: '/SectionStudents/SearchStudent?handler=SearchStudent',
+				data: {
+					searchStudent: student,
+					sectionId: "@Model.SectionVM.Id",
+					schoolYearId: "@Model.SectionVM.SchoolYearId",
+					year: "@Model.SectionVM.Year",
+				},
+				success: function (data) {
+					$('#searchLoading').slideUp(400, function () {
+						if (data.message === 'OK' && data.students.length != 0) {
+							var cards = '';
+
+							$.each(data.students, function (index, item) {
+								cards += `
+									<div class="card student-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-11">
+													<h5 class="card-title"><strong>${item.lastName}, ${item.firstName}</strong></h5>
+													<br />
+													<p class="card-text">${item.userName}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedStudentIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+												</div>
+											</div>
+										</div>
+									</div>
+								`;
+							});
+
+							$('#resultContainer').append(cards);
+
+							$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+							$('#resultFooter').slideDown();
+						} else {
+							showErrorMessage('empty student');
+						}
+
+						$('#resultContainer').slideDown(200);
+					});
+
+				},
+				error: function (xhr, status, error) {
+					$('#searchLoading').slideUp(function () {
+						showErrorMessage('error retrieving');
+
+						$('#resultContainer').slideDown(200);
+					});
+					console.error("Error: " + error);
+				}
+			});
+		}
 
 		function submitStudents() {
 			var sectionStudents = [];
 			$("[name=selectedStudentIds]:checked").each(function (i, elem) {
 				sectionStudents.push({
-					"sectionId": @Model.SectionVM.Id,
+					"sectionId": "@Model.SectionVM.Id",
 					"studentId": elem.value,
-					"schoolYearId": @Model.SectionVM.SchoolYearId });
+					"schoolYearId": "@Model.SectionVM.SchoolYearId" });
 			});
 
 			$.ajax({
@@ -586,7 +732,7 @@
 				},
 				data: JSON.stringify(studentSectionId),
 				success: function (response) {
-					var newUrl = `${window.location.pathname}?sectionId=${@Model.SectionVM.Id}`;
+					var newUrl = `${window.location.pathname}?sectionId=${"@Model.SectionVM.Id"}`;
 					window.location.href = newUrl;
 				}
 			});

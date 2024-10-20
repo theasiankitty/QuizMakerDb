@@ -24,6 +24,7 @@ namespace QuizMakerDb.Data
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+		public DbSet<TeacherSubject> TeacherSubjects { get; set; }
 		public DbSet<SchoolYear> SchoolYears { get; set; }
         public DbSet<Course> Courses { get; set; }
 		public DbSet<CourseYear> CourseYears { get; set; }
@@ -46,7 +47,7 @@ namespace QuizMakerDb.Data
             builder.Entity<AppRoleClaim>().ToTable("IdentityRoleClaims");
             builder.Entity<AppUserToken>().ToTable("IdentityUserTokens");
 
-            Seed(builder);
+            //Seed(builder);
         }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)
@@ -114,7 +115,8 @@ namespace QuizMakerDb.Data
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpper(),
                 EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Active = true
             };
             adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin@1234");
 
@@ -128,7 +130,8 @@ namespace QuizMakerDb.Data
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpper(),
                 EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Active = true
             };
             teacherUser.PasswordHash = hasher.HashPassword(teacherUser, "Teacher@1234");
 
@@ -142,7 +145,8 @@ namespace QuizMakerDb.Data
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpper(),
                 EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Active = true
             };
             student.PasswordHash = hasher.HashPassword(student, "Student@1234");
 

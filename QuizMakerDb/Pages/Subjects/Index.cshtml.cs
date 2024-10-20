@@ -22,16 +22,14 @@ namespace QuizMakerDb.Pages.Subjects
 		public string SortOrder { get; set; } = string.Empty!;
 		public string SearchTitle { get; set; } = string.Empty!;
 		public string SearchCode { get; set; } = string.Empty!;
-		public string SearchSemester { get; set; } = string.Empty!;
 		public int TotalItems { get; set; }
 
-		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTitle, string? searchCode, string? searchSemester)
+		public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTitle, string? searchCode)
 		{
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
 			SearchTitle = string.IsNullOrEmpty(searchTitle) ? "" : searchTitle;
 			SearchCode = string.IsNullOrEmpty(searchCode) ? "" : searchCode;
-			SearchSemester = string.IsNullOrEmpty(searchSemester) ? "" : searchSemester;
 
 			if (_context.Subjects != null)
 			{
@@ -55,12 +53,6 @@ namespace QuizMakerDb.Pages.Subjects
 					.Contains(searchCode.ToLower()));
 				}
 
-				if (!string.IsNullOrEmpty(searchSemester))
-				{
-					subjects = subjects.Where(m =>
-						m.Semester == byte.Parse(searchSemester));
-				}
-
 				switch (sortColumn)
 				{
 					case "id":
@@ -75,10 +67,6 @@ namespace QuizMakerDb.Pages.Subjects
 						subjects = SortOrder == "asc" ? subjects.OrderBy(o => o.Code)
 							: subjects.OrderByDescending(o => o.Code);
 						break;
-					case "semester":
-						subjects = SortOrder == "asc" ? subjects.OrderBy(o => o.Semester)
-							: subjects.OrderByDescending(o => o.Semester);
-						break;
 				}
 
 				int pageSize = 10;
@@ -91,7 +79,6 @@ namespace QuizMakerDb.Pages.Subjects
 						Id = m.Id,
 						Title = m.Title,
 						Code = m.Code,
-						Semester = ((Semester)m.Semester).ToString(),
 					}).AsNoTracking(),
 					pageIndex ?? 1,
 					pageSize

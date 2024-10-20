@@ -50,11 +50,15 @@ namespace QuizMakerDb.Pages.Students
                 Email = student.Email,
                 UserName = student.UserName,
                 UserId = student.UserId,
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
                 isIrregular = student.isIrregular,
                 CurrentSectionId = student.CurrentSectionId,
 >>>>>>> Stashed changes
+=======
+                isIrregular = student.isIrregular,
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
                 Active = student.Active,
                 CreatedBy = student.CreatedBy,
                 CreatedDate = student.CreatedDate,
@@ -99,11 +103,15 @@ namespace QuizMakerDb.Pages.Students
                 Email = StudentVM.Email,
                 UserName = StudentVM.UserName,
                 UserId = StudentVM.UserId,
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
                 isIrregular = StudentVM.isIrregular,
                 CurrentSectionId = StudentVM.CurrentSectionId,
 >>>>>>> Stashed changes
+=======
+                isIrregular = StudentVM.isIrregular,
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
                 Active = true,
                 CreatedBy = StudentVM.CreatedBy,
                 CreatedDate = StudentVM.CreatedDate,

@@ -1,13 +1,19 @@
 ﻿@page
 @using QuizMakerDb.Data.Identity
 @model QuizMakerDb.Pages.TeacherSubjects.IndexModel
+<<<<<<< HEAD
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 @inject UserManager<AppUser> userManager
 @{
 	ViewData["Title"] = "Index";
 
+<<<<<<< HEAD
 	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
 
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 	var user = await userManager.GetUserAsync(User);
 
 	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
@@ -48,8 +54,11 @@
 	}
 }
 
+<<<<<<< HEAD
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 <div class="container-fluid">
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
@@ -160,6 +169,7 @@
 									<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient" style="min-width: 305px; width: 310px;">
 										<a class="text-decoration-none text-dark"
 										   asp-page="./Index"
+<<<<<<< HEAD
 										   asp-route-sortColumn="course_year"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-teacherId="@Model.TeacherVM.Id"
@@ -188,6 +198,8 @@
 									<th class="d-none d-lg-table-cell bg-body-secondary bg-gradient" style="min-width: 305px; width: 310px;">
 										<a class="text-decoration-none text-dark"
 										   asp-page="./Index"
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 										   asp-route-sortColumn="code"
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-teacherId="@Model.TeacherVM.Id"
@@ -230,9 +242,12 @@
 											@Html.DisplayFor(modelItem => item.Subject)
 										</td>
 										<td class="d-none d-lg-table-cell">
+<<<<<<< HEAD
 											@Html.DisplayFor(modelItem => item.CourseYear)
 										</td>
 										<td class="d-none d-lg-table-cell">
+=======
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 											@Html.DisplayFor(modelItem => item.Code)
 										</td>
 										<td class="text-center">
@@ -459,12 +474,21 @@
 			});
 
 			selectAllbutton.on('click', function () {
+<<<<<<< HEAD
 				var allChecked = $('input[name="selectedCourseYearSubjectIds"]:checked').length === $('input[name="selectedCourseYearSubjectIds"]').length;
 
 				$('input[name="selectedCourseYearSubjectIds"]').prop('checked', !allChecked);
 
 				$('.subject-card').each(function () {
 					var checkbox = $(this).find('input[name="selectedCourseYearSubjectIds"]');
+=======
+				var allChecked = $('input[name="selectedSubjectIds"]:checked').length === $('input[name="selectedSubjectIds"]').length;
+
+				$('input[name="selectedSubjectIds"]').prop('checked', !allChecked);
+
+				$('.subject-card').each(function () {
+					var checkbox = $(this).find('input[name="selectedSubjectIds"]');
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 					if (allChecked) {
 						$(this).removeClass('bg-primary text-light');
 					} else {
@@ -508,8 +532,13 @@
 		}
 
 		function updateAddButton() {
+<<<<<<< HEAD
 			var checkedSubjectCount = $('input[name="selectedCourseYearSubjectIds"]:checked').length;
 			var allSubjectCheckBox = $('input[name="selectedCourseYearSubjectIds"]').length;
+=======
+			var checkedSubjectCount = $('input[name="selectedSubjectIds"]:checked').length;
+			var allSubjectCheckBox = $('input[name="selectedSubjectIds"]').length;
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 
 			if (checkedSubjectCount === allSubjectCheckBox) {
 				selectAllbutton.text('Deselect All');
@@ -526,8 +555,13 @@
 		}
 
 		function toggleCheckbox(card) {
+<<<<<<< HEAD
 			var checkbox = $(card).find('input[name="selectedCourseYearSubjectIds"]');
 			var hiddenCheckbox = $(card).find('input[name="selectedCourseYearSubjectIds"]');
+=======
+			var checkbox = $(card).find('input[name="selectedSubjectIds"]');
+			var hiddenCheckbox = $(card).find('input[name="selectedCourseYearIds"]');
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 			var isChecked = checkbox.prop('checked');
 
 			checkbox.prop('checked', !isChecked);
@@ -591,10 +625,18 @@
 												<div class="col-11">
 													<h5 class="card-title"><strong>${item.code} (${item.courseYear})</strong></h5>
 													<br />
+<<<<<<< HEAD
 													<p class="card-text">${item.subject}</p>
 												</div>
 												<div class="col-1 d-flex justify-content-end align-items-center">
 													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedCourseYearSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+=======
+													<p class="card-text">${item.title}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+													<input type="checkbox" name="selectedCourseYearIds" value="${item.courseYearId}" style="display: none;" />
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 												</div>
 											</div>
 										</div>
@@ -660,10 +702,18 @@
 												<div class="col-11">
 													<h5 class="card-title"><strong>${item.code}</strong></h5>
 													<br />
+<<<<<<< HEAD
 													<p class="card-text">${item.subject}</p>
 												</div>
 												<div class="col-1 d-flex justify-content-end align-items-center">
 													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedCourseYearSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+=======
+													<p class="card-text">${item.title}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+													<input type="checkbox" name="selectedCourseYearIds" value="${item.courseYearId}" style="display: none;" />
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 												</div>
 											</div>
 										</div>
@@ -696,6 +746,7 @@
 		}
 
 		function submitSubjects() {
+<<<<<<< HEAD
 			var courseYearSubjects = [];
 			$("[name=selectedCourseYearSubjectIds]:checked").each(function (i, elem) {
 				courseYearSubjects.push({
@@ -707,6 +758,22 @@
 			// console.log(courseYearSubjects);
 
 			console.log(JSON.stringify(courseYearSubjects));
+=======
+			var sectionSubject = [];
+			$("[name=selectedSubjectIds]:checked").each(function (i, elem) {
+				var hiddenCheckbox = $(elem).closest('.card').find('input[name="selectedCourseYearIds"]');
+
+				var courseYearId = hiddenCheckbox.val();
+
+				sectionSubject.push({
+					'teacherId': "@Model.TeacherVM.Id",
+					'subjectId': elem.value,
+					'courseYearId': courseYearId
+				});
+			});
+
+			// console.log(JSON.stringify(sectionSubject));
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 
 			$.ajax({
 				type: 'POST',
@@ -714,9 +781,16 @@
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
+<<<<<<< HEAD
 					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
 				data: JSON.stringify(courseYearSubjects),
+=======
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+				},
+				data: JSON.stringify(sectionSubject),
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 				success: function (data) {
 					var newUrl = `${window.location.pathname}?teacherId=${"@Model.TeacherVM.Id"}`;
 					window.location.href = newUrl;
@@ -731,7 +805,12 @@
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
+<<<<<<< HEAD
 					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+=======
+					RequestVerificationToken:
+						$('input:hidden[name="__RequestVerificationToken"]').val()
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 				},
 				data: JSON.stringify(teacherSubjectId),
 				success: function (response) {

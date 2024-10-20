@@ -24,23 +24,23 @@ namespace QuizMakerDb.Pages.Students
         public string SearchStudent { get; set; } = string.Empty!;
 		public string SearchUserName { get; set; } = string.Empty!;
 		public string SearchSex { get; set; } = string.Empty!;
-		public int TotalItems { get; set; }
+        public string SearchStatus { get; set; } = string.Empty!;
+        public int TotalItems { get; set; }
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudent, string? searchUserName, string? searchSex)
+        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchStudent, string? searchUserName, string? searchSex, string? searchStatus)
         {
             SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
             SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
             SearchStudent = string.IsNullOrEmpty(searchStudent) ? "" : searchStudent;
 			SearchUserName = string.IsNullOrEmpty(searchUserName) ? "" : searchUserName;
 			SearchSex = string.IsNullOrEmpty(searchSex) ? "" : searchSex;
+            SearchStatus = string.IsNullOrEmpty(searchStatus) ? "" : searchStatus;
 
-			if (_context.Students != null)
+            if (_context.Students != null)
             {
                 IQueryable<Student> students = _context.Students.AsQueryable();
 
-				students = students
-                    .Where(m => m.Active == true)
-                    .OrderByDescending(o => o.Id);
+				students = students.OrderByDescending(o => o.Id);
 
                 if (!string.IsNullOrEmpty(searchStudent))
                 {
@@ -59,7 +59,20 @@ namespace QuizMakerDb.Pages.Students
 					students = students.Where(m => m.Sex == byte.Parse(searchSex));
 				}
 
-				switch (sortColumn)
+                if (!string.IsNullOrEmpty(searchStatus))
+                {
+					switch (searchStatus)
+					{
+						case "active":
+							students = students.Where(m => m.Active);
+							break;
+						case "inactive":
+							students = students.Where(m => !m.Active);
+							break;
+					}
+				}
+
+                switch (sortColumn)
                 {
                     case "id":
                         students = SortOrder == "asc" ? students.OrderBy(o => o.Id)
@@ -81,6 +94,10 @@ namespace QuizMakerDb.Pages.Students
                         students = SortOrder == "asc" ? students.OrderBy(o => o.Email)
                             : students.OrderByDescending(o => o.Email);
                         break;
+                    case "status":
+                        students = SortOrder == "asc" ? students.OrderBy(o => o.Active)
+                            : students.OrderByDescending(o => o.Active);
+                        break;
                 }
 
                 int pageSize = 10;
@@ -95,6 +112,7 @@ namespace QuizMakerDb.Pages.Students
                         Student = m.FirstName + " " + m.LastName,
                         SexDescription = ((Sex)m.Sex).ToString(),
                         Email = m.Email,
+                        Active = m.Active,
                     }).AsNoTracking(),
                     pageIndex ?? 1,
                     pageSize

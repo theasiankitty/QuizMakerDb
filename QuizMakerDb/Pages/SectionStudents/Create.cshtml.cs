@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
@@ -32,25 +33,45 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 			var studentSections = JsonConvert.DeserializeObject<List<SectionStudent>>(data.ToString());
 
-			if (studentSections.Any())
+			if (studentSections == null || !studentSections.Any())
 			{
-				foreach (var student in studentSections)
-				{
-					var sectionStudent = new SectionStudent
-					{
-						StudentId = student.StudentId,
-						SectionId = student.SectionId,
-						SchoolYearId = student.SchoolYearId,
-						Active = true,
-						CreatedBy = creator.Id,
-						CreatedDate = DateTime.Now
-					};
-
-					_context.SectionStudents.Add(sectionStudent);
-				}
+				return new JsonResult("No student sections provided");
 			}
 
-			await _context.SaveChangesAsync();
+			var executionStrategy = _context.Database.CreateExecutionStrategy();
+
+			await executionStrategy.ExecuteAsync(async () =>
+			{
+				using (var transaction = await _context.Database.BeginTransactionAsync())
+				{
+					try
+					{
+						foreach (var student in studentSections)
+						{
+							var sectionStudent = new SectionStudent
+							{
+								StudentId = student.StudentId,
+								SectionId = student.SectionId,
+								SchoolYearId = student.SchoolYearId,
+								Active = true,
+								CreatedBy = creator.Id,
+								CreatedDate = DateTime.Now
+							};
+
+							_context.SectionStudents.Add(sectionStudent);
+						}
+
+						await _context.SaveChangesAsync();
+						await transaction.CommitAsync();
+					}
+					catch (Exception ex)
+					{
+						await transaction.RollbackAsync();
+						Console.WriteLine($"Error saving data: {ex.Message}");
+						throw;
+					}
+				}
+			});
 
 			return new JsonResult("OK");
 		}

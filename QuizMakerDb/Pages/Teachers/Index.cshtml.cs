@@ -24,9 +24,10 @@ namespace QuizMakerDb.Pages.Teachers
         public string SearchTeacher { get; set; } = string.Empty!;
 		public string SearchUserName { get; set; } = string.Empty!;
 		public string SearchSex { get; set; } = string.Empty!;
-		public int TotalItems { get; set; }
+        public string SearchStatus { get; set; } = string.Empty!;
+        public int TotalItems { get; set; }
 
-        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTeacher, string? searchUserName, string? searchSex)
+        public async Task OnGetAsync(string? sortColumn, string? sortOrder, int? pageIndex, string? searchTeacher, string? searchUserName, string? searchSex, string? searchStatus)
         {
             SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
             SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
@@ -39,7 +40,6 @@ namespace QuizMakerDb.Pages.Teachers
                 IQueryable<Teacher> teachers = _context.Teachers.AsQueryable();
 
                 teachers = teachers
-                    .Where(m => m.Active == true)
                     .OrderByDescending(o => o.Id);
 
                 if (!string.IsNullOrEmpty(searchTeacher))
@@ -59,7 +59,20 @@ namespace QuizMakerDb.Pages.Teachers
 					teachers = teachers.Where(m => m.Sex == byte.Parse(searchSex));
 				}
 
-				switch (sortColumn)
+                if (!string.IsNullOrEmpty(searchStatus))
+                {
+					switch (searchStatus)
+					{
+						case "active":
+							teachers = teachers.Where(m => m.Active);
+							break;
+						case "inactive":
+							teachers = teachers.Where(m => !m.Active);
+							break;
+					}
+				}
+
+                switch (sortColumn)
                 {
                     case "id":
                         teachers = SortOrder == "asc" ? teachers.OrderBy(o => o.Id)
@@ -81,7 +94,11 @@ namespace QuizMakerDb.Pages.Teachers
 						teachers = SortOrder == "asc" ? teachers.OrderBy(o => o.Email)
 							: teachers.OrderByDescending(o => o.Email);
 						break;
-				}
+                    case "status":
+                        teachers = SortOrder == "asc" ? teachers.OrderBy(o => o.Active)
+                            : teachers.OrderByDescending(o => o.Active);
+                        break;
+                }
 
                 int pageSize = 10;
 
@@ -95,12 +112,12 @@ namespace QuizMakerDb.Pages.Teachers
                         Teacher = m.FirstName + " " + m.LastName,
                         SexDescription = ((Sex)m.Sex).ToString(),
                         Email = m.Email,
+                        Active = m.Active,
                     }).AsNoTracking(),
                     pageIndex ?? 1,
                     pageSize
                 );
             }
-
         }
     }
 }

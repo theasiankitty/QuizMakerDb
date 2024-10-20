@@ -25,6 +25,8 @@ namespace QuizMakerDb.Data.Models
 
         public byte Takes { get; set; }
 
+        public bool ShowResults { get; set; }
+
         public int TeacherId { get; set; }
 
         public bool Active { get; set; }

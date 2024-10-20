@@ -111,8 +111,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -140,8 +139,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -169,8 +167,7 @@
 										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
+										   asp-route-searchCode="@Model.SearchCode">
 											<div class="container-fluid">
 												<div class="row">
 													<div class="col-10">
@@ -178,35 +175,6 @@
 													</div>
 													<div class="col-2 text-end p-0">
 														@if (Model.SortColumn == "code")
-														{
-															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
-															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
-														}
-														else
-														{
-															<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
-														}
-													</div>
-												</div>
-											</div>
-										</a>
-									</th>
-									<th class="d-none d-md-table-cell bg-body-secondary bg-gradient" style="min-width: 150px; width: 155px;">
-										<a class="text-decoration-none text-dark"
-										   asp-page="./Index"
-										   asp-route-sortColumn="semester"
-										   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
-										   asp-route-courseYearId="@Model.CourseYearVM.Id"
-										   asp-route-searchSubject="@Model.SearchSubject"
-										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester">
-											<div class="container-fluid">
-												<div class="row">
-													<div class="col-10">
-														@Html.DisplayNameFor(model => model.CourseYearSubjects[0].Semester)
-													</div>
-													<div class="col-2 text-end p-0">
-														@if (Model.SortColumn == "semester")
 														{
 															<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
 															<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
@@ -239,9 +207,6 @@
 										<td class="d-none d-lg-table-cell">
 											@Html.DisplayFor(modelItem => item.Code)
 										</td>
-										<td class="d-none d-md-table-cell">
-											@Html.DisplayFor(modelItem => item.Semester)
-										</td>
 										<td class="text-center">
 											@if (isAdmin)
 											{
@@ -271,7 +236,6 @@
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-left"></i>
 										</a>
@@ -283,7 +247,6 @@
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex <= 1 ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-left"></i>
 										</a>
@@ -297,7 +260,6 @@
 											   asp-route-courseYearId="@Model.CourseYearVM.Id"
 											   asp-route-searchSubject="@Model.SearchSubject"
 											   asp-route-searchCode="@Model.SearchCode"
-											   asp-route-searchSemester="@Model.SearchSemester"
 											   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == i ? "disabled" : "")">
 												@i
 											</a>
@@ -310,7 +272,6 @@
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex >= Model.CourseYearSubjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-right"></i>
 										</a>
@@ -322,7 +283,6 @@
 										   asp-route-courseYearId="@Model.CourseYearVM.Id"
 										   asp-route-searchSubject="@Model.SearchSubject"
 										   asp-route-searchCode="@Model.SearchCode"
-										   asp-route-searchSemester="@Model.SearchSemester"
 										   class="btn btn-sm btn-secondary @(Model.CourseYearSubjects.PageIndex == Model.CourseYearSubjects.TotalPages ? "disabled" : "")">
 											<i class="nav-icon bi bi-chevron-double-right"></i>
 										</a>
@@ -354,8 +314,8 @@
 	</div>
 </div>
 
-<div class="modal fade" id="addSubjectModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSubjectModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="addSubjectModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h1 class="modal-title fs-5" id="modalHeaderTitle">
@@ -368,24 +328,34 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-12">
-							<div class="input-group mb-3">
+							<div class="input-group input-group-lg mb-3">
 								<input class="form-control" id="searchSubjectInput" type="search" placeholder="Search Subject Code" aria-label="SearchSubject" aria-describedby="searchSubject">
-								<button class="btn btn-outline-secondary" type="button" id="searchSubjectButton">Search</button>
+								<button class="btn btn-outline-secondary" type="button" id="searchSubjectButton" onclick="updateAddButton()"></button>
 							</div>
 						</div>
 						<div class="col-12" id="searchLoading" style="display: none;">
 							<div class="d-flex align-items-center">
 								<strong role="status">Searching...</strong>
-								<div class="spinner-border ms-auto" aria-hidden="true"></div>
+								<div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
 							</div>
 						</div>
-						<div class="overflow-auto" id="resultContainer" style="max-height: 300px; display: none;">
+						<div class="overflow-auto" id="resultContainer" style="max-height: 500px; display: none;">
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer text-end" id="resultFooter" style="display: none;">
-				<button class="btn btn-primary" id="submitSubjectButton" type="button" onclick="submitSubjects();"></button>
+				<div class="container">
+					<div class="row">
+						<div class="col-6 text-start">
+							<button class="btn btn-dark" id="loadMoreBtn" type="button" onclick="getAllSubjects()">Load more</button>
+						</div>
+						<div class="col-6 text-end">
+							<button class="btn btn-success" id="selectAllBtn" type="button">Select All</button>
+							<button class="btn btn-primary" id="submitSubjectButton" type="button" onclick="submitSubjects();"></button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -415,11 +385,6 @@
 							<div class="col-12">
 								<input class="form-control" type="text" name="SearchCode" value="@Model.SearchCode" placeholder="Search Code" />
 							</div>
-							<div class="col-12">
-								<select class="form-select" name="SearchSemester" asp-items="@Html.GetEnumSelectList<Semester>()" value="@Model.SearchSemester">
-									<option selected disabled>Select Semester</option>
-								</select>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -431,12 +396,19 @@
 	</div>
 </div>
 
-
 @section Scripts {
 	<script>
+		var currentPage = 0;
+		var pageSize = 10;
+		var loadedRecords = 0;
+		var submitSubjectButton = $('#submitSubjectButton');
+		var searchSubjectInput = $('#searchSubjectInput');
+		var searchButton = $('#searchSubjectButton');
+		var selectAllbutton = $('#selectAllBtn');
+
 		$(document).ready(function () {
-			$('#searchSubjectButton').click(function () {
-				var subject = $('#searchSubjectInput').val();
+			searchButton.click(function () {
+				var subject = searchSubjectInput.val();
 				searchSubject(subject);
 
 				$('#resultContainer').slideUp();
@@ -444,25 +416,128 @@
 				$('#searchLoading').slideDown();
 			});
 
-			updateButton();
+			searchButton.text('Search All');
+
+			searchSubjectInput.on('input', function () {
+				var inputValue = $(this).val().trim();
+
+				if (inputValue !== '') {
+					searchButton.text('Search');
+				} else {
+					searchButton.text('Search All');
+				}
+			});
+
+			selectAllbutton.on('click', function () {
+				var allChecked = $('input[name="selectedSubjectIds"]:checked').length === $('input[name="selectedSubjectIds"]').length;
+
+				$('input[name="selectedSubjectIds"]').prop('checked', !allChecked);
+
+				$('.subject-card').each(function () {
+					var checkbox = $(this).find('input[name="selectedSubjectIds"]');
+					if (allChecked) {
+						$(this).removeClass('bg-primary text-light');
+					} else {
+						$(this).addClass('bg-primary text-light');
+					}
+				});
+
+				$(this).text(allChecked ? 'Select All' : 'Deselect All');
+				updateAddButton();
+			});
+
+			updateAddButton();
+			getAllSubjects();
 		});
 
-		function updateButton() {
+		function toggleCheckbox(card) {
+			var checkbox = $(card).find('input[type="checkbox"]');
+			var isChecked = checkbox.prop('checked');
+
+			checkbox.prop('checked', !isChecked);
+
+			if (!isChecked) {
+				$(card).addClass('bg-primary text-light');
+			} else {
+				$(card).removeClass('bg-primary text-light');
+			}
+
+			updateAddButton();
+		}
+
+		function updateAddButton() {
 			var checkedCount = $('input[name="selectedSubjectIds"]:checked').length;
-			var button = $('#submitSubjectButton');
+			var allCheckBox = $('input[name="selectedSubjectIds"]').length;
+
+			if (checkedCount === allCheckBox) {
+				selectAllbutton.text('Deselect All');
+			} else {
+				selectAllbutton.text('Select All');
+			}
 
 			if (checkedCount > 0) {
-				button.prop('disabled', false);
-				button.text('Add (' + checkedCount + ')');
+				submitSubjectButton.prop('disabled', false);
+				submitSubjectButton.text('Add (' + checkedCount + ')');
 			} else {
-				button.prop('disabled', true);
-				button.text('Add');
+				resetButton();
 			}
 		}
 
+		function resetButton() {
+			submitSubjectButton.prop('disabled', true);
+			submitSubjectButton.text('Add');
+		}
+
 		function searchSubject(subject) {
+			resetButton();
+
+			$('#resultContainer .card').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			$('#resultContainer .errorMessage').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			if (subject != '') {
+				$('#loadMoreBtn').hide();
+				getSearchSubject(subject);
+			} else {
+				currentPage = 0;
+				pageSize = 10;
+				loadedRecords = 0;
+				getAllSubjects();
+			}
+		}
+
+		function showErrorMessage(message) {
+			var errorMessage = '';
+
+			if (message === 'empty subject') {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>No subject found.</p>
+						<small>Please verify if the subject is already assigned for this course year.<br/>If it isn’t, <a href="/Subjects/Index">click here</a> to add it.</small>
+					</div>
+					`;
+			} else {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>Error Retrieving Data.</p>
+					</div>
+					`;
+			}
+
+			$('#resultContainer').append(errorMessage);
+		}
+
+		function getAllSubjects() {
+			selectAllbutton.text('Select All');
+			$('#loadMoreBtn').hide();
+
 			$.ajax({
 				type: 'GET',
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 				url: '/CourseYearSubjects/SearchSubject',
 =======
@@ -545,29 +620,111 @@
 					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
 >>>>>>> Stashed changes
+=======
+				url: '/SearchSubject/Subject?handler=AllSubjectByCourseYear',
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 				data: {
-					searchSubject: subject,
-					courseYearId: `${@Model.CourseYearVM.Id}`,
+					courseYearId: "@Model.CourseYearVM.Id",
+					currentPage: currentPage,
+					pageSize: pageSize,
 				},
 				success: function (data) {
 					$('#searchLoading').slideUp(400, function () {
 						if (data.message === 'OK' && data.subjects.length != 0) {
-											var table = '';
+							var cards = '';
 
 							$.each(data.subjects, function (index, item) {
-								table = `<table class="table table-light mb-0"><thead class="table-secondary sticky-top" style="border-top: 1px solid gray"><tr><th>Code</th><th style="min-width: 20px; width: 25px;"></th></tr></thead><tbody>`;
-
-								$.each(data.subjects, function (index, item) {
-									table += `<tr class="align-middle"><td>${item.code}</td><td><input class="form-check-input" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateButton()" /></td></tr>`;
-								});
-
-								table += `</tbody></table>`;
+								cards += `
+									<div class="card subject-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-11">
+													<h5 class="card-title"><strong>${item.code}</strong></h5>
+													<br />
+													<p class="card-text">${item.title}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+												</div>
+											</div>
+										</div>
+									</div>
+								`;
 							});
 
-							$('#resultContainer').html(table);
+							$('#resultContainer').append(cards);
+
+							$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+							loadedRecords += data.subjects.length;
+							currentPage++;
+
+							console.log('loaded records: ', loadedRecords, 'data count: ', data.count);
+
+							if (loadedRecords < data.count) {
+								$('#loadMoreBtn').show();
+							} else {
+								$('#loadMoreBtn').hide();
+							}
+
 							$('#resultFooter').slideDown();
 						} else {
-							$('#resultContainer').html('<p>No subjects found.</p><small>Please verify if the subject is already assigned for this course year.<br/>If it isn’t, <a href="/Subjects/Index">click here</a> to add it.</small>');
+							showErrorMessage('empty subject');
+						}
+						$('#resultContainer').slideDown(200);
+					});
+
+				},
+				error: function (xhr, status, error) {
+					$('#searchLoading').slideUp(function () {
+						showErrorMessage('error retrieving');
+
+						$('#resultContainer').slideDown(200);
+					});
+					console.error("Error: " + error);
+				}
+			});
+		}
+
+		function getSearchSubject(subject) {
+			$.ajax({
+				type: 'GET',
+				url: '/SearchSubject/Subject?handler=SearchSubject',
+				data: {
+					searchSubject: subject,
+					courseYearId: "@Model.CourseYearVM.Id"
+				},
+				success: function (data) {
+					$('#searchLoading').slideUp(400, function () {
+						if (data.message === 'OK' && data.subjects.length != 0) {
+							var cards = '';
+
+							$.each(data.subjects, function (index, item) {
+								cards += `
+									<div class="card subject-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-11">
+													<h5 class="card-title"><strong>${item.code}</strong></h5>
+													<br />
+													<p class="card-text">${item.title}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedSubjectIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+												</div>
+											</div>
+										</div>
+									</div>
+								`;
+							});
+
+							$('#resultContainer').append(cards);
+
+							$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+							$('#resultFooter').slideDown();
+						} else {
+							showErrorMessage('empty subejct');
 						}
 
 						$('#resultContainer').slideDown(200);
@@ -576,7 +733,8 @@
 				},
 				error: function (xhr, status, error) {
 					$('#searchLoading').slideUp(function () {
-						$('#resultContainer').html('<p>Error retrieving data.</p>');
+						showErrorMessage('error retrieving');
+
 						$('#resultContainer').slideDown(200);
 					});
 					console.error("Error: " + error);
@@ -588,12 +746,13 @@
 			var sectionSubject = [];
 
 			$("[name=selectedSubjectIds]:checked").each(function (i, elem) {
-				console.log(elem.value);
 				sectionSubject.push({
 					'subjectId': elem.value,
-					'courseYearId': `${@Model.CourseYearVM.Id}`
+					'courseYearId': "@Model.CourseYearVM.Id"
 				});
 			});
+
+			console.log(JSON.stringify(sectionSubject));
 
 			$.ajax({
 				type: 'POST',
@@ -605,7 +764,7 @@
 				},
 				data: JSON.stringify(sectionSubject),
 				success: function (data) {
-					var newUrl = `${window.location.pathname}?courseYearId=${@Model.CourseYearVM.Id}`;
+					var newUrl = `${window.location.pathname}?courseYearId=${"@Model.CourseYearVM.Id"}`;
 					window.location.href = newUrl;
 				}
 			});
@@ -622,7 +781,7 @@
 				},
 				data: JSON.stringify(courseYearSubjectId),
 				success: function (response) {
-					var newUrl = `${window.location.pathname}?courseYearId=${@Model.CourseYearVM.Id}`;
+					var newUrl = `${window.location.pathname}?courseYearId=${"@Model.CourseYearVM.Id"}`;
 					window.location.href = newUrl;
 				}
 			});

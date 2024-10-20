@@ -26,12 +26,16 @@ namespace QuizMakerDb.Pages.CourseYears
 		{
 <<<<<<< Updated upstream
 
+<<<<<<< HEAD
 			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
 =======
 			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
 >>>>>>> Stashed changes
 
 			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
+=======
+			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
+>>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 
 			return Page();
 		}
