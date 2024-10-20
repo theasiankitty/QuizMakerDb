@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
@@ -23,7 +24,9 @@ namespace QuizMakerDb.Pages.Students
 
 		public IActionResult OnGet()
         {
-            return Page();
+			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
+
+			return Page();
         }
 
         [BindProperty]
@@ -72,6 +75,11 @@ namespace QuizMakerDb.Pages.Students
 				Email = StudentVM.Email,
 				UserName = StudentVM.UserName,
 				UserId = userId,
+<<<<<<< Updated upstream
+=======
+				isIrregular = StudentVM.isIrregular,
+				CurrentSectionId = StudentVM.CurrentSectionId,
+>>>>>>> Stashed changes
 				Active = true,
 				CreatedBy = creator.Id,
 				CreatedDate = DateTime.Now,

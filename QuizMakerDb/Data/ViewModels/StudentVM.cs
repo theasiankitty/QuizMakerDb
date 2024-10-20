@@ -34,6 +34,13 @@ namespace QuizMakerDb.Data.ViewModels
 
 		public Guid UserId { get; set; }
 
+<<<<<<< Updated upstream
+=======
+        public bool isIrregular { get; set; }
+
+		public int? CurrentSectionId { get; set; }
+
+>>>>>>> Stashed changes
 		public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }

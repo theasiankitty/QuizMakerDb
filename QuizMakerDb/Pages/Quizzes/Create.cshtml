@@ -1,0 +1,282 @@
+﻿@page
+@model QuizMakerDb.Pages.Quizzes.CreateModel
+
+@{
+	ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item fs-3"><a asp-page="Index">Quizzes</a></li>
+            <li class="breadcrumb-item fs-3 active" aria-current="page">Create</li>
+        </ol>
+    </nav>
+    <form class="row justify-content-center mt-3" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="QuizVM.Minutes" />
+        <input type="hidden" asp-for="QuizVM.Takes" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-7 col-xxl-6">
+            <div id="multiStepCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="card card-primary mb-3">
+                            <div class="card-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            <h1>Title</h1>
+                                            <div class="p-2">
+                                                <p>Create a clear and engaging title that reflects the theme and purpose of your quiz.</p>
+                                            </div>
+                                            <div class="form-group input-group-lg">
+                                                <input asp-for="QuizVM.Title" class="form-control" placeholder="Title" maxlength="100" />
+                                                <span for="QuizVM_Title" class="text-danger field-validation-error" style="display: none;">Title is required.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-success next-btn">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="card card-primary mb-4">
+                            <div class="card-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            <h1>Introduction</h1>
+                                            <div class="p-2">
+                                                <p>Write a brief introduction that outlines the purpose and goals of the quiz. Clearly explain what participants can expect, including any topics covered and the quiz format.</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea asp-for="QuizVM.Introduction" class="form-control" placeholder="Introduction" maxlength="300" style="height: 150px; resize: none;"></textarea>
+                                                <span for="QuizVM_Introduction" class="text-danger field-validation-error" style="display: none;">Introduction is required.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+                                            <button type="button" class="btn btn-success next-btn">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="card card-primary mb-4">
+                            <div class="card-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3">
+                                            <h1>Conclusion Description</h1>
+                                            <div class="p-2">
+                                                <p>This conclusion description is displayed after the quiz is submitted. It should thank participants for completing the quiz and inform them that their responses have been recorded.</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea asp-for="QuizVM.ConclusionDescription" class="form-control" placeholder="Conclusion Description" maxlength="300" style="height: 150px; resize: none;"></textarea>
+                                                <span for="QuizVM_ConclusionDescription" class="text-danger field-validation-error" style="display: none;">Conclusion Description is required.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+                                            <button type="button" class="btn btn-success next-btn">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="card card-primary mb-4">
+                            <div class="card-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-3 mb-3">
+                                            <h1>Settings</h1>
+                                            <div class="border rounded mt-4 p-3">
+                                                <h4 class="mb-3">Questions Order</h4>
+                                                <p>Randomize the order of the questions during the quiz to enhance engagement and prevent memorization, ensuring a unique experience for each participant.</p>
+                                                <div class="form-group">
+                                                    <input class="form-check-input" type="checkbox" asp-for="QuizVM.isQuestionRandomized" />
+                                                    <label class="form-check-label ms-2 fw-bold" for="QuizVM_isQuestionRandomized">
+                                                        Randomized Questions
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="border rounded mt-4 p-3">
+                                                <h4 class="mb-3">Answer Option</h4>
+                                                <p>Check this option to permit participants to leave their answers blank during the quiz. This setting enables flexibility for those who may not know the answers to all questions, allowing them to skip rather than guess.</p>
+                                                <div class="form-group">
+                                                    <input class="form-check-input" type="checkbox" asp-for="QuizVM.AllowEmptyAnswers" />
+                                                    <label class="form-check-label ms-2 fw-bold" for="QuizVM_AllowEmptyAnswers">
+                                                        Allow Empty Answers
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="border rounded mt-4 p-3">
+                                                <h4 class="mb-3">Timer</h4>
+                                                <p>The timer indicates the remaining time for participants to complete the quiz. Clearly state how many minutes participants can take the quiz, whether it's unlimited time or a specific minutes.</p>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="unlimitedTimeRadio" type="radio" name="quizTime" />
+                                                    <label class="form-check-label ms-2 fw-bold" for="unlimitedTimeRadio">
+                                                        Unlimited
+                                                    </label>
+                                                </div>
+                                                <div class="form-check align-items-center d-flex justify-content-start gap-3">
+                                                    <input class="form-check-input" id="limitedTimeRadio" type="radio" name="quizTime" />
+                                                    <input class="form-control" id="limitedTimeInput" type="number" for="limitedTimeRadio" min="0" max="300" step="5" style="max-width: 100px;" />
+                                                    <label class="form-check-label fw-bold" for="limitedTimeRadio">
+                                                        minutes
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="border rounded mt-4 p-3">
+                                                <h4 class="mb-3">Takes</h4>
+                                                <p>This section outlines the number of attempts allowed for each quiz. Clearly state how many times participants can take the quiz, whether it's unlimited attempts or a specific number.</p>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="unlimitedTakeRadio" type="radio" name="quizTake" />
+                                                    <label class="form-check-label ms-2 fw-bold" for="unlimitedTakeRadio">
+                                                        Unlimited
+                                                    </label>
+                                                </div>
+                                                <div class="form-check align-items-center d-flex justify-content-start gap-3">
+                                                    <input class="form-check-input" id="limitedTakeRadio" type="radio" name="quizTake" />
+                                                    <input class="form-control" id="limitedTakeInput" type="number" for="limitedTakeRadio" min="0" max="5" style="max-width: 100px;" />
+                                                    <label class="form-check-label fw-bold" for="limitedTakeRadio">
+                                                        times
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="border rounded mt-4 p-3">
+                                                <h4 class="mb-3">Results</h4>
+                                                <p>This feature displays the participants scores after completing the quiz.</p>
+                                                <div class="form-group">
+                                                    <input class="form-check-input" type="checkbox" asp-for="QuizVM.ShowResults" checked />
+                                                    <label class="form-check-label ms-2 fw-bold" for="QuizVM_isQuestionRandomized">
+                                                        Check to show the participant's quiz result
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+                                            <button type="submit" id="submit-btn" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+    <script>
+        $(document).ready(function () {
+            $('.field-validation-error').hide();
+
+            $('.next-btn').click(function () {
+                const currentItem = $(this).closest('.carousel-item');
+                const inputs = currentItem.find('input, textarea');
+
+                let allFilled = true;
+
+                inputs.each(function () {
+                    const $input = $(this);
+                    const $validationMessage = $input.next('.field-validation-error');
+
+                    if ($input.val().trim() === '') {
+                        $input.addClass('is-invalid');
+                        $validationMessage.show();
+                        allFilled = false;
+                    } else {
+                        $input.removeClass('is-invalid');
+                        $validationMessage.hide();
+                    }
+                });
+
+                if (allFilled) {
+                    $('#multiStepCarousel').carousel('next');
+                }
+            });
+
+            $('input').on('input', function () {
+                const $input = $(this);
+                const $validationMessage = $input.next('.field-validation-error');
+
+                if ($input.val().trim() !== '') {
+                    $input.removeClass('is-invalid');
+                    $validationMessage.hide();
+                } else {
+                    $input.addClass('is-invalid');
+                    $validationMessage.show();
+                }
+            });
+
+            $('.prev-btn').click(function () {
+                $('#multiStepCarousel').carousel('prev');
+            });
+
+            $('#unlimitedTimeRadio').change(function () {
+                $('#limitedTimeInput').val(0);
+                $('#limitedTimeInput').prop('readonly', true);
+            });
+
+            $('#limitedTimeRadio').change(function () {
+                $('#limitedTimeInput').val(30);
+                $('#limitedTimeInput').prop('readonly', false);
+            });
+
+            $('#limitedTimeInput').on('focus click', function () {
+                if (!$('#limitedTimeRadio').is(':checked')) {
+                    $('#limitedTimeRadio').prop('checked', true).change();
+                }
+
+                if ($('#limitedTimeInput').val() == 0) {
+                    $('#unlimitedTimeRadio').prop('checked', true).change();
+                }
+            });
+
+            $('#unlimitedTakeRadio').change(function () {
+                $('#limitedTakeInput').val(0);
+                $('#limitedTakeInput').prop('readonly', true);
+            });
+
+            $('#limitedTakeRadio').change(function () {
+                $('#limitedTakeInput').val(1);
+                $('#limitedTakeInput').prop('readonly', false);
+            });
+
+            $('#limitedTakeInput').on('focus click', function () {
+                if (!$('#limitedTakeRadio').is(':checked')) {
+                    $('#limitedTakeRadio').prop('checked', true).change();
+                }
+
+                if ($('#limitedTakeInput').val() == 0) {
+                    $('#unlimitedTakeRadio').prop('checked', true).change();
+                }
+            });
+
+            $('#unlimitedTimeRadio').prop('checked', true).change();
+            $('#unlimitedTakeRadio').prop('checked', true).change();
+
+            $('#submit-btn').click(function () {
+                $('#QuizVM_Minutes').val($('#limitedTimeInput').val());
+                $('#QuizVM_Takes').val($('#limitedTakeInput').val());
+                $('form').submit();
+            });
+        });
+    </script>
+}

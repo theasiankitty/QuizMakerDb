@@ -1,9 +1,13 @@
 ﻿@page
 @model QuizMakerDb.Pages.Students.CreateModel
-
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @{
 	ViewData["Title"] = "Create";
+
+	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
 }
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <div class="container-fluid">
 	<nav aria-label="breadcrumb">
@@ -15,6 +19,11 @@
 	<form class="row justify-content-center mt-3" method="post">
 		@Html.AntiForgeryToken()
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<<<<<<< Updated upstream
+=======
+		<input asp-for="StudentVM.UserName" type="hidden" />
+		<input asp-for="StudentVM.CurrentSectionId" type="hidden" />
+>>>>>>> Stashed changes
 		<input asp-for="StudentVM.Active" type="hidden" />
 		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
 			<div class="card card-primary card-outline mb-4">
@@ -66,6 +75,36 @@
 									<span asp-validation-for="StudentVM.UserName" class="text-danger"></span>
 								</div>
 							</div>
+<<<<<<< Updated upstream
+=======
+							<div class="col-md-12 mb-4">
+								<div class="form-check">
+									<input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox" onchange="toggleCourseYearSelection()">
+									<label asp-for="StudentVM.isIrregular" class="form-check-label">
+										Check if the Student is irregular.
+									</label>
+								</div>
+							</div>
+							<div class="col-md-12" id="showCourseYearSelection" style="display: none;">
+								<div class="row p-2 border rounded">
+									<div class="col-12 mt-2 mb-4">
+										<span class="fs-5">Select the irregular student current information.</span>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-label">School Year</label>
+											<select asp-items="ViewBag.SchoolYears" class="form-select" id="schoolYearId" onchange="getSections()"></select>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-label">Section</label>
+											<select class="form-select" id="sectionSelect" onchange="changeSection()"></select>
+										</div>
+									</div>
+								</div>
+							</div>
+>>>>>>> Stashed changes
 						</div>
 					</div>
 				</div>
@@ -91,6 +130,67 @@
 		function onChangeSex() {
 			var value = event.srcElement.value;
 		}
+<<<<<<< Updated upstream
+=======
+
+		function toggleCourseYearSelection() {
+			var isChecked = $('#StudentVM_isIrregular').is(':checked');
+    
+			if (isChecked) {
+				$('#showCourseYearSelection').slideDown(500);
+				getSections();
+			} else {
+				$('#showCourseYearSelection').slideUp(500);
+				$('#StudentVM_CurrentSectionId').val(null);
+			}
+		}
+
+		function changeSection() {
+			$('#StudentVM_CurrentSectionId').val($('#sectionSelect').val());
+
+			console.log($('#StudentVM_CurrentSectionId').val());
+		}
+
+		function displaySections(sections) {
+			var sectionSelect = $('#sectionSelect');
+
+			sectionSelect.empty();
+
+			$.each(sections, function (index, section) {
+				var option = `
+					<option value="${section.id}">${section.section}</option>
+				`;
+
+				sectionSelect.append(option);
+			});
+
+			sectionSelect.change();
+		}
+
+		function getSections() {
+			var schoolYearId = parseInt($('#schoolYearId').val());
+
+			$.ajax({
+				type: 'GET',
+				url: '/Students/Irregular?handler=SearchSections&schoolYearId=' + schoolYearId,
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				success: function (data) {
+					if (data.message === "OK") {
+						displaySections(data.sections);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("Error: " + error);
+				}
+			});
+		}
+
+		initializeUserName();
+>>>>>>> Stashed changes
 	</script>
 }
 

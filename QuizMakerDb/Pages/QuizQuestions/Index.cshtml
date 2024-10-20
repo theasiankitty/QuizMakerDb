@@ -1,0 +1,3506 @@
+﻿@page
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model QuizMakerDb.Pages.QuizQuestions.IndexModel
+@{
+	ViewData["Title"] = "Questions";
+
+	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
+<div class="container-fluid">
+	<div class="row d-flex flex-column justify-content-center align-items-center mt-4">
+		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xl-9 col-xxl-8 mb-4">
+			<div class="card">
+				<div class="card-body p-5">
+					<div class="row d-flex align-items-center justify-content-center">
+						<div class="col-12 text-center">
+							<h1>
+								@Html.DisplayFor(modelItem => Model.QuizVM.Title)
+							</h1>
+						</div>
+						<div class="col-md-8 text-center mt-4">
+							<p>
+								@Html.DisplayFor(modelItem => Model.QuizVM.Introduction)
+							</p>
+						</div>
+						<div class="col-md-8 text-center mt-2 mb-2">
+							<h4>Total Points: <span id="totalPoints"></span></h4>
+						</div>
+						<div class="col-md-12 text-center mb-2">
+							<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#questionTypeModal" type="button">Add Question</button>
+						</div>
+						<div class="col-md-12 text-center">
+							<a href="/QuizSubjects?quizId=@Model.QuizVM.Id" class="btn btn-success">
+								Publish Quiz
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xl-9 col-xxl-8 mb-4">
+			<div class="row d-flex align-items-center justify-content-center gap-3" id="questionContainer">
+			</div>
+		</div>
+	
+	</div>
+</div>
+
+<!-- Question Type Modal -->
+<div class="modal fade" id="questionTypeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="questionTypeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="questionTypeModalLabel">Choose Question Type</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-4 grid-item">
+						<button class="btn btn-primary btn-custom d-flex flex-column align-items-center justify-content-center" id="multipleChoiceBtn">
+							<i class="bi bi-list-nested fs-3"></i>
+							<span>Multiple Choice</span>
+						</button>
+					</div>
+					<div class="col-4 grid-item">
+						<button class="btn btn-danger btn-custom d-flex flex-column align-items-center justify-content-center" id="trueOrFalseBtn">
+							<i class="bi bi-check-circle fs-3"></i>
+							<span>True/False</span>
+						</button>
+					</div>
+					<div class="col-4 grid-item">
+						<button class="btn btn-success btn-custom d-flex flex-column align-items-center justify-content-center" id="matchingOrOrderingBtn">
+							<i class="bi bi-arrow-down-up fs-3"></i>
+							<span>Matching/Ordering</span>
+						</button>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center justify-content-center mt-3">
+					<div class="col-4 grid-item">
+						<button class="btn btn-info btn-custom d-flex flex-column align-items-center justify-content-center text-light" id="numericBtn">
+							<i class="bi bi-calculator fs-3"></i>
+							<span>Numeric</span>
+						</button>
+					</div>
+					<div class="col-4 grid-item">
+						<button class="btn btn-warning btn-custom d-flex flex-column align-items-center justify-content-center text-light" id="fillInTheBlankBtn">
+							<i class="bi bi-pencil fs-3"></i>
+							<span>Fill In The Blank</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Multiple Choice Modal -->
+<div class="modal fade" id="multipleChoiceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="multipleChoiceModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="mc_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="multipleChoiceModalLabel">Multiple Choice</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="mc_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="mc_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="mc_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="mc_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-first order-md-last mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								onclick="uploadImage('#mc_question_image_container', '#mc_input_image_file')">
+								<div id="mc_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="mc_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="mc_choices_container">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="mc_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editMultipleChoiceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editMultipleChoiceModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="e_mc_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editMultipleChoiceModalLabel">Multiple Choice (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_mc_input_points" placeholder="Points" min="1" max="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_mc_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="e_mc_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_mc_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-first order-md-last mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								onclick="uploadImage('#e_mc_question_image_container', '#e_mc_input_image_file')">
+								<div id="e_mc_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_mc_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="e_mc_choices_container">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_mc_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_mc_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<!-- True Or False Modal -->
+<div class="modal fade" id="trueOrFalseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="trueOrFalseModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="tf_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="trueOrFalseModalLabel">True Or False</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="tf_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="tf_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="tf_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="tf_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#tf_question_image_container', '#tf_input_image_file')">
+								<div id="tf_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="tf_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="tf_choices_container">
+						<div class="col-6">
+							<div class="p-3 border rounded" onclick="toggleRadio('tf_radio_true')" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_radio" id="tf_radio_true" style="transform: scale(1.2);">
+									<label class="form-check-label" for="tf_radio_true" style="cursor: pointer;">
+										True
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="p-3 border rounded" onclick="toggleRadio('tf_radio_false')" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_radio" id="tf_radio_false" style="transform: scale(1.2);">
+									<label class="form-check-label" for="tf_radio_false" style="cursor: pointer;">
+										False
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="tf_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editTrueOrFalseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editTrueOrFalseModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="e_tf_form" class="modal-content">
+			<input type="hidden" id="e_tf_id" />
+			<input type="hidden" id="e_tf_order" />
+			<input type="hidden" id="e_tf_a_id" />
+			<input type="hidden" id="e_tf_a_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editTrueOrFalseModalLabel">True Or False (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_tf_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_tf_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="e_tf_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_tf_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_tf_question_image_container', '#e_tf_input_image_file')">
+								<div id="e_tf_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_tf_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="e_tf_choices_container">
+						<div class="col-6">
+							<div class="p-3 border rounded" onclick="toggleRadio('e_tf_radio_true')" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_radio" id="e_tf_radio_true" style="transform: scale(1.2);">
+									<label class="form-check-label" for="e_tf_radio_true" style="cursor: pointer;">
+										True
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="p-3 border rounded" onclick="toggleRadio('e_tf_radio_false')" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_radio" id="e_tf_radio_false" style="transform: scale(1.2);">
+									<label class="form-check-label" for="e_tf_radio_false" style="cursor: pointer;">
+										False
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_tf_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_tf_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Matching Or Ordering Modal -->
+<div class="modal fade" id="matchingOrOrderingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="matchingOrOrderingModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="mo_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="matchingOrOrderingModalLabel">Matching Or Ordering</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="mo_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="mo_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Instruction" id="mo_instruction" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="mo_instruction">Instruction</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#mo_instruction_image_container', '#mo_input_image_file')">
+								<div id="mo_instruction_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="mo_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-3 mb-4">
+							<select class="form-select form-select-lg" id="mo_list_type" aria-label="List Type" onchange="changeListType()" style="height: 58px;">
+								<option value="upper-alpha">Matching</option>
+								<option value="decimal">Ordering</option>
+							</select>
+						</div>
+						<div class="col-sm-12 col-md-9 mb-4">
+							<div class="input-group input-group-lg">
+								<div class="form-floating">
+									<input type="search" class="form-control" id="mo_item_input" placeholder="Item Name" aria-describedby="addItem" autocomplete="off" maxlength="100" oninput="checkItemInput()">
+									<label for="mo_item_input">Item Name</label>
+								</div>
+								<button class="btn btn-outline-secondary" type="button" id="addItemButton" onclick="addItem()">Add Item</button>
+							</div>
+						</div>
+						<div class="col-12" id="itemListContainer">
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyItemList">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3" id="mo_prompt_container"></div>
+					<div class="row mt-3" id="mo_add_prompt_button_container"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="mo_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editMatchingOrOrderingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editMatchingOrOrderingModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="mo_form" class="modal-content">
+			<input type="hidden" id="e_mo_id" />
+			<input type="hidden" id="e_mo_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editMatchingOrOrderingModalLabel">Matching Or Ordering (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_mo_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_mo_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Instruction" id="e_mo_instruction" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_mo_instruction">Instruction</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_mo_instruction_image_container', '#e_mo_input_image_file')">
+								<div id="e_mo_instruction_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_mo_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-3 mb-4">
+							<select class="form-select form-select-lg" id="e_mo_list_type" aria-label="List Type" onchange="e_changeListType()" style="height: 58px;">
+								<option value="upper-alpha">Matching</option>
+								<option value="decimal">Ordering</option>
+							</select>
+						</div>
+						<div class="col-sm-12 col-md-9 mb-4">
+							<div class="input-group input-group-lg">
+								<div class="form-floating">
+									<input type="search" class="form-control" id="e_mo_item_input" placeholder="Item Name" aria-describedby="addItem" autocomplete="off" maxlength="100" oninput="e_checkItemInput()">
+									<label for="e_mo_item_input">Item Name</label>
+								</div>
+								<button class="btn btn-outline-secondary" type="button" id="e_addItemButton" onclick="e_addItem()">Add Item</button>
+							</div>
+						</div>
+						<div class="col-12" id="e_itemListContainer">
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyItemList">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3" id="e_mo_prompt_container"></div>
+					<div class="row mt-3" id="e_mo_add_prompt_button_container"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_mo_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_mo_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Numeric Modal -->
+<div class="modal fade" id="numericModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="numericModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="num_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="numericModalLabel">Numeric</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="num_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="num_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="num_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="num_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#num_question_image_container', '#num_input_image_file')">
+								<div id="num_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="num_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="e_num_answer_container">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="num_input_answer" placeholder="Numeric Only" maxlength="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="num_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="num_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editNumericModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editNumericModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="num_form" class="modal-content">
+			<input type="hidden" id="e_num_id" />
+			<input type="hidden" id="e_num_order" />
+			<input type="hidden" id="e_num_a_id" />
+			<input type="hidden" id="e_num_a_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editNumericModalLabel">Numeric (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_num_input_points" placeholder="Points" min="1" max="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_num_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="e_num_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_num_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_num_question_image_container', '#e_num_input_image_file')">
+								<div id="e_num_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_num_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="e_num_answer_container">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="e_num_input_answer" placeholder="Numeric Only" maxlength="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_num_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_num_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_num_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Fill In The Blank Modal -->
+<div class="modal fade" id="fillInTheBlankModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="fillInTheBlankModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="fill_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="fillInTheBlankModalLabel">Fill In The Blank</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="fill_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="fill_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="fill_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="fill_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#fill_question_image_container', '#fill_input_image_file')">
+								<div id="fill_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="fill_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="fill_input_answer" placeholder="Answer" maxlength="100" autocomplete="off">
+								<label for="fill_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="fill_answer_container"></div>
+					<div class="row" id="add_alternative_answer_container">
+						<div class="col-12 mt-2 mb-2 text-end">
+							<button class="btn btn-outline-secondary" type="button" onclick="addAlternativeAnswer()">Add Alternative Answer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="fill_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editFillInTheBlankModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editFillInTheBlankModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="fill_form" class="modal-content">
+			<input type="hidden" id="e_fill_id" />
+			<input type="hidden" id="e_fill_order" />
+			<input type="hidden" id="e_fill_a_id" />
+			<input type="hidden" id="e_fill_a_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editFillInTheBlankModalLabel">Fill In The Blank (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_fill_input_points" placeholder="Points" min="1" max="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_fill_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="e_fill_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_fill_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_fill_question_image_container', '#e_fill_input_image_file')">
+								<div id="e_fill_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_fill_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="e_fill_input_answer" placeholder="Answer" maxlength="100" autocomplete="off">
+								<label for="e_fill_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="e_fill_answer_container"></div>
+					<div class="row" id="add_alternative_answer_container">
+						<div class="col-12 mt-2 mb-2 text-end">
+							<button class="btn btn-outline-secondary" type="button" onclick="e_addAlternativeAnswer()">Add Alternative Answer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_fill_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_fill_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Image View Modal -->
+<div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="viewImageModalLabel">Uploaded Image</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<img id="modalImage" src="" alt="Uploaded Image" class="img-fluid" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Alert Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-light">
+				<h5 class="modal-title" id="alertModalLabel">Alert</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="alertText"></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Success Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="successToast" class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i class="bi bi-check2-circle me-2"></i>
+			<strong class="me-auto">Success</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body text-white">
+			Question is Successfully Added!
+		</div>
+	</div>
+</div>
+
+<!-- Updated Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="updatedToast" class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i class="bi bi-check2-circle me-2"></i>
+			<strong class="me-auto">Success</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body text-white">
+			Question is Successfully Updated!
+		</div>
+	</div>
+</div>
+
+<!-- Deleted Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="deletedToast" class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i class="bi bi-check2-circle me-2"></i>
+			<strong class="me-auto">Success</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body text-white">
+			Question is Successfully Deleted!
+		</div>
+	</div>
+</div>
+
+<!-- Danger Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="dangerToast" class="toast bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i class="bi bi-check2-circle me-2"></i>
+			<strong class="me-auto">Alert</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body text-white">
+			Can't add question this time, try again later.
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		var tempQuestionData;
+		var questionType;
+		var totalPoints = 0;
+
+		$(document).ready(function () {
+			$('#e_fill_submit_button').on('click', function () {
+				checkEditedFillInTheBlank();
+			});
+
+			$('#editFillInTheBlankModal').on('hidden.bs.modal', function () {
+				editFillInTheBlankHidden();
+			});
+
+			$('#fill_submit_button').on('click', function () {
+				checkFillInTheBlank();
+			});
+
+			$('#fillInTheBlankModal').on('hidden.bs.modal', function () {
+				fillInTheBlankHidden();
+			});
+
+			$('#fillInTheBlankModal').on('shown.bs.modal', function () {
+				fillInTheBlankShown();
+			});
+
+			$('#fillInTheBlankBtn').on('click', function () {
+				$('#questionTypeModal').modal('hide');
+				$('#fillInTheBlankModal').modal('show');
+			});
+
+			$('#e_num_submit_button').on('click', function () {
+				checkEditedNumeric();
+			});
+
+			$('#editNumericModal').on('hidden.bs.modal', function () {
+				editNumericHidden();
+			});
+
+			$('#num_submit_button').on('click', function () {
+				checkNumeric();
+			});
+
+			$('#numericModal').on('hidden.bs.modal', function () {
+				numericHidden();
+			});
+
+			$('#numericModal').on('shown.bs.modal', function () {
+				numericShown();
+			});
+
+			$('#numericBtn').on('click', function () {
+				$('#questionTypeModal').modal('hide');
+				$('#numericModal').modal('show');
+			});
+
+			$('#e_mo_submit_button').on('click', function () {
+				checkEditedMatchingOrOrdering();
+			});
+
+			$('#editMatchingOrOrderingModal').on('hidden.bs.modal', function () {
+				editMatchingOrOrderingHidden();
+			});
+
+			$('#mo_submit_button').on('click', function () {
+				checkMatchingOrOrdering();
+			});
+
+			$('#matchingOrOrderingModal').on('hidden.bs.modal', function () {
+				matchingOrOrderingHidden();
+			});
+
+			$('#matchingOrOrderingModal').on('shown.bs.modal', function () {
+				matchingOrOrderingShown();
+			});
+
+			$('#matchingOrOrderingBtn').on('click', function () {
+				$('#questionTypeModal').modal('hide');
+				$('#matchingOrOrderingModal').modal('show');
+			});
+
+			$('#e_tf_submit_button').on('click', function () {
+				checkEditedTrueOrFalse();
+			});
+
+			$('#editTrueOrFalseModal').on('hidden.bs.modal', function () {
+				editTrueOrFalseHidden();
+			});
+
+			$('#tf_submit_button').on('click', function () {
+				checkTrueOrFalse();
+			});
+
+			$('#trueOrFalseModal').on('hidden.bs.modal', function () {
+				trueOrFalseHidden();
+			});
+
+			$('#trueOrFalseModal').on('shown.bs.modal', function () {
+				trueOrFalseShown();
+			});
+
+			$('#trueOrFalseBtn').on('click', function () {
+				$('#questionTypeModal').modal('hide');
+				$('#trueOrFalseModal').modal('show');
+			});
+
+			$('#e_mc_submit_button').on('click', function () {
+				checkEditedMultipleChoice();
+			});
+
+			$('#editMultipleChoiceModal').on('hidden.bs.modal', function () {
+				editMultipleChoiceHidden();
+			});
+
+			$('#mc_submit_button').on('click', function () {
+				checkMultipleChoice();
+			});
+
+			$('#multipleChoiceModal').on('hidden.bs.modal', function () {
+				multipleChoiceHidden();
+			});
+
+			$('#multipleChoiceModal').on('shown.bs.modal', function () {
+				multipleChoiceShown();
+			});
+
+			$('#multipleChoiceBtn').on('click', function () {
+				$('#questionTypeModal').modal('hide');
+				$('#multipleChoiceModal').modal('show');
+			});
+
+			loadQuestions();
+		});
+
+		function viewImage(imageSrc, event) {
+			event.preventDefault();
+			event.stopPropagation();
+			$('#modalImage').attr('src', imageSrc);
+			$('#viewImageModal').modal('show');
+		}
+
+		function removeImage(containerId, fileId, event) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(containerId).empty().append('<i class="bi bi-card-image fs-3 text-secondary"></i>');
+			$(fileId).val('');
+		}
+		
+		function showImage(containerId, fileId, base64) {
+			if (!base64.startsWith('data:image/')) {
+				console.error('Invalid Base64 image data.');
+				return;
+			}
+
+			const image = `<img src="${base64}" class="custom-uploaded-image" />`;
+			const buttonContainer = $('<div class="custom-button-container"></div>');
+
+			const viewButton = `<button class="custom-view-image" onclick="viewImage('${base64}', event)"><i class="bi bi-eye"></i></button>`;
+			const deleteButton = `<button class="custom-remove-image" onclick="removeImage('${containerId}', '${fileId}', event)"><i class="bi bi-trash"></i></button>`;
+
+			$(containerId).empty().append(image).append(buttonContainer.append(viewButton, deleteButton));
+		}
+
+		function uploadImage(containerId, fileId) {
+			$(fileId).click();
+
+			$(fileId).off('change').on('change', function (event) {
+				const file = event.target.files[0];
+				if (file) {
+					const reader = new FileReader();
+					reader.onload = function (e) {
+						const image = `<img src="${e.target.result}" class="custom-uploaded-image" />`;
+						const buttonContainer = $('<div class="custom-button-container"></div>');
+						const viewButton = `<button class="custom-view-image" onclick="viewImage('${e.target.result}', event)"><i class="bi bi-eye"></i></button>`;
+						const deleteButton = `<button class="custom-remove-image" onclick="removeImage('${containerId}', '${fileId}', event)"><i class="bi bi-trash"></i></button>`;
+
+						$(containerId).empty().append(image).append(buttonContainer.append(viewButton, deleteButton));
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+		}
+
+		function clearValidationMessages(question) {
+			$('.error-message').remove();
+
+			switch (question) {
+				case 0:
+					$('#mc_choices_container .choice-container input[type="text"]').removeClass('is-invalid');
+					$('#mc_input_points').removeClass('is-invalid');
+					$('#mc_question').removeClass('is-invalid');
+					$('#e_mc_choices_container .choice-container input[type="text"]').removeClass('is-invalid');
+					$('#e_mc_input_points').removeClass('is-invalid');
+					$('#e_mc_question').removeClass('is-invalid');
+					break;
+
+				case 1:
+					$('#tf_input_points').removeClass('is-invalid');
+					$('#tf_question').removeClass('is-invalid');
+					$('#e_tf_input_points').removeClass('is-invalid');
+					$('#e_tf_question').removeClass('is-invalid');
+					break;
+
+				case 2:
+					$('#mo_input_points').removeClass('is-invalid');
+					$('#mo_instruction').removeClass('is-invalid');
+					$('#e_mo_input_points').removeClass('is-invalid');
+					$('#e_mo_instruction').removeClass('is-invalid');
+					break;
+
+				case 3:
+					$('#num_input_points').removeClass('is-invalid');
+					$('#num_question').removeClass('is-invalid');
+					$('#num_input_answer').removeClass('is-invalid');
+					$('#e_num_input_points').removeClass('is-invalid');
+					$('#e_num_question').removeClass('is-invalid');
+					$('#e_num_input_answer').removeClass('is-invalid');
+					break;
+
+				case 4:
+					$('#fill_input_points').removeClass('is-invalid');
+					$('#fill_question').removeClass('is-invalid');
+					$('#fill_input_answer').removeClass('is-invalid');
+					$('#e_fill_input_points').removeClass('is-invalid');
+					$('#e_fill_question').removeClass('is-invalid');
+					$('#e_fill_input_answer').removeClass('is-invalid');
+					break;
+
+				default:
+					alert('Clear Validation: Unknown question type:', question);
+			}
+		}
+
+		function showError(inputId, message) {
+			$(inputId).addClass('is-invalid');
+			$(inputId).next('.error-message').remove();
+			$(inputId).after(`<span class="field-validation-error error-message text-danger">${message}</span>`);
+		}
+
+		function isValidNumber(value) {
+			return value > 0 && value <= 100;
+		}
+
+		function isValidQuestion(question) {
+			return question.trim() !== '';
+		}
+
+		function closeModal(questionType, modalType) {
+			if (modalType === 'create') {
+				switch (questionType) {
+					case 0:
+						$('#multipleChoiceModal').modal('hide');
+						break;
+
+					case 1:
+						$('#trueOrFalseModal').modal('hide');
+						break;
+
+					case 2:
+						$('#matchingOrOrderingModal').modal('hide');
+						break;
+
+					case 3:
+						$('#numericModal').modal('hide');
+						break;
+
+					case 4:
+						$('#fillInTheBlankModal').modal('hide');
+						break;
+
+					default:
+						alert('Close Modal: Unknown question type:', question);
+				}
+			} else {
+				switch (questionType) {
+					case 0:
+						$('#editMultipleChoiceModal').modal('hide');
+						break;
+
+					case 1:
+						$('#editTrueOrFalseModal').modal('hide');
+						break;
+
+					case 2:
+						$('#editMatchingOrOrderingModal').modal('hide');
+						break;
+
+					case 3:
+						$('#editNumericModal').modal('hide');
+						break;
+
+					case 4:
+						$('#editFillInTheBlankModal').modal('hide');
+						break;
+
+					default:
+						alert('Close Modal: Unknown question type:', question);
+				}
+			}
+		}
+
+		function removeQuestion(questionId, questionType) {
+			console.log(questionId, questionType);
+
+			$.ajax({
+				url: '/QuizQuestions/Update?handler=RemoveQuestion',
+				type: 'POST',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify({ 
+					questionId: questionId
+				}),
+				success: function(response) {
+					if (response === 'OK') {
+						closeModal(questionType, 'edit');
+
+						loadQuestions();
+
+						$('#deletedToast').toast({
+							autohide: true,
+							delay: 3000
+						}).toast('show');
+					}
+				},
+				error: function(xhr) {
+					console.error("Error updating order:", xhr.responseText);
+				}
+			});
+		}
+
+		function changeOrder(questionId, direction) {
+			event.stopPropagation();
+
+			$.ajax({
+				url: '/QuizQuestions/Update?handler=ChangeOrder',
+				type: 'POST',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify({ 
+					questionId: questionId, 
+					direction: direction 
+				}),
+				success: function(response) {
+					if (response === 'OK') {
+						loadQuestions();
+					}
+				},
+				error: function(xhr) {
+					console.error("Error updating order:", xhr.responseText);
+				}
+			});
+		}
+
+		function updateQuestion(data, questionType) {
+			$.ajax({
+				url: '/QuizQuestions/Update?handler=UpdateQuestion',
+				type: 'POST',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify(data),
+				success: function (response) {
+					if (response === 'OK') {
+						closeModal(questionType, 'edit');
+
+						loadQuestions();
+
+						$('#updatedToast').toast({
+							autohide: true,
+							delay: 3000
+						}).toast('show');
+					} else {
+						console.error("error");
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error submitting question:', textStatus, errorThrown);
+
+					$('#dangerToast').toast({
+						autohide: true,
+						delay: 3000
+					}).toast('show');
+				}
+			});
+		}
+
+		function submitQuestion(questionData, questionType) {
+			console.log("Data being sent:", questionData);
+
+			$.ajax({
+				type: 'POST',
+				url: '/QuizQuestions/Create',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify(questionData),
+				success: function (response) {
+					if (response === "OK") {
+						closeModal(questionType, 'create');
+
+						loadQuestions();
+
+						$('#successToast').toast({
+							autohide: true,
+							delay: 3000
+						}).toast('show');
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error submitting question:', textStatus, errorThrown);
+					console.log('Response:', jqXHR.responseText);
+
+					$('#dangerToast').toast({
+						autohide: true,
+						delay: 3000
+					}).toast('show');
+				}
+			});
+		}
+
+		function editQuestion(card) {
+			var question = $(card).data('question');
+			var questionType = question.questionType;
+
+			switch (questionType) {
+				case 0:
+					editMultipleChoice(question);
+					break;
+
+				case 1:
+					editTrueOrFalse(question);
+					break;
+
+				case 2:
+					editMatchingOrOrdering(question);
+					break;
+
+				case 3:
+					editNumeric(question);
+					break;
+
+				case 4:
+					editFillInTheBlank(question);
+					break;
+
+				default:
+					alert('Edit Question: Unknown question type:', question);
+			}
+		}
+
+		function displayQuestions(data) {
+			var questionContainer = $('#questionContainer');
+			questionContainer.empty();
+
+			if (data.length === 0) {
+				var emptyQuestions = `
+						<div class="col-12">
+							<div class="text-center text-secondary">
+								<i class="bi bi-question-circle" style="font-size: 5rem;"></i>
+								<h1>No questions available.</h1>
+							</div>
+						</div>
+					`;
+
+				questionContainer.append(emptyQuestions);
+				$('#publishButton').prop('disabled', true);
+			} else {
+				totalPoints = 0;
+
+				$.each(data, function (index, question) {
+
+					totalPoints += question.points;
+
+					var questionType = '';
+					var questionDescription = '';
+					var questionAnswers = '';
+
+					switch (question.questionType) {
+						case 0:
+							questionType = 'Multiple Choice';
+							questionDescription = `Question: ${question.description}`;
+							break;
+
+						case 1:
+							questionType = 'True Or False';
+							questionDescription = `Question: ${question.description}`;
+							break;
+
+						case 2:
+							questionType = 'Matching Or Ordering';
+							questionDescription = `Instruction: ${question.description}`;
+							break;
+
+						case 3:
+							questionType = 'Numeric';
+							questionDescription = `Question: ${question.description}`;
+							break;
+
+						case 4:
+							questionType = 'Fill In The Blank';
+							questionDescription = `Question: ${question.description}`;
+							break;
+
+						default:
+							alert('Description: Unknown question type:', question);
+					}
+
+					var questionCard = `
+							<div class="col-12">
+								<div class="card custom-card" data-question='${JSON.stringify(question)}' style="cursor: pointer;" onclick="editQuestion(this)">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-10 col-md-11">
+												<h4>${questionType}</h4>
+												<p>${questionDescription}</p>
+												<div class="answerContainer d-flex align-items-center"><span id="answerType"></span>${questionAnswers}</div>
+											</div>
+											<div class="col-2 col-md-1 text-end">
+												<div class="btn-group-vertical" role="group">
+													<button type="button" class="btn btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'up')">
+														<i class="bi bi-chevron-up"></i>
+													</button>
+													<button type="button" class="btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'down')">
+														<i class="bi bi-chevron-down"></i>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						`;
+
+					questionContainer.append(questionCard);
+
+					var answerContainer = questionContainer.find('.answerContainer').last();
+
+					if (question.questionType === 2) {
+						answerContainer.find('#answerType').text('Prompts:');
+					} else {
+						answerContainer.find('#answerType').text('Answers:');
+					}
+
+					$.each(question.answers, function (index, answer) {
+						if (answer.isCorrect) {
+							var answerMarkup = `<div class="d-flex"><div class="border pt-1 pb-1 ps-2 pe-2 rounded-5 m-1">${answer.answer}</div></div>`;
+							answerContainer.append(answerMarkup);
+						}
+					});
+				});
+
+				$('#publishButton').prop('disabled', false);
+			}
+
+			$('#totalPoints').text(totalPoints);
+		}
+
+		function loadQuestions() {
+			$.ajax({
+				type: 'GET',
+				url: '/QuizQuestions/LoadQuestions?handler=Questions',
+				data: {
+					quizId: parseInt("@Model.QuizVM.Id")
+				},
+				success: function (data) {
+					if (data.message === "OK") {
+						tempQuestionData = data.questions;
+						console.log(data.questions);
+						displayQuestions(data.questions);
+					} else {
+						console.error(data.message);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error submitting question:', textStatus, errorThrown);
+				}
+			});
+		}
+	</script>
+
+	<!-- Multiple Choice Script -->
+	<script>
+		var mc_container = $('#mc_choices_container');
+		var mc_minimum_choices = 4;
+		var mc_choices = 0;
+		var e_mc_choices = 0;
+		var multipleChoiceData = {
+			quizId: 0,
+			description: '',
+			order: '',
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		var e_multipleChoiceData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		var og_multipleChoiceData;
+
+		function gatherEditedMultipleChoiceData() {
+			e_multipleChoiceData.id = parseInt($('#e_mc_id').val());
+			e_multipleChoiceData.description = $('#e_mc_question').val();
+			e_multipleChoiceData.questionType = 0;
+			e_multipleChoiceData.order = parseInt($('#e_mc_order').val());
+			e_multipleChoiceData.points = parseInt($('#e_mc_input_points').val());
+			e_multipleChoiceData.image = null;
+			e_multipleChoiceData.answers = [];
+			e_multipleChoiceData.items = [];
+			e_multipleChoiceData.active = true;
+
+			if ($('#e_mc_question_image_container img').attr('src')) {
+				var base64Image = $('#e_mc_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_multipleChoiceData.image = base64Data;
+			}
+
+			$('.e-choice-container').each(function (index) {
+				var choiceText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('img').attr('src');
+				var choiceImage = null;
+				var isCorrect = $(this).find('input[type="radio"]').is(':checked');
+
+				if (tempImage != null) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					choiceImage = base64Data;
+				}
+
+				if (choiceText.trim() !== '') {
+					var originalAnswer = og_multipleChoiceData.answers[index];
+					if (originalAnswer) {
+						e_multipleChoiceData.answers.push({
+							id: originalAnswer.id,
+							answer: choiceText,
+							isCorrect: isCorrect,
+							showAnswer: true,
+							order: (index + 1).toString(),
+							image: choiceImage,
+							active: true
+						});
+					} else {
+						e_multipleChoiceData.answers.push({
+							id: 0,
+							answer: choiceText,
+							isCorrect: isCorrect,
+							showAnswer: true,
+							order: (index + 1).toString(),
+							image: choiceImage,
+							active: true
+						});
+					}
+				}
+			});
+		}
+
+		function checkEditedMultipleChoice() {
+			event.preventDefault();
+			gatherEditedMultipleChoiceData();
+			clearValidationMessages(0);
+
+			var points = e_multipleChoiceData.points;
+			var question = e_multipleChoiceData.description;
+			var choices = e_multipleChoiceData.answers;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_mc_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#e_mc_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			$('#e_mc_choices_container .e-choice-container').each(function (index) {
+				const choiceInput = $(this).find('input[type="text"]');
+				const choiceText = choiceInput.val().trim();
+
+				if (choiceText === '') {
+					showError(choiceInput, 'Choice cannot be empty.');
+					choiceInput.addClass('is-invalid');
+					valid = false;
+				} else {
+					choiceInput.removeClass('is-invalid');
+				}
+			});
+
+			if (valid) updateQuestion(e_multipleChoiceData, 0);
+		}
+
+		function deactivateAnswer(answerId) {
+			const answer = e_multipleChoiceData.answers.find(ans => ans.id === answerId);
+    
+			if (answer) {
+				answer.active = false;
+				console.log(`Answer with id ${answerId} is now inactive.`);
+			}
+		}
+
+		function e_checkAnotherChoiceInput(inputElement, id) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.e-choice-container').slideUp(300, function () {
+					deactivateAnswer(id);
+					$(this).remove();
+					
+					if ($('.form-check-input:checked').length === 0) {
+						$('#e_mc_choice_radio_1').prop('checked', true);
+					}
+				});
+			}
+		}
+
+		function e_addMoreMultipleChoice() {
+			e_mc_choices++;
+
+			var choice = `
+					<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${e_mc_choices}" style="display: none;">
+						<div class="row">
+							<div class="col-sm-12 col-md-10 mb-2">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${e_mc_choices}" style="transform: scale(1.2);">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="e_mc_choice_${e_mc_choices}" placeholder="Choice #${e_mc_choices}" maxlength="100" value="Another Choice" onchange="e_checkAnotherChoiceInput(this)">
+										<label for="e_mc_choice_${e_mc_choices}">Another Choice</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+									onclick="uploadImage('#e_mc_choice_image_container_${e_mc_choices}', '#e_mc_choice_input_image_file_${e_mc_choices}')">
+									<div id="e_mc_choice_image_container_${e_mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+										<i class="bi bi-card-image fs-3 text-secondary"></i>
+									</div>
+								</div>
+								<input type="file" id="e_mc_choice_input_image_file_${e_mc_choices}" accept="image/*" style="display: none;" />
+							</div>
+						</div>
+					</div>
+				`;
+
+			$('#e_addMoreButtonContainer').before(choice);
+			$(`#e_choice_container_${e_mc_choices}`).slideDown(300);
+		}
+
+		function editMultipleChoice(data) {
+			og_multipleChoiceData = data;
+			var e_mc_choices_container = $('#e_mc_choices_container');
+			$('#e_mc_input_points').val(data.points);
+			$('#e_mc_question').val(data.description);
+
+			var deleteButtonContainer = $('#e_mc_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			console.log(data.image);
+
+			if (data.image != '') {
+				showImage('#e_mc_question_image_container', '#e_mc_input_image_file', data.image);
+			} else {
+				removeImage('#e_mc_question_image_container', '#e_mc_input_image_file', event);
+			}
+
+			e_mc_choices_container.empty();
+
+			$.each(data.answers, function(index, answer) {
+				index++;
+
+				var isChecked = answer.isCorrect ? 'checked' : '';
+
+				if (index <= mc_minimum_choices) {
+					var choice = `
+						<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
+							<input type="hidden" id="e_mc_id" value="${data.id}" />
+							<input type="hidden" id="e_mc_order" value="${data.order}" />
+							<div class="row">
+								<div class="col-sm-12 col-md-10 mb-2">
+									<div class="form-check d-flex align-items-center gap-3">
+										<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
+										<div class="form-floating w-100">
+											<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" value="${answer.answer}">
+											<label for="e_mc_choice_${index}">Choice #${index}</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
+										<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
+								</div>
+							</div>
+						</div>
+					`;
+
+					e_mc_choices_container.append(choice);
+					$(`#e_choice_container_${index}`).slideDown(300);
+
+					if (index === mc_minimum_choices) {
+						var addMoreButton = `
+								<div class="col-12 mt-2 mb-2 text-end" id="e_addMoreButtonContainer">
+									<button class="btn btn-outline-secondary" type="button" onclick="e_addMoreMultipleChoice()">Add Another Choice</button>
+								</div>
+							`;
+
+						e_mc_choices_container.append(addMoreButton);
+					}
+
+					e_mc_choices = index;
+				} else {
+					var choice = `
+							<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
+								<div class="row">
+									<div class="col-sm-12 col-md-10 mb-2">
+										<div class="form-check d-flex align-items-center gap-3">
+											<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" data-answer='${JSON.stringify(answer)}' value="${answer.answer}" onchange="e_checkAnotherChoiceInput(this, ${answer.id})">
+												<label for="e_mc_choice_${index}">Another Choice</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+										<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+											style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+											onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
+											<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
+												<i class="bi bi-card-image fs-3 text-secondary"></i>
+											</div>
+										</div>
+										<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
+									</div>
+								</div>
+							</div>
+						`;
+
+					$('#e_addMoreButtonContainer').before(choice);
+					$(`#e_choice_container_${index}`).slideDown(300);
+
+					e_mc_choices = index;
+				}
+
+				if (answer.image) {
+					showImage(`#e_mc_choice_image_container_${index}`, `#e_mc_choice_input_image_file_${index}`, answer.image);
+				}
+			});
+
+			$('#editMultipleChoiceModal').modal('show');
+		}
+
+		function editMultipleChoiceHidden() {
+			loadQuestions();
+			e_mc_choices = 0;
+			clearValidationMessages(0);
+		}
+
+		function gatherMultipleChoiceData() {
+			multipleChoiceData.quizId = parseInt("@Model.QuizVM.Id");
+			multipleChoiceData.description = $('#mc_question').val();
+			multipleChoiceData.questionType = 0;
+			multipleChoiceData.points = parseInt($('#mc_input_points').val());
+			multipleChoiceData.order = 0;
+			multipleChoiceData.image = null;
+			multipleChoiceData.answers = [];
+			multipleChoiceData.items = [];
+			multipleChoiceData.active = true;
+
+			if ($('#mc_question_image_container img').attr('src') != null) {
+				var base64Image = $('#mc_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				multipleChoiceData.image = base64Data;
+			}
+
+			$('.choice-container').each(function (index) {
+				var choiceText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('img').attr('src') || '';
+				var choiceImage = null;
+				var isCorrect = $(this).find('input[type="radio"]').is(':checked');
+				var indexOrder = (index + 1).toString();
+
+				if (tempImage) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					choiceImage = base64Data;
+				}
+
+				if (choiceText.trim() !== '') {
+					multipleChoiceData.answers.push({
+						answer: choiceText,
+						image: choiceImage,
+						isCorrect: isCorrect,
+						showAnswer: true,
+						order: indexOrder,
+						active: true
+					});
+				}
+			});
+		}
+
+		function checkMultipleChoice() {
+			event.preventDefault();
+			gatherMultipleChoiceData();
+			clearValidationMessages(0);
+
+			var points = multipleChoiceData.points;
+			var question = multipleChoiceData.description;
+			var choices = multipleChoiceData.answers;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#mc_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#mc_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			$('#mc_choices_container .choice-container').each(function (index) {
+				const choiceInput = $(this).find('input[type="text"]');
+				const choiceText = choiceInput.val().trim();
+
+				if (choiceText === '') {
+					showError(choiceInput, 'Choice cannot be empty.');
+					choiceInput.addClass('is-invalid');
+					valid = false;
+				} else {
+					choiceInput.removeClass('is-invalid');
+				}
+			});
+
+			if (valid) submitQuestion(multipleChoiceData, 0);
+		}
+
+		function checkAnotherChoiceInput(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.choice-container').slideUp(300, function () {
+					$(this).remove();
+
+					if ($('.form-check-input:checked').length === 0) {
+						$('#mc_choice_radio_1').prop('checked', true);
+					}
+				});
+			}
+		}
+
+		function addMoreMultipleChoice() {
+			mc_choices++;
+
+			var choice = `
+					<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
+						<div class="row">
+							<div class="col-sm-12 col-md-10 mb-2">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100" value="Another Choice" onchange="checkAnotherChoiceInput(this)">
+										<label for="mc_choice_${mc_choices}">Another Choice</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+									onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
+									<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+										<i class="bi bi-card-image fs-3 text-secondary"></i>
+									</div>
+								</div>
+								<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
+							</div>
+						</div>
+					</div>
+				`;
+
+			$('#addMoreButtonContainer').before(choice);
+			$(`#choice_container_${mc_choices}`).slideDown(300);
+		}
+
+		function multipleChoiceHidden() {
+			$('#mc_question').val('');
+			mc_choices = 0;
+			mc_container.empty();
+			$('#mc_input_points').val(1);
+			removeImage('#mc_question_image_container', '#mc_input_image_file', event);
+			clearValidationMessages(0);
+			multipleChoiceData = {
+				quizId: 0,
+				description: '',
+				order: '',
+				questionType: 0,
+				points: 0,
+				image: '',
+				answers: [],
+				items: [],
+				active: false
+			};
+		}
+
+		function multipleChoiceShown() {
+			$('#mc_input_points').val(1);
+			mc_container.empty();
+
+			while (mc_choices < mc_minimum_choices) {
+				mc_choices++;
+
+				var isChecked = mc_choices === 1 ? 'checked' : '';
+
+				var choice = `
+					<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
+						<div class="row">
+							<div class="col-sm-12 col-md-10 mb-2">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);" ${isChecked}>
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100">
+										<label for="mc_choice_${mc_choices}">Choice #${mc_choices}</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+									onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
+									<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+										<i class="bi bi-card-image fs-3 text-secondary"></i>
+									</div>
+								</div>
+								<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
+							</div>
+						</div>
+					</div>
+				`;
+
+				mc_container.append(choice);
+				$(`#choice_container_${mc_choices}`).slideDown(300);
+			}
+
+			var addMoreButton = `
+					<div class="col-12 mt-2 mb-2 text-end" id="addMoreButtonContainer">
+						<button class="btn btn-outline-secondary" type="button" onclick="addMoreMultipleChoice()">Add Another Choice</button>
+					</div>
+				`;
+
+			mc_container.append(addMoreButton);
+		}
+	</script>
+
+	<!-- True Or False Script -->
+	<script>
+		var trueOrFalseData = {
+			quizId: 0,
+			points: 0,
+			description: '',
+			order: '',
+			questionType: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+		
+		var e_trueOrFalseData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		function gatherEditedTrueOrFalseData() {
+			var isTrue = $('#e_tf_radio_true').is(':checked');
+			var answer = isTrue ? 'True' : 'False';
+
+			e_trueOrFalseData.id = parseInt($('#e_tf_id').val());
+			e_trueOrFalseData.description = $('#e_tf_question').val();
+			e_trueOrFalseData.questionType = 1;
+			e_trueOrFalseData.order = parseInt($('#e_tf_order').val());
+			e_trueOrFalseData.points = parseInt($('#e_tf_input_points').val());
+			e_trueOrFalseData.image = null;
+			e_trueOrFalseData.active = true;
+			e_trueOrFalseData.answers = [];
+			e_trueOrFalseData.items = [];
+
+			if ($('#e_tf_question_image_container img').attr('src') != null) {
+				var base64Image = $('#e_tf_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_trueOrFalseData.image = base64Data;
+			}
+
+			e_trueOrFalseData.answers.push({
+				id: parseInt($('#e_tf_a_id').val()),
+				answer: answer,
+				isCorrect: true,
+				showAnswer: true,
+				order: null,
+				image: null,
+				active: true
+			});
+		}
+
+		function checkEditedTrueOrFalse() {
+			event.preventDefault();
+			gatherEditedTrueOrFalseData();
+			clearValidationMessages(1);
+
+			var points = e_trueOrFalseData.points;
+			var question = e_trueOrFalseData.description;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_tf_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#e_tf_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_trueOrFalseData, 1);
+		}
+
+		function editTrueOrFalse(data) {
+			$('#e_tf_input_points').val(data.points);
+			$('#e_tf_question').val(data.description);
+			$('#e_tf_id').val(data.id);
+			$('#e_tf_order').val(data.order);
+			
+			var deleteButtonContainer = $('#e_tf_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_tf_question_image_container', '#e_tf_input_image_file', data.image);
+			} else {
+				removeImage('#e_tf_question_image_container', '#e_tf_input_image_file', event);
+			}
+
+			$.each(data.answers, function(index, answer) {
+				$('#e_tf_a_id').val(answer.id);
+				$('#e_tf_a_order').val(answer.order);
+
+				if (answer.answer === 'True') {
+					$('#e_tf_radio_true').prop('checked', true);
+				} else {
+					$('#e_tf_radio_false').prop('checked', true);
+				}
+			});
+
+			$('#editTrueOrFalseModal').modal('show');
+		}
+
+		function editTrueOrFalseHidden() {
+			loadQuestions();
+			clearValidationMessages(1);
+		}
+
+		function gatherTrueOrFalseData() {
+			var isTrue = $('#tf_radio_true').is(':checked');
+			var answer = isTrue ? 'True' : 'False';
+
+			trueOrFalseData.quizId = parseInt("@Model.QuizVM.Id");
+			trueOrFalseData.description = $('#tf_question').val();
+			trueOrFalseData.questionType = 1;
+			trueOrFalseData.points = parseInt($('#tf_input_points').val());
+			trueOrFalseData.order = 0;
+			trueOrFalseData.image = null;
+			trueOrFalseData.answers = [];
+			trueOrFalseData.items = [];
+			trueOrFalseData.active = true;
+
+			if ($('#tf_question_image_container img').attr('src')) {
+				var base64Image = $('#tf_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				trueOrFalseData.image = base64Data;
+			}
+
+			trueOrFalseData.answers.push({
+				answer: answer,
+				isCorrect: true,
+				showAnswer: true,
+				order: null,
+				image: null,
+				active: true
+			});
+		}
+
+		function checkTrueOrFalse() {
+			event.preventDefault();
+			gatherTrueOrFalseData();
+			clearValidationMessages(1);
+
+			var points = trueOrFalseData.points;
+			var question = trueOrFalseData.description;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#tf_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#tf_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (valid) submitQuestion(trueOrFalseData, 1);
+		}
+
+		function toggleRadio(radioId) {
+			$('#' + radioId).prop('checked', true);
+		}
+
+		function trueOrFalseHidden() {
+			$('#tf_radio_true').prop('checked', true);
+			$('#tf_question').val('');
+			$('#tf_input_points').val(1);
+			removeImage('#tf_question_image_container', '#tf_input_image_file', event);
+			clearValidationMessages(1);
+			trueOrFalseData = {
+				quizId: 0,
+				points: 0,
+				description: '',
+				order: '',
+				questionType: 0,
+				image: '',
+				answers: [],
+				items: [],
+				active: false
+			};
+		}
+
+		function trueOrFalseShown() {
+			$('#tf_radio_true').prop('checked', true);
+			$('#tf_input_points').val(1);
+		}
+	</script>
+
+	<!-- Matching Or Ordering Script -->
+	<script>
+		var itemList = [];
+		var container = $('#itemListContainer');
+		var e_itemListContainer = $('#e_itemListContainer');
+		var mo_prompts = 0;
+		var e_mo_prompts = 0;
+		var mo_minimum_prompts = 2;
+		var orderedListContainer = $('<ol class="custom-ordered-list d-flex flex-wrap m-2 p-0" id="orderedListContainer"></ol>');
+		var e_orderedListContainer = $('<ol class="e-custom-ordered-list d-flex flex-wrap m-2 p-0" id="e_orderedListContainer"></ol>');
+		var promptContainer = $('#mo_prompt_container');
+		var e_promptContainer = $('#e_mo_prompt_container');
+		var addPromptButtonContainer = $('#mo_add_prompt_button_container');
+		var e_addPromptButtonContainer = $('#e_mo_add_prompt_button_container');
+		var item = $('#mo_item_input');
+		var e_item = $('#e_mo_item_input');
+		var matchingOrOrderingData = {
+			quizId: 0,
+			description: '',
+			order: '',
+			questionType: 0,
+			points: 0,
+			image: '',
+			items: [],
+			answers: [],
+			active: false
+		};
+
+		var e_matchingOrOrderingData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		var og_matchingOrOrderingData;
+
+		function e_removeItem(index) {
+			e_matchingOrOrderingData.items.splice(index, 1);
+			e_appendItemsOnPrompt();
+			e_appendItemMarker();
+			e_checkPrompt();
+		}
+
+		function getNextOrder() {
+			const items = e_matchingOrOrderingData.items;
+
+			if (items.length === 0) {
+				return $('#e_mo_list_type').val() === 'upper-alpha' ? 'A' : 1;
+			}
+
+			const lastItem = items[items.length - 1].order;
+
+			if ($('#e_mo_list_type').val() === 'upper-alpha') {
+				return String.fromCharCode(lastItem.charCodeAt(0) + 1);
+			} else if ($('#e_mo_list_type').val() === 'decimal') {
+				return parseInt(lastItem) + 1;
+			}
+		}
+
+		function e_addItem() {
+			var nextOrder = getNextOrder();
+
+			if (e_item.val() != '') {
+				var listTitle = '<h4>Items</h4>';
+
+				e_matchingOrOrderingData.items.push({
+					id: 0,
+					name: e_item.val(),
+					order: nextOrder,
+					quizQuestionId: $('#e_mo_id').val(),
+					active: true
+				});
+
+				e_itemListContainer.empty();
+				e_itemListContainer.append(listTitle);
+
+				e_appendItemMarker();
+
+				e_itemListContainer.append(e_orderedListContainer);
+				e_item.val('');
+			}
+
+			e_checkItemInput();
+			e_checkItemList();
+			e_changeListType();
+		}
+
+		function e_showEmptyPrompt() {
+			e_addPromptButtonContainer.empty();
+			e_promptContainer.empty();
+
+			var emptyPrompt = `
+					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyPrompt" style="display: none;">
+						<i class="bi bi-border-width fs-1 text-secondary"></i>
+						<span class="fs-3 text-secondary">Empty Prompt</span>
+					</div>
+				`;
+
+			e_promptContainer.append(emptyPrompt);
+			$('#e_emptyPrompt').slideDown(200);
+		}
+
+		function e_showEmptyList() {
+			e_itemListContainer.empty();
+
+			var emptyList = `
+					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyItemList" style="display: none;">
+						<i class="bi bi-list-ol fs-1 text-secondary"></i>
+						<span class="fs-3 text-secondary">Empty List</span>
+					</div>
+				`;
+
+			e_itemListContainer.append(emptyList);
+			$('#e_emptyItemList').slideDown(300);
+		}
+
+		function e_checkPrompt() {
+			if (e_matchingOrOrderingData.items.length == 0) {
+				e_showEmptyList();
+			}
+
+			if (e_matchingOrOrderingData.items.length < 2) {
+				e_emptyPromptContainer();
+			}
+		}
+
+		function e_emptyPromptContainer() {
+			e_promptContainer.slideUp(300, function () {
+				$(this).empty().fadeIn();
+				e_addPromptButtonContainer.empty();
+				e_matchingOrOrderingData.answers = [];
+			});
+		}
+
+		function e_checkPromptValue(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.e-prompt-container').slideUp(300, function () {
+					$(this).remove();
+
+					if ($('.e-prompt-container').length === 0) {
+						e_showEmptyPrompt();
+					}
+				});
+			}
+		}
+
+		function e_addPrompt() {
+			$('#e_emptyPrompt').remove();
+
+			e_mo_prompts++;
+				
+			var promptItem = `
+				<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
+					<div class="row">
+						<div class="col-3 col-md-3">
+							<select class="form-select form-select-lg e-mo-prompt-item-select-list" id="e_mo_prompt_item_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
+							</select>
+						</div>
+						<div class="col-9 col-md-6">
+							<div class="form-floating w-100">
+								<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="e_checkPromptValue(this)">
+								<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+								onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
+								<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+				</div>
+			`;
+
+			e_promptContainer.append(promptItem);
+			$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
+
+			e_appendItemsOnPrompt();
+
+			e_matchingOrOrderingData.answers.push({
+				id: 0,
+				answer: $(`#e_mo_prompt_${e_mo_prompts}`).val(),
+				isCorrect: true,
+				showAnswer: true,
+				order: $(`#e_mo_prompt_item_select_list_${e_mo_prompts}`).val(),
+				quizQuestionId: $('#e_mo_id').val(),
+				image: null,
+				active: true
+			});
+		}
+
+		function e_checkItemList() {
+			if (e_matchingOrOrderingData.items.length == 2) {
+				var headerTitle = '<h4>Prompts</h4>'
+				e_promptContainer.append(headerTitle);
+
+				e_addPrompt();
+
+				var addMorePromptButton = `
+					<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+						<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
+					</div>
+				`;
+
+				e_addPromptButtonContainer.append(addMorePromptButton);
+			}
+		}
+
+		function e_checkItemInput() {
+			var trimmedItem = e_item.val().trim();
+
+			if (trimmedItem === '') {
+				$('#e_addItemButton').prop('disabled', true);
+			} else {
+				$('#e_addItemButton').prop('disabled', false);
+			}
+		}
+
+		function e_appendItemMarker() {
+			e_orderedListContainer.empty();
+
+			if (e_matchingOrOrderingData.items.length != 0) {
+				$.each(e_matchingOrOrderingData.items, function (index, value) {
+					if ($('#e_mo_list_type').val() === 'upper-alpha') {
+						marker = String.fromCharCode(65 + index);
+					} else {
+						marker = index + 1;
+					}
+
+					value.order = marker;
+
+					var list = `
+						<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
+							<input type="hidden" class="e-mo-i-id" value="${value.id}" />
+							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+								${marker}.<strong class="ms-1">${value.name}</strong>
+								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
+							</span>
+						</li>
+						`;
+
+					e_orderedListContainer.append(list);
+					$(`#e_mo_item_li_${index}`).fadeIn(200);
+				});
+			}
+		}
+
+		function e_changeListType() {
+			if (e_orderedListContainer.length !== 0) {
+				e_appendItemMarker();
+				e_appendItemsOnPrompt();
+			}
+		}
+
+		function e_appendItemsOnPrompt() {
+			var selectList = $('.e-mo-prompt-item-select-list');
+
+			selectList.empty();
+
+			if (e_matchingOrOrderingData.items.length != 0) {
+				$.each(e_matchingOrOrderingData.items, function (index, value) {
+					var marker;
+					var list;
+
+					if ($('#e_mo_list_type').val() === 'upper-alpha') {
+						marker = String.fromCharCode(65 + index);
+						list = `<option value="${marker}">${marker}</option>`;
+					}
+
+					if ($('#e_mo_list_type').val() === 'decimal') {
+						marker = index + 1;
+						list = `<option value="${marker}">${marker}</option>`;
+					}
+
+					selectList.append(list);
+				});
+			}
+		}
+
+		function gatherEditedMatchingOrOrderingData() {
+			e_matchingOrOrderingData.id = parseInt($('#e_mo_id').val());
+			e_matchingOrOrderingData.description = $('#e_mo_instruction').val();
+			e_matchingOrOrderingData.questionType = 2;
+			e_matchingOrOrderingData.order = parseInt($('#e_mo_order').val());
+			e_matchingOrOrderingData.points = parseInt($('#e_mo_input_points').val());
+			e_matchingOrOrderingData.image = null;
+			e_matchingOrOrderingData.active = true;
+			e_matchingOrOrderingData.answers = [];
+			e_matchingOrOrderingData.items = [];
+
+			if ($('#e_mo_instruction_image_container img').attr('src')) {
+				var base64Image = $('#e_mo_instruction_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_matchingOrOrderingData.image = base64Data;
+			}
+
+			$('.e-prompt-container').each(function (index) {
+				var promptId = $(this).find('input[type="hidden"].e-mo-a-id').val();
+				var promptOrder = $(this).find('select[name="promptItemSelect"]').val();
+				var promptText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('img').attr('src');
+				var promptImage = null;
+				var isCorrect = $(this).find('input[type="radio"]').is(':checked');
+
+				if (tempImage) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					promptImage = base64Data;
+				}
+
+				if (promptText.trim() !== '') {
+					e_matchingOrOrderingData.answers.push({
+						id: promptId,
+						answer: promptText,
+						isCorrect: true,
+						showAnswer: true,
+						order: promptOrder,
+						image: promptImage == '' ? null : promptImage,
+						active: true
+					});
+				}
+			});
+
+			$('.e-item-container').each(function (index) {
+				var listItem = $(this);
+				var itemId = listItem.find('input[type="hidden"].e-mo-i-id').val();
+				var itemName = listItem.find('strong').text();
+				var spanText = listItem.find('span').text();
+				var itemOrder = spanText.split('.')[0].trim();
+
+				e_matchingOrOrderingData.items.push({
+					id: itemId,
+					name: itemName,
+					order: itemOrder,
+					quizQuestionId: $('#e_mo_id').val(),
+					active: true
+				});
+			});
+		}
+
+		function checkEditedMatchingOrOrdering() {
+			event.preventDefault();
+			gatherEditedMatchingOrOrderingData();
+			clearValidationMessages(2);
+
+			var points = e_matchingOrOrderingData.points;
+			var description = e_matchingOrOrderingData.description;
+			var choices = e_matchingOrOrderingData.answers;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_mo_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			} else if (!isValidQuestion(description)) {
+				showError('#e_mo_instruction', 'Please enter an instruction.');
+				valid = false;
+			} else if (e_matchingOrOrderingData.items.length < 2) {
+				$('#alertText').text('Please enter at least two items.');
+				$('#alertModal').modal('show');
+				valid = false;
+			} else if (e_matchingOrOrderingData.answers.length === 0) {
+				$('#alertText').text('Please enter at least one prompt.');
+				$('#alertModal').modal('show');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_matchingOrOrderingData, 2);
+		}
+
+		function editMatchingOrOrdering(data) {
+			e_checkItemInput();
+			e_matchingOrOrderingData = data;
+			og_matchingOrOrderingData = data;
+			var e_mo_prompt_container = $('#e_mo_prompt_container');
+			var e_selectList = $('.e-mo-prompt-item-select-list');
+
+			console.log(data.points);
+
+			$('#e_mo_id').val(data.id);
+			$('#e_mo_order').val(data.order);
+			$('#e_mo_input_points').val(data.points);
+			$('#e_mo_instruction').val(data.description);
+			
+			var deleteButtonContainer = $('#e_mo_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_mo_instruction_image_container', '#e_mo_input_image_file', data.image);
+			} else {
+				removeImage('#e_mo_instruction_image_container', '#e_mo_input_image_file', event);
+			}
+
+			e_selectList.empty();
+			e_mo_prompt_container.empty();
+			e_itemListContainer.empty();
+
+			if (data.items.length >= 2) {
+				var listTitle = '<h4>Items</h4>';
+
+				e_itemListContainer.append(listTitle);
+
+				if (/^[A-Z]$/.test(data.items[0].order)) {
+					$('#e_mo_list_type').val('upper-alpha').change();
+				} else {
+					$('#e_mo_list_type').val('decimal').change();
+				}
+
+				e_orderedListContainer.empty();
+
+				$.each(data.items, function (index, item) {
+					var list = `
+						<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
+							<input type="hidden" class="e-mo-i-id" value="${item.id}" />
+							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+								${item.order}.<strong class="ms-1">${item.name}</strong>
+								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
+							</span>
+						</li>
+						`;
+
+					e_orderedListContainer.append(list);
+				});
+
+				e_orderedListContainer.find('li').fadeIn(200);
+				e_itemListContainer.append(e_orderedListContainer);
+			}
+
+			if (data.answers.length != 0) {
+				e_addPromptButtonContainer.empty();
+
+				var headerTitle = '<h4>Prompts</h4>';
+
+				e_mo_prompt_container.append(headerTitle);
+
+				$.each(data.answers, function(index, answer) {
+					e_mo_prompts++;
+
+					var promptItem = `
+						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
+							<input type="hidden" class="e-mo-a-id" value="${answer.id}" />
+							<input type="hidden" class="e-mo-a-order" value="${answer.order}" />
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<select class="form-select form-select-lg e-mo-prompt-item-select-list" name="promptItemSelect" id="e_mo_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
+									</select>
+								</div>
+								<div class="col-9 col-md-6">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_checkPromptValue(this)">
+										<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										 style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										 onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
+										<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
+								</div>
+							</div>
+						</div>
+					`;
+
+					e_mo_prompt_container.append(promptItem);
+					$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
+
+					$.each(data.items, function(itemIndex, item) {
+						var isSelected = item.order == answer.order ? "selected" : "";
+						var list = `<option value="${item.order}" ${isSelected}>${item.order}</option>`;
+						$(`#e_mo_select_list_${e_mo_prompts}`).append(list);
+					});
+
+					if (answer.image) {
+						showImage(`#e_mo_prompt_image_container_${e_mo_prompts}`, `#e_mo_prompt_input_image_file_${e_mo_prompts}`, answer.image);
+					}
+				});
+			}
+
+			var addMorePromptButton = `
+					<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+						<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
+					</div>
+				`;
+
+			e_addPromptButtonContainer.append(addMorePromptButton);
+
+			$('#editMatchingOrOrderingModal').modal('show');
+		}
+
+		function editMatchingOrOrderingHidden() {
+			loadQuestions();
+			e_mo_prompts = 0;
+			clearValidationMessages(2);
+		}
+
+		function gatherMatchingOrOrderingData() {
+			var listMarker;
+
+			console.log($('#mo_input_points').val());
+			
+			matchingOrOrderingData.quizId = parseInt("@Model.QuizVM.Id");
+			matchingOrOrderingData.questionType = 2;
+			matchingOrOrderingData.description = $('#mo_instruction').val();
+			matchingOrOrderingData.points = parseInt($('#mo_input_points').val());
+			matchingOrOrderingData.order = 0;
+			matchingOrOrderingData.image = null;
+			matchingOrOrderingData.items = [];
+			matchingOrOrderingData.answers = [];
+			matchingOrOrderingData.active = true;
+
+			if ($('#mo_instruction_image_container img').attr('src') != null) {
+				var base64Image = $('#mo_instruction_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				matchingOrOrderingData.image = base64Data;
+			}
+
+			$('#orderedListContainer').find('li').each(function (index) {
+
+				if ($('#mo_list_type').val() === 'upper-alpha') {
+					listMarker = String.fromCharCode(65 + index);
+				} else {
+					listMarker = (index + 1).toString();
+				}
+
+				var itemText = $(this).find('strong').text();
+				matchingOrOrderingData.items.push({
+					name: itemText,
+					order: listMarker,
+					active: true
+				});
+			});
+
+			$('.prompt-container').each(function () {
+				var selectedItem = $(this).find('.mo-prompt-item-select-list').val();
+				var inputText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('.custom-image-container img').attr('src') 
+				var imageSrc = null;
+
+				if (tempImage != null) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					imageSrc = base64Data;
+				}
+
+				matchingOrOrderingData.answers.push({
+					answer: inputText,
+					order: selectedItem,
+					image: imageSrc,
+					isCorrect: true,
+					showAnswer: true,
+					active: true
+				});
+			});
+		}
+
+		function checkMatchingOrOrdering() {
+			event.preventDefault();
+			gatherMatchingOrOrderingData();
+			clearValidationMessages(2);
+
+			var points = matchingOrOrderingData.points;
+			var instruction = matchingOrOrderingData.description;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#mo_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			} else if (!isValidQuestion(instruction)) {
+				showError('#mo_instruction', 'Please enter an instruction.');
+				valid = false;
+			} else if (matchingOrOrderingData.items.length < 2) {
+				$('#alertText').text('Please enter at least two items.');
+				$('#alertModal').modal('show');
+				valid = false;
+			} else if (matchingOrOrderingData.answers.length === 0) {
+				$('#alertText').text('Please enter at least one prompt.');
+				$('#alertModal').modal('show');
+				valid = false;
+			}
+
+			if (valid) submitQuestion(matchingOrOrderingData, 2);
+
+			// console.log(matchingOrOrderingData);
+		}
+
+		function showEmptyPrompt() {
+			var emptyPrompt = `
+					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyPrompt" style="display: none;">
+						<i class="bi bi-border-width fs-1 text-secondary"></i>
+						<span class="fs-3 text-secondary">Empty Prompt</span>
+					</div>
+				`;
+
+			promptContainer.append(emptyPrompt);
+			$('#emptyPrompt').slideDown(200);
+		}
+
+		function checkPromptValue(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.prompt-container').slideUp(300, function () {
+					$(this).remove();
+
+					if ($('.prompt-container').length === 0) {
+						showEmptyPrompt();
+					}
+				});
+			}
+		}
+
+		function addPrompt() {
+			$('#emptyPrompt').remove();
+
+			mo_prompts++;
+				
+			var promptItem = `
+				<div class="col-sm-12 col-md-12 mb-4 mb-md-2 prompt-container" id="mo_prompt_container_${mo_prompts}" style="display: none;">
+					<div class="row">
+						<div class="col-3 col-md-3">
+							<select class="form-select form-select-lg mo-prompt-item-select-list" aria-label="Items" style="height: 55px;">
+							</select>
+						</div>
+						<div class="col-9 col-md-6">
+							<div class="form-floating w-100">
+								<input type="text" class="form-control" id="mo_prompt_${mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="checkPromptValue(this)">
+								<label for="mo_prompt_${mo_prompts}">Prompt</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+								onclick="uploadImage('#mo_prompt_image_container_${mo_prompts}', '#mo_prompt_input_image_file_${mo_prompts}')">
+								<div id="mo_prompt_image_container_${mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="mo_prompt_input_image_file_${mo_prompts}" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+				</div>
+			`;
+
+			promptContainer.append(promptItem);
+			$(`#mo_prompt_container_${mo_prompts}`).slideDown(300);
+
+			appendItemsOnPrompt();
+		}
+
+		function showEmptyList() {
+			addPromptButtonContainer.empty();
+			container.empty();
+
+			var emptyList = `
+					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyItemList" style="display: none;">
+						<i class="bi bi-list-ol fs-1 text-secondary"></i>
+						<span class="fs-3 text-secondary">Empty List</span>
+					</div>
+				`;
+
+			container.append(emptyList);
+			$('#emptyItemList').slideDown(300);
+		}
+
+		function emptyPromptContainer() {
+			promptContainer.slideUp(300, function () {
+				$(this).empty().fadeIn();
+				addPromptButtonContainer.empty();
+			});
+		}
+
+		function checkPrompt() {
+			if (itemList.length == 0) {
+				showEmptyList();
+			}
+
+			if (itemList.length < 2) {
+				emptyPromptContainer();
+			}
+		}
+
+		function removeItem(index) {
+			itemList.splice(index, 1);
+			appendItemsOnPrompt();
+			appendItemMarker();
+			checkPrompt();
+		}
+
+		function appendItemMarker() {
+			orderedListContainer.empty();
+
+			if (itemList.length != 0) {
+				$.each(itemList, function (index, value) {
+					if ($('#mo_list_type').val() === 'upper-alpha') {
+						marker = String.fromCharCode(65 + index);
+					} else {
+						marker = index + 1;
+					}
+
+					var list = `
+						<li class="m-1" id="mo_item_li_${index}" style="display: none;">
+							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+								${marker}.<strong class="ms-1">${value}</strong>
+								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="removeItem(${index})"></i>
+							</span>
+						</li>
+						`;
+
+					orderedListContainer.append(list);
+					$(`#mo_item_li_${index}`).fadeIn(200);
+				});
+			}
+		}
+
+		function changeListType() {
+			var orderedList = $('#orderedListContainer');
+
+			if (orderedList.length !== 0) {
+				appendItemMarker();
+				appendItemsOnPrompt();
+			}
+		}
+
+		function appendItemsOnPrompt() {
+			var selectList = $('.mo-prompt-item-select-list');
+
+			selectList.empty();
+
+			if (itemList.length != 0) {
+				$.each(itemList, function (index, value) {
+					var marker;
+					var list;
+
+					if ($('#mo_list_type').val() === 'upper-alpha') {
+						marker = String.fromCharCode(65 + index);
+						list = `<option value="${marker}">${marker}</option>`;
+					}
+
+					if ($('#mo_list_type').val() === 'decimal') {
+						marker = index + 1;
+						list = `<option value="${marker}">${marker}</option>`;
+					}
+
+					selectList.append(list);
+				});
+			}
+		}
+
+		function checkItemList() {
+			if (itemList.length == 2) {
+				var headerTitle = '<h4>Prompts</h4>'
+				promptContainer.append(headerTitle);
+				
+				addPromptButtonContainer.empty();
+
+				addPrompt();
+
+				var addMorePromptButton = `
+					<div class="col-12 mt-2 mb-2 text-end" id="addMorePromptButtonContainer">
+						<button class="btn btn-outline-secondary" type="button" onclick="addPrompt()">Add Prompt</button>
+					</div>
+				`;
+
+				addPromptButtonContainer.append(addMorePromptButton);
+			}
+		}
+
+		function checkItemInput() {
+			var trimmedItem = item.val().trim();
+
+			if (trimmedItem === '') {
+				$('#addItemButton').prop('disabled', true);
+			} else {
+				$('#addItemButton').prop('disabled', false);
+			}
+		}
+		
+		function addItem() {
+			if (item.val() != '') {
+				var listTitle = '<h4>Items</h4>';
+				
+				itemList.push(item.val());
+
+				container.empty();
+				container.append(listTitle);
+
+				appendItemMarker();
+
+				container.append(orderedListContainer);
+				item.val('');
+			}
+
+			checkItemInput();
+			checkItemList();
+			changeListType();
+		}
+
+		function matchingOrOrderingHidden() {
+			$('#mo_instruction').val('');
+			$('#mo_input_points').val(1);
+			removeImage('#mo_instruction_image_container', '#mo_input_image_file', event);
+			showEmptyList();
+			promptContainer.empty();
+			itemList.length = 0;
+			item.val('');
+			mo_prompts = 0;
+			matchingOrOrderingData = {
+				quizId: 0,
+				description: '',
+				order: '',
+				questionType: 0,
+				points: 0,
+				image: '',
+				items: [],
+				answers: [],
+				active: false
+			};
+			clearValidationMessages(2);
+		}
+
+		function matchingOrOrderingShown() {
+			$('#mo_instruction').val('');
+			$('#mo_input_answer').val('');
+			$('#mo_input_points').val(1);
+		}
+
+		checkItemInput();
+	</script>
+
+	<!-- Numeric Script -->
+	<script>
+		var numericData = {
+			quizId: 0,
+			description: '',
+			order: '',
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			answers: false
+		};
+
+		var e_numericData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		function gatherEditedNumericData() {
+			e_numericData.id = parseInt($('#e_num_id').val());
+			e_numericData.description = $('#e_num_question').val();
+			e_numericData.questionType = 3;
+			e_numericData.order = parseInt($('#e_num_order').val());
+			e_numericData.points = parseInt($('#e_num_input_points').val());
+			e_numericData.image = null;
+			e_numericData.active = true;
+			e_numericData.answers = [];
+			e_numericData.items = [];
+
+			if ($('#e_num_question_image_container img').attr('src')) {
+				var base64Image = $('#e_num_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_numericData.image = base64Data;
+			}
+
+			e_numericData.answers.push({
+				id: parseInt($('#e_num_a_id').val()),
+				answer: $('#e_num_input_answer').val(),
+				isCorrect: true,
+				showAnswer: true,
+				order: null,
+				image: null,
+				active: true
+			});
+		}
+
+		function checkEditedNumeric() {
+			questionType = 3;
+			event.preventDefault();
+			gatherEditedNumericData();
+			clearValidationMessages(3);
+
+			var points = e_numericData.points;
+			var question = e_numericData.description;
+			var numericAnswer = $('#e_num_input_answer').val();
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_num_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#e_num_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (numericAnswer === '') {
+				showError('#e_num_input_answer', 'Please enter an answer.');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_numericData, 3);
+		}
+
+		function editNumeric(data) {
+			$('#e_num_input_points').val(data.points);
+			$('#e_num_question').val(data.description);
+			$('#e_num_id').val(data.id);
+			$('#e_num_order').val(data.order);
+			
+			var deleteButtonContainer = $('#e_num_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_num_question_image_container', '#e_num_input_image_file', data.image);
+			} else {
+				removeImage('#e_num_question_image_container', '#e_num_input_image_file', event);
+			}
+
+			$.each(data.answers, function(index, answer) {
+				$('#e_num_a_id').val(answer.id);
+				$('#e_num_a_order').val(answer.order);
+				$('#e_num_input_answer').val(answer.answer).change();
+			});
+
+			$('#editNumericModal').modal('show');
+		}
+
+		function editNumericHidden() {
+			loadQuestions();
+			clearValidationMessages(3);
+		}
+
+		function gatherNumericData() {
+			numericData.quizId = parseInt("@Model.QuizVM.Id");
+			numericData.questionType = 3;
+			numericData.description = $('#num_question').val();
+			numericData.order = 0;
+			numericData.points = parseInt($('#num_input_points').val());
+			numericData.image = null;
+			numericData.answers = [];
+			numericData.items = [];
+			numericData.active = true;
+
+			if ($('#num_question_image_container img').attr('src') != null) {
+				var base64Image = $('#num_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				numericData.image = base64Data;
+			}
+
+			var numberAnswer = $('#num_input_answer').val().trim();
+
+			if (numberAnswer !== '') {
+				numericData.answers.push({
+					answer: numberAnswer,
+					isCorrect: true,
+					showAnswer: true,
+					order: null,
+					image: null,
+					active: true
+				});
+			}
+		}
+
+		function checkNumeric() {
+			event.preventDefault();
+			gatherNumericData();
+			clearValidationMessages(3);
+
+			var points = numericData.points;
+			var question = numericData.description;
+			var answer = $('#num_input_answer').val().trim();
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#num_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#num_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (answer === '') {
+				showError('#num_input_answer', 'Please enter a number.');
+				valid = false;
+			}
+
+			if (valid) submitQuestion(numericData, 3);
+		}
+
+		function numericHidden() {
+			$('#num_question').val('');
+			$('#num_input_answer').val('');
+			$('#num_input_points').val(1);
+			removeImage('#num_question_image_container', '#num_input_image_file', event);
+			clearValidationMessages(3);
+			numericData = {
+				quizId: 0,
+				description: '',
+				order: '',
+				questionType: 0,
+				points: 0,
+				image: '',
+				answers: [],
+				items: [],
+				answers: false
+			};
+		}
+
+		function numericShown() {
+			$('#num_question').val('');
+			$('#num_input_answer').val('');
+			$('#num_input_points').val(1);
+		}
+	</script>
+
+	<!-- Fill in the Blank Script -->
+	<script>
+		var fill_container = $('#fill_answer_container');
+		var e_fill_container = $('#e_fill_answer_container');
+		var fill_answers = 0;
+		var e_fill_answers = 0;
+		var fillInTheBlankData = {
+			quizId: 0,
+			description: '',
+			order: '',
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		var e_fillInTheBlankData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		function e_checkAlternativeAnswerInput(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.e-answer-container').slideUp(300, function () {
+					$(this).remove();
+				});
+			}
+		}
+
+		function e_addAlternativeAnswer() {
+			e_fill_answers++;
+
+			var alternativeAnswer = `
+					<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+						<input type="hidden" class="e-fill-a-id" />
+						<div class="row">
+							<div class="col-11">
+								<div class="form-floating w-100">
+									<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="e_checkAlternativeAnswerInput(this)">
+									<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+								</div>
+							</div>
+							<div class="col-1 d-flex align-items-center">
+								<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+							</div>
+						</div>
+					</div>
+				`;
+
+			e_fill_container.append(alternativeAnswer);
+			$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
+		}
+
+		function gatherEditedFillInTheBlankData() {
+			e_fillInTheBlankData.id = parseInt($('#e_fill_id').val());
+			e_fillInTheBlankData.description = $('#e_fill_question').val();
+			e_fillInTheBlankData.questionType = 4;
+			e_fillInTheBlankData.order = parseInt($('#e_fill_order').val());
+			e_fillInTheBlankData.points = parseInt($('#e_fill_input_points').val());
+			e_fillInTheBlankData.image = null;
+			e_fillInTheBlankData.active = true;
+			e_fillInTheBlankData.answers = [];
+			e_fillInTheBlankData.items = [];
+
+			if ($('#e_fill_question_image_container img').attr('src')) {
+				var base64Image = $('#e_fill_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_fillInTheBlankData.image = base64Data;
+			}
+
+			e_fillInTheBlankData.answers.push({
+				id: parseInt($('#e_fill_a_id').val()),
+				answer: $('#e_fill_input_answer').val(),
+				isCorrect: true,
+				showAnswer: true,
+				order: null,
+				image: null,
+				active: true
+			});
+
+			$('#e_fill_answer_container .e-alternative-answer-input').each(function (index) {
+				const answer = $(this).val().trim();
+				const alternativeId = $(this).closest('.e-answer-container').find('input.e-fill-a-id').val();
+				const hasId = alternativeId != '' ? alternativeId : 0;
+
+				if (answer) e_fillInTheBlankData.answers.push({
+					id: hasId,
+					answer: answer,
+					isCorrect: true,
+					showAnswer: false,
+					order: null,
+					image: null,
+					active: true
+				});
+			});
+		}
+
+		function checkEditedFillInTheBlank() {
+			event.preventDefault();
+			gatherEditedFillInTheBlankData();
+			clearValidationMessages(4);
+
+			var points = e_fillInTheBlankData.points;
+			var question = e_fillInTheBlankData.description;
+			var fillInTheBlankAnswer = '';
+
+			$.each(e_fillInTheBlankData.answers, function(index, answer) {
+				if (answer.showAnswer == 1) {
+					fillInTheBlankAnswer = answer.answer;
+				}
+			});
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_fill_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#e_fill_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (fillInTheBlankAnswer == '') {
+				showError('#e_fill_input_answer', 'Please enter an answer.');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_fillInTheBlankData, 4);
+		}
+
+		function editFillInTheBlank(data) {
+			$('#e_fill_input_points').val(data.points);
+			$('#e_fill_question').val(data.description);
+			$('#e_fill_id').val(data.id);
+			$('#e_fill_order').val(data.order);
+			
+			var deleteButtonContainer = $('#e_fill_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_fill_question_image_container', '#e_fill_input_image_file', data.image);
+			} else {
+				removeImage('#e_fill_question_image_container', '#e_fill_input_image_file', event);
+			}
+
+			e_fill_container.empty();
+
+			$.each(data.answers, function(index, answer) {
+				if (answer.showAnswer) {
+					$('#e_fill_a_id').val(answer.id);
+					$('#e_fill_a_order').val(answer.order);
+					$('#e_fill_input_answer').val(answer.answer).change();
+				} else {
+					e_fill_answers++;
+
+					var alternativeAnswer = `
+						<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+							<input type="hidden" class="e-fill-a-id" value="${answer.id}" />
+							<div class="row">
+								<div class="col-11">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="${answer.answer}" onchange="e_checkAlternativeAnswerInput(this)">
+										<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+									</div>
+								</div>
+								<div class="col-1 d-flex align-items-center">
+									<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+								</div>
+							</div>
+						</div>
+					`;
+
+					e_fill_container.append(alternativeAnswer);
+					$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
+				}
+			});
+
+			$('#editFillInTheBlankModal').modal('show');
+		}
+
+		function editFillInTheBlankHidden() {
+			loadQuestions();
+			clearValidationMessages(4);
+		}
+
+		function gatherFillInTheBlankData() {
+			fillInTheBlankData.quizId = parseInt("@Model.QuizVM.Id");
+			fillInTheBlankData.questionType = 4;
+			fillInTheBlankData.description = $('#fill_question').val().trim();
+			fillInTheBlankData.order = 0;
+			fillInTheBlankData.points = parseInt($('#fill_input_points').val());
+			fillInTheBlankData.image = null;
+			fillInTheBlankData.answers = [];
+			fillInTheBlankData.items = [];
+			fillInTheBlankData.active = true;
+
+			if ($('#fill_question_image_container img').attr('src') != null) {
+				var base64Image = $('#fill_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				fillInTheBlankData.image = base64Data;
+			}
+
+			var mainAnswer = $('#fill_input_answer').val().trim();
+
+			if (mainAnswer !== '') {
+				fillInTheBlankData.answers.push({
+					answer: mainAnswer,
+					isCorrect: true,
+					showAnswer: true,
+					order: null,
+					active: true
+				});
+			}
+
+			$('#fill_answer_container .alternative-answer-input').each(function () {
+				const answer = $(this).val().trim();
+				if (answer) fillInTheBlankData.answers.push({
+					answer: answer,
+					isCorrect: true,
+					showAnswer: false,
+					order: null,
+					active: true
+				});
+			});
+		}
+
+		function checkFillInTheBlank() {
+			event.preventDefault();
+			gatherFillInTheBlankData();
+			clearValidationMessages(4);
+
+			var points = fillInTheBlankData.points;
+			var question = fillInTheBlankData.description;
+			var answer = $('#fill_input_answer').val().trim();
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#fill_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#fill_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (answer === '') {
+				showError('#fill_input_answer', 'Please enter an answer.');
+				valid = false;
+			}
+
+			if (valid) submitQuestion(fillInTheBlankData, 4);
+		}
+
+		function checkAlternativeAnswerInput(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.answer-container').slideUp(300, function () {
+					$(this).remove();
+				});
+			}
+		}
+
+		function addAlternativeAnswer() {
+			fill_answers++;
+
+			var alternativeAnswer = `
+					<div class="col-12 mb-2 answer-container" id="answer_container_${fill_answers}" style="display: none;">
+						<div class="row">
+							<div class="col-11">
+								<div class="form-floating w-100">
+									<input type="text" class="form-control alternative-answer-input" id="fill_alt_answer_${fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="checkAlternativeAnswerInput(this)">
+									<label for="fill_alt_answer_${fill_answers}">Alternative Answer</label>
+								</div>
+							</div>
+							<div class="col-1 d-flex align-items-center">
+								<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+							</div>
+						</div>
+					</div>
+				`;
+
+			fill_container.append(alternativeAnswer);
+			$(`#answer_container_${fill_answers}`).slideDown(300);
+		}
+
+		function fillInTheBlankHidden() {
+			$('#fill_question').val('');
+			$('#fill_input_answer').val('');
+			$('#fill_input_points').val(1);
+			fill_answers = 0;
+			fill_container.empty();
+			removeImage('#fill_question_image_container', '#fill_input_image_file', event);
+			clearValidationMessages(4);
+			fillInTheBlankData = {
+				quizId: 0,
+				description: '',
+				order: '',
+				questionType: 0,
+				points: 0,
+				image: '',
+				answers: [],
+				items: [],
+				active: false
+			};
+		}
+
+		function fillInTheBlankShown() {
+			$('#fill_question').val('');
+			$('#fill_input_answer').val('');
+			$('#fill_input_points').val(1);
+		}
+	</script>
+}

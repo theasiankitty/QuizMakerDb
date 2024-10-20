@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
@@ -32,7 +33,8 @@ namespace QuizMakerDb.Pages.Students
                 return NotFound();
             }
 
-            var student =  await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
+            var student = await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -48,6 +50,11 @@ namespace QuizMakerDb.Pages.Students
                 Email = student.Email,
                 UserName = student.UserName,
                 UserId = student.UserId,
+<<<<<<< Updated upstream
+=======
+                isIrregular = student.isIrregular,
+                CurrentSectionId = student.CurrentSectionId,
+>>>>>>> Stashed changes
                 Active = student.Active,
                 CreatedBy = student.CreatedBy,
                 CreatedDate = student.CreatedDate,
@@ -55,7 +62,14 @@ namespace QuizMakerDb.Pages.Students
                 UpdatedDate = student.UpdatedDate,
             };
 
-            return Page();
+            var schoolYearId = await _context.Sections
+                .Where(m => m.SchoolYearId == StudentVM.CurrentSectionId)
+                .Select(m => m.SchoolYearId)
+                .FirstOrDefaultAsync();
+
+			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name", schoolYearId);
+
+			return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -85,6 +99,11 @@ namespace QuizMakerDb.Pages.Students
                 Email = StudentVM.Email,
                 UserName = StudentVM.UserName,
                 UserId = StudentVM.UserId,
+<<<<<<< Updated upstream
+=======
+                isIrregular = StudentVM.isIrregular,
+                CurrentSectionId = StudentVM.CurrentSectionId,
+>>>>>>> Stashed changes
                 Active = true,
                 CreatedBy = StudentVM.CreatedBy,
                 CreatedDate = StudentVM.CreatedDate,

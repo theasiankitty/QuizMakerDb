@@ -27,6 +27,114 @@ html {
     position: relative;
 }
 
+<<<<<<< Updated upstream
+=======
+.custom-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.custom-uploaded-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.custom-button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.custom-remove-image, .custom-view-image {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+    .custom-remove-image:hover {
+        background: rgba(255, 0, 0, 0.7);
+        color: white;
+    }
+
+    .custom-view-image:hover {
+        background: rgb(0 88 255 / 70%);
+        color: white;
+    }
+
+.custom-ordered-list {
+    padding-left: 1.5em;
+    list-style: none;
+}
+
+    .custom-ordered-list li {
+        margin-bottom: 0.5rem;
+    }
+
+.e-custom-ordered-list {
+    padding-left: 1.5em;
+    list-style: none;
+}
+
+    .e-custom-ordered-list li {
+        margin-bottom: 0.5rem;
+    }
+
+.capsule {
+    transition: transform 0.3s ease;
+    cursor: default;
+}
+
+    .capsule:hover {
+        transform: scale(1.1);
+        background-color: #c4c8cb;
+    }
+
+.carousel-item {
+    transition: transform 0.5s ease;
+}
+
+.custom-card {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+    .custom-card:hover {
+        transform: scale(1.02);
+        /*background-color: #0d6efd;*/
+        /*color: white;*/
+    }
+
+        /*.custom-card:hover .btn-outline-secondary {*/
+            /*background-color: #007bff;*/
+            /*border-color: white;*/
+            /*color: white;*/
+        /*}*/
+
+.grid-item {
+    height: 100px;
+}
+
+.btn-custom {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+>>>>>>> Stashed changes
 /* width */
 ::-webkit-scrollbar {
     width: 10px;

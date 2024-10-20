@@ -21,7 +21,14 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 			_context = context;
 		}
 
-		public async Task<JsonResult> OnPostAsync([FromBody] object data, [FromQuery] string operation)
+		public class CourseYearSubjectData
+		{
+            public int SubjectId { get; set; }
+
+            public int CourseYearId { get; set; }
+        }
+
+        public async Task<JsonResult> OnPostAsync([FromBody] IList<CourseYearSubjectData> courseYearSubjects)
 		{
 			var creator = await _userManager.GetUserAsync(User);
 
@@ -30,9 +37,13 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 				return new JsonResult("NOT FOUND");
 			}
 
+<<<<<<< Updated upstream
 			var courseYearSubjects = JsonConvert.DeserializeObject<List<CourseYearSubject>>(data.ToString());
 
 			if (courseYearSubjects.Any())
+=======
+			if (courseYearSubjects == null)
+>>>>>>> Stashed changes
 			{
 				foreach (var subject in courseYearSubjects)
 				{

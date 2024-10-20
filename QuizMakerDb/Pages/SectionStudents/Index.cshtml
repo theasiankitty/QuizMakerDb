@@ -355,6 +355,56 @@
 	</div>
 </div>
 
+<<<<<<< Updated upstream
+=======
+<div class="modal fade" id="addStudentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Add Student</span>
+					<i class="bi bi-book"></i>
+				</h1>
+				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="input-group input-group-lg mb-3">
+								<input class="form-control" id="searchStudentInput" type="search" placeholder="Search Name or User Name" autocomplete="off" aria-label="SearchStudent" aria-describedby="searchStudent">
+								<button class="btn btn-outline-secondary" type="button" id="searchStudentButton" onclick="updateAddButton()"></button>
+							</div>
+						</div>
+						<div class="col-12" id="searchLoading" style="display: none;">
+							<div class="d-flex align-items-center">
+								<strong role="status">Searching...</strong>
+								<div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+							</div>
+						</div>
+						<div class="overflow-auto" id="resultContainer" style="max-height: 500px; display: none;">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer text-end" id="resultFooter" style="display: none;">
+				<div class="container">
+					<div class="row">
+						<div class="col-6 text-start">
+							<button class="btn btn-dark" id="loadMoreBtn" type="button" onclick="getAllStudents()">Load more</button>
+						</div>
+						<div class="col-6 text-end">
+							<button class="btn btn-success" id="selectAllBtn" type="button">Select All</button>
+							<button class="btn btn-primary" id="submitStudentBtn" type="button" onclick="submitStudents();"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+>>>>>>> Stashed changes
 <div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">

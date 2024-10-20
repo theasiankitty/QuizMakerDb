@@ -24,8 +24,14 @@ namespace QuizMakerDb.Pages.CourseYears
 
 		public IActionResult OnGet()
 		{
+<<<<<<< Updated upstream
 
 			ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Name");
+=======
+			ViewData["Courses"] = new SelectList(_context.Courses.Where(m => m.Active == true), "Id", "Name");
+>>>>>>> Stashed changes
+
+			ViewData["SchoolYears"] = new SelectList(_context.SchoolYears.Where(m => m.Active == true), "Id", "Name");
 
 			return Page();
 		}
