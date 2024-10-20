@@ -16,6 +16,8 @@ namespace QuizMakerDb.Data.Models
 
         public bool isQuestionRandomized { get; set; }
 
+		public bool AllowEmptyAnswers { get; set; }
+
 		[StringLength(300)]
 		public string ConclusionDescription { get; set; } = string.Empty!;
 

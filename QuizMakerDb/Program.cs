@@ -16,6 +16,14 @@ builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireCo
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
+builder.Services.AddAntiforgery(options =>
+{
+	// Set Cookie properties using CookieBuilder properties†.
+	options.FormFieldName = "AntiForgeryElement";
+	options.HeaderName = "X-CSRF-TOKEN";
+	options.SuppressXFrameOptionsHeader = false;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +44,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseAntiforgery();
 
 app.MapRazorPages();
 

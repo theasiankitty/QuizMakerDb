@@ -1,0 +1,672 @@
+﻿@* @page
+@using QuizMakerDb.Data.Identity
+@model QuizMakerDb.Pages.QuizSections.IndexModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@inject UserManager<AppUser> userManager
+@{
+	ViewData["Title"] = "Index";
+
+	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+
+	var user = await userManager.GetUserAsync(User);
+
+	bool isAdmin = await userManager.IsInRoleAsync(user, Constants.ROLE_ADMIN);
+
+	var hasQuizSections = Model.QuizSections.Count > 0;
+
+	var firstDisabled = Model.QuizSections.PageIndex == 1 ? "disabled" : "";
+	var lastDisabled = Model.QuizSections.PageIndex == Model.QuizSections.TotalPages ? "disabled" : "";
+	var prevDisabled = !Model.QuizSections.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.QuizSections.HasNextPage ? "disabled" : "";
+
+	int length = 3;
+	int start = 1;
+	int center = Math.Abs(length / 2) + 1;
+
+	if (Model.QuizSections.PageIndex < center)
+	{
+		start = 1;
+	}
+	else
+	{
+		start = (Model.QuizSections.PageIndex - center) + 1;
+	}
+
+	int end = start + length;
+
+	if (Model.QuizSections.TotalPages == 1)
+		end = 1;
+	if (end > Model.QuizSections.TotalPages)
+	{
+		end = Model.QuizSections.TotalPages + 1;
+		start = end - length;
+		if (start < 1)
+		{
+			start = 1;
+			end = length;
+		}
+	}
+}
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item fs-3"><a href="/QuizQuestions/Index?quizId=@Model.QuizVM.Id">Publish Quiz - @Model.QuizVM.Title</a></li>
+		</ol>
+	</nav>
+	<div class="row justify-content-end mt-3">
+		<div class="col-5">
+			<button type="button" class="btn btn-outline-primary btn-block text-center" data-bs-toggle="modal" data-bs-target="#publishModal">
+				<i class="bi bi-plus-lg"></i>
+				Publish
+			</button>
+		</div>
+		<form class="col-7 text-end" asp-page="./Index" method="get">
+			@Html.AntiForgeryToken()
+			<button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#searchModal">
+				<i class="bi bi-search"></i>
+				Search
+			</button>
+			<a class="btn btn-primary btn-block"
+			   asp-page="./Index"
+			   asp-route-sortColumn=""
+			   asp-route-sortOrder=""
+			   asp-route-pageIndex="1"
+			   asp-route-quizId="@Model.QuizVM.Id"
+			   asp-route-searchStudent=""
+			   asp-route-searchSection="">
+				<i class="bi bi-arrow-clockwise"></i>
+				Refresh
+			</a>
+		</form>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row mt-3">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title fw-medium">Published Quiz</h3>
+						</div>
+						@if (hasQuizSections)
+						{
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient" style="min-width: 105px; width: 105px;">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="id"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																#
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "id")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											<th class="bg-body-secondary bg-gradient">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="section"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.QuizSections[0].Section)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "section")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											<th class="d-none d-sm-table-cell bg-body-secondary bg-gradient">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="code"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.QuizSections[0].Code)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "code")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
+											@if (isAdmin)
+											{
+												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
+											}
+
+											else
+											{
+												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
+											}
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var item in Model.QuizSections)
+										{
+											<tr class="align-middle">
+												<td class="d-none d-sm-table-cell">
+													@Html.DisplayFor(modelItem => item.Id)
+												</td>
+												<td>
+													@Html.DisplayFor(modelItem => item.Section)
+												</td>
+												<td class="d-none d-sm-table-cell">
+													@Html.DisplayFor(modelItem => item.Code)
+												</td>
+												<td class="text-center">
+													@if (isAdmin)
+													{
+														<button type="button" class="btn btn-danger btn-sm btn-block" onclick="editQuizSection(@item.Id)">
+															<i class="bi bi-x-lg"></i>
+														</button>
+													}
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+							<div class="card-footer clearfix">
+								<div class="container-fluid">
+									<div class="row justify-content-end">
+										<div class="col text-start d-none d-sm-block">
+											<small>@Model.TotalItems record@(Model.TotalItems != 1 ? "s" : "") in total</small>
+										</div>
+										@if (Model.TotalItems > 10)
+										{
+											<div class="col text-end">
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="1"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection"
+												   class="btn btn-sm btn-secondary @(Model.QuizSections.PageIndex == 1 ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-double-left"></i>
+												</a>
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@(Model.QuizSections.PageIndex - 1)"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection"
+												   class="btn btn-sm btn-secondary @(Model.QuizSections.PageIndex <= 1 ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-left"></i>
+												</a>
+
+												@for (int i = start; i < end; i++)
+												{
+													<a asp-page="./Index"
+													   asp-route-sortColumn="@Model.SortColumn"
+													   asp-route-sortOrder="@Model.SortOrder"
+													   asp-route-pageIndex="@i"
+													   asp-route-quizId="@Model.QuizVM.Id"
+													   asp-route-searchSection="@Model.SearchSection"
+													   class="btn btn-sm btn-secondary @(Model.QuizSections.PageIndex == i ? "disabled" : "")">
+														@i
+													</a>
+												}
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@(Model.QuizSections.PageIndex + 1)"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection"
+												   class="btn btn-sm btn-secondary @(Model.QuizSections.PageIndex >= Model.QuizSections.TotalPages ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-right"></i>
+												</a>
+
+												<a asp-page="./Index"
+												   asp-route-sortColumn="@Model.SortColumn"
+												   asp-route-sortOrder="@Model.SortOrder"
+												   asp-route-pageIndex="@Model.QuizSections.TotalPages"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSection="@Model.SearchSection"
+												   class="btn btn-sm btn-secondary @(Model.QuizSections.PageIndex == Model.QuizSections.TotalPages ? "disabled" : "")">
+													<i class="nav-icon bi bi-chevron-double-right"></i>
+												</a>
+											</div>
+										}
+									</div>
+								</div>
+							</div>
+						}
+						else
+						{
+							<div style="height: 400px">
+								<div class="h-100 d-flex justify-content-center align-items-center">
+									<div class="container-fluid">
+										<div class="row justify-content-center">
+											<div class="col-12 text-center text-secondary">
+												<h2>No Records Found</h2>
+											</div>
+											<div class="col-12 text-center text-secondary">
+												<i class="bi bi-folder-x display-1"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="publishModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="publishModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalHeaderTitle">
+					<span class="pe-1">Publish Quiz - Section</span>
+					<i class="bi bi-book"></i>
+				</h1>
+				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="input-group input-group-lg mb-3">
+								<input class="form-control" id="searchSectionInput" type="search" placeholder="Search Section" autocomplete="off" aria-label="SearchSection" aria-describedby="searchSection">
+								<button class="btn btn-outline-secondary" type="button" id="searchSectionButton" onclick="updateAddButton()"></button>
+							</div>
+						</div>
+						<div class="col-12" id="searchLoading" style="display: none;">
+							<div class="d-flex align-items-center">
+								<strong role="status">Searching...</strong>
+								<div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+							</div>
+						</div>
+						<div class="overflow-auto" id="resultContainer" style="max-height: 500px; display: none;">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer text-end" id="resultFooter" style="display: none;">
+				<div class="container">
+					<div class="row">
+						<div class="col-6 text-start">
+							<button class="btn btn-dark" id="loadMoreBtn" type="button" onclick="getAllSections()">Load more</button>
+						</div>
+						<div class="col-6 text-end">
+							<button class="btn btn-success" id="selectAllBtn" type="button">Select All</button>
+							<button class="btn btn-primary" id="submitSectionBtn" type="button" onclick="submitSSections();"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		var currentPage = 0;
+		var pageSize = 10;
+		var loadedRecords = 0;
+		var submitButton = $('#submitSectionBtn');
+		var searchButton = $('#searchSectionButton');
+		var searchSectionInput = $('#searchSectionInput');
+		var selectAllbutton = $('#selectAllBtn');
+
+		$(document).ready(function () {
+			searchButton.click(function () {
+				var section = searchSectionInput.val();
+				searchSection(section);
+
+				$('#resultContainer').slideUp();
+				$('#resultFooter').slideUp();
+				$('#searchLoading').slideDown();
+			});
+
+			searchButton.text('Search All');
+
+			searchSectionInput.on('input', function () {
+				var inputValue = $(this).val().trim();
+
+				if (inputValue !== '') {
+					searchButton.text('Search');
+				} else {
+					searchButton.text('Search All');
+				}
+			});
+
+			selectAllbutton.on('click', function () {
+				var allChecked = $('input[name="selectedSectionIds"]:checked').length === $('input[name="selectedSectionIds"]').length;
+
+				$('input[name="selectedSectionIds"]').prop('checked', !allChecked);
+
+				$('.section-card').each(function () {
+					var checkbox = $(this).find('input[name="selectedSectionIds"]');
+					if (allChecked) {
+						$(this).removeClass('bg-primary text-light');
+					} else {
+						$(this).addClass('bg-primary text-light');
+					}
+				});
+
+				$(this).text(allChecked ? 'Select All' : 'Deselect All');
+				updateAddButton();
+			});
+
+			updateAddButton();
+			getAllSections();
+		});
+
+		function toggleCheckbox(card) {
+			var checkbox = $(card).find('input[type="checkbox"]');
+			var isChecked = checkbox.prop('checked');
+
+			checkbox.prop('checked', !isChecked);
+
+			if (!isChecked) {
+				$(card).addClass('bg-primary text-light');
+			} else {
+				$(card).removeClass('bg-primary text-light');
+			}
+
+			updateAddButton();
+		}
+
+		function updateAddButton() {
+			var checkedCount = $('input[name="selectedSectionIds"]:checked').length;
+			var allCheckBox = $('input[name="selectedSectionIds"]').length;
+
+			if (checkedCount === allCheckBox) {
+				selectAllbutton.text('Deselect All');
+			} else {
+				selectAllbutton.text('Select All');
+			}
+
+			if (checkedCount > 0) {
+				submitButton.prop('disabled', false);
+				submitButton.text('Add (' + checkedCount + ')');
+			} else {
+				resetButton();
+			}
+		}
+
+		function resetButton() {
+			submitButton.prop('disabled', true);
+			submitButton.text('Add');
+		}
+
+		function searchSection(section) {
+			resetButton();
+
+			$('#resultContainer .card').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			$('#resultContainer .errorMessage').fadeOut(400, function () {
+				$(this).remove();
+			});
+
+			if (section != '') {
+				$('#loadMoreBtn').hide();
+				getSearchSection(section);
+			} else {
+				currentPage = 0;
+				pageSize = 10;
+				loadedRecords = 0;
+				getAllStudents();
+			}
+		}
+
+		function showErrorMessage(message) {
+			var errorMessage = '';
+
+			if (message === 'empty student') {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>No sections found.</p>
+						<small>Please check if the quiz has been published for this section. <br/>If the section still does not appear, contact your administrator for assistance.</small>
+					</div>
+					`;
+			} else {
+				errorMessage = `
+					<div class="errorMessage">
+						<p>Error Retrieving Data.</p>
+					</div>
+					`;
+			}
+
+			$('#resultContainer').append(errorMessage);
+		}
+
+		function getAllSections() {
+			selectAllbutton.text('Select All');
+			$('#loadMoreBtn').hide();
+
+			var test = 'test';
+
+			$.ajax({
+				type: 'GET',
+				url: '/QuizSections/SearchSection?handler=AllSection',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: {
+					quizId: "@Model.QuizVM.Id",
+					teacherId: "@Model.QuizVM.TeacherId",
+					currentPage: currentPage,
+					pageSize: pageSize
+				},
+				success: function (data) {
+					$('#searchLoading').slideUp(400, function () {
+						if (data.message === 'OK' && data.sections.length != 0) {
+							console.log(data.sections)
+
+							var cards = '';
+
+							$.each(data.sections, function (index, item) {
+								cards += `
+									<div class="card student-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-11">
+													<h5 class="card-title"><strong>${test}</strong></h5>
+													<br />
+													<p class="card-text">${test}</p>
+												</div>
+												<div class="col-1 d-flex justify-content-end align-items-center">
+													<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedStudentIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+												</div>
+											</div>
+										</div>
+									</div>
+								`;
+							});
+
+							$('#resultContainer').append(cards);
+
+							$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+							loadedRecords += data.sections.length;
+							currentPage++;
+
+							console.log(loadedRecords);
+
+							if (loadedRecords < data.count) {
+								$('#loadMoreBtn').show();
+							} else {
+								$('#loadMoreBtn').hide();
+							}
+
+							$('#resultFooter').slideDown();
+						} else {
+							showErrorMessage('empty student');
+						}
+
+						$('#resultContainer').slideDown(200);
+					});
+
+				},
+				error: function (xhr, status, error) {
+					$('#searchLoading').slideUp(function () {
+						showErrorMessage('error retrieving');
+
+						$('#resultContainer').slideDown(200);
+					});
+					console.error("Error: " + error);
+				}
+			});
+		}
+
+		// function getSearchSection(section) {
+		// 	$.ajax({
+		// 		type: 'GET',
+		// 		url: '/SectionStudents/SearchStudent?handler=SearchStudent',
+		// 		data: {
+		// 			searchStudent: student,
+		// 			sectionId: "@Model.QuizVM.Id"
+		// 		},
+		// 		success: function (data) {
+		// 			$('#searchLoading').slideUp(400, function () {
+		// 				if (data.message === 'OK' && data.students.length != 0) {
+		// 					var cards = '';
+
+		// 					$.each(data.students, function (index, item) {
+		// 						cards += `
+		// 							<div class="card student-card mb-3" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+		// 								<div class="card-body">
+		// 									<div class="row">
+		// 										<div class="col-11">
+		// 											<h5 class="card-title"><strong>${item.lastName}, ${item.firstName}</strong></h5>
+		// 											<br />
+		// 											<p class="card-text">${item.userName}</p>
+		// 										</div>
+		// 										<div class="col-1 d-flex justify-content-end align-items-center">
+		// 											<input class="form-check-input me-2 mt-0" type="checkbox" name="selectedStudentIds" value="${item.id}" onchange="updateAddButton()" style="transform: scale(1.3); display: none;" />
+		// 										</div>
+		// 									</div>
+		// 								</div>
+		// 							</div>
+		// 						`;
+		// 					});
+
+		// 					$('#resultContainer').append(cards);
+
+		// 					$('#resultContainer').animate({ scrollTop: $('#resultContainer')[0].scrollHeight }, 500);
+
+		// 					$('#resultFooter').slideDown();
+		// 				} else {
+		// 					showErrorMessage('empty student');
+		// 				}
+
+		// 				$('#resultContainer').slideDown(200);
+		// 			});
+
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			$('#searchLoading').slideUp(function () {
+		// 				showErrorMessage('error retrieving');
+
+		// 				$('#resultContainer').slideDown(200);
+		// 			});
+		// 			console.error("Error: " + error);
+		// 		}
+		// 	});
+		// }
+
+		// function submitSections() {
+		// 	var sectionStudents = [];
+		// 	$("[name=selectedStudentIds]:checked").each(function (i, elem) {
+		// 		sectionStudents.push({
+		// 			"sectionId": "@Model.QuizVM.Id",
+		// 			"studentId": elem.value });
+		// 	});
+
+		// 	$.ajax({
+		// 		type: 'POST',
+		// 		url: '/SectionStudents/Create',
+		// 		dataType: 'json',
+		// 		contentType: 'application/json',
+		// 		headers: {
+		// 			RequestVerificationToken:
+		// 				$('input:hidden[name="__RequestVerificationToken"]').val()
+		// 		},
+		// 		data: JSON.stringify(sectionStudents),
+		// 		success: function (data) {
+		// 			var newUrl = `${window.location.pathname}?sectionId=${@Model.QuizVM.Id}`;
+		// 			window.location.href = newUrl;
+		// 		}
+		// 	});
+		// }
+
+		// function changeActiveStatus(sectionId) {
+		// 	$.ajax({
+		// 		type: 'POST',
+		// 		url: '/SectionStudents/Update',
+		// 		dataType: 'json',
+		// 		contentType: 'application/json',
+		// 		headers: {
+		// 			RequestVerificationToken:
+		// 				$('input:hidden[name="__RequestVerificationToken"]').val()
+		// 		},
+		// 		data: JSON.stringify(studentSectionId),
+		// 		success: function (response) {
+		// 			var newUrl = `${window.location.pathname}?sectionId=${"@Model.QuizVM.Id"}`;
+		// 			window.location.href = newUrl;
+		// 		}
+		// 	});
+		// }
+	</script>
+}
+ *@

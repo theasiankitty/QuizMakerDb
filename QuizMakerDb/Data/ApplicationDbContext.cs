@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using QuizMakerDb.Data.Configurations;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
@@ -17,7 +18,8 @@ namespace QuizMakerDb.Data
 		public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<QuizSection> QuizSections { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
-        public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+        public DbSet<QuestionItem> QuestionItems { get; set; }
+		public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public DbSet<AnswerStudent> AnswerStudents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -34,6 +36,7 @@ namespace QuizMakerDb.Data
             base.OnModelCreating(builder);
 
 			builder.ApplyConfiguration(new AnswerStudentConfig());
+			//builder.ApplyConfiguration(new TeacherSubjectConfig());
 
 			builder.Entity<AppUser>().ToTable("IdentityUsers");
             builder.Entity<AppRole>().ToTable("IdentityRoles");
@@ -46,7 +49,15 @@ namespace QuizMakerDb.Data
             Seed(builder);
         }
 
-        private void Seed(ModelBuilder builder)
+		protected override void OnConfiguring(DbContextOptionsBuilder builder)
+		{
+			builder.ConfigureWarnings(delegate (WarningsConfigurationBuilder warnings)
+			{
+				warnings.Ignore(CoreEventId.ForeignKeyAttributesOnBothNavigationsWarning);
+			});
+		}
+
+		private void Seed(ModelBuilder builder)
         {
             Guid adminUserId = Guid.NewGuid();
             Guid adminRoleId = Guid.NewGuid();
