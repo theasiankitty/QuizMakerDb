@@ -19,15 +19,8 @@
 	<form class="row justify-content-center mt-3" method="post">
 		@Html.AntiForgeryToken()
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 		<input asp-for="StudentVM.UserName" type="hidden" />
 		<input asp-for="StudentVM.CurrentSectionId" type="hidden" />
->>>>>>> Stashed changes
-=======
-		<input asp-for="StudentVM.UserName" type="hidden" />
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 		<input asp-for="StudentVM.Active" type="hidden" />
 		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
 			<div class="card card-primary card-outline mb-4">
@@ -83,23 +76,14 @@
 									<span asp-validation-for="StudentVM.UserName" class="text-danger"></span>
 								</div>
 							</div>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 							<div class="col-md-12 mb-4">
 								<div class="form-check">
 									<input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox" onchange="toggleCourseYearSelection()">
-=======
-							<div class="col-md-12">
-								<div class="form-check">
-									<input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox">
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 									<label asp-for="StudentVM.isIrregular" class="form-check-label">
 										Check if the Student is irregular.
 									</label>
 								</div>
 							</div>
-<<<<<<< HEAD
 							<div class="col-md-12" id="showCourseYearSelection" style="display: none;">
 								<div class="row p-2 border rounded">
 									<div class="col-12 mt-2 mb-4">
@@ -119,9 +103,6 @@
 									</div>
 								</div>
 							</div>
->>>>>>> Stashed changes
-=======
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 						</div>
 					</div>
 				</div>
@@ -196,9 +177,6 @@
 		function onChangeSex() {
 			var value = event.srcElement.value;
 		}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 
 		function toggleCourseYearSelection() {
 			var isChecked = $('#StudentVM_isIrregular').is(':checked');
@@ -257,11 +235,6 @@
 		}
 
 		initializeUserName();
->>>>>>> Stashed changes
-=======
-
-		initializeUserName();
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 	</script>
 }
 

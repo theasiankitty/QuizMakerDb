@@ -15,7 +15,7 @@ namespace QuizMakerDb.Data.ViewModels
 
 		public string ConclusionDescription { get; set; } = string.Empty!;
 
-		public byte Minutes { get; set; }
+		public Int16 Minutes { get; set; }
 
 		public byte Takes { get; set; }
 

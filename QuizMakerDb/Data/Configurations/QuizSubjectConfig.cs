@@ -10,17 +10,24 @@ namespace QuizMakerDb.Data.Configurations
 		{
 			builder.HasKey(e => e.Id);
 
-			builder.HasOne(m => m.QuizInfo)
-				.WithOne()
-				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasOne(m => m.QuizInfo);
+			builder.HasOne(m => m.SubjectInfo);
+			builder.HasOne(m => m.SectionInfo);
 
-			builder.HasOne(m => m.SubjectInfo)
-				.WithOne()
-				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasIndex(m => m.QuizId)
+				.IsUnique(false);
 
-			builder.HasOne(m => m.SectionInfo)
-				.WithOne()
-				.OnDelete(DeleteBehavior.NoAction);
+			//builder.HasOne(m => m.QuizInfo)
+			//	.WithOne()
+			//	.OnDelete(DeleteBehavior.NoAction);
+
+			//builder.HasOne(m => m.SubjectInfo)
+			//	.WithOne()
+			//	.OnDelete(DeleteBehavior.NoAction);
+
+			//builder.HasOne(m => m.SectionInfo)
+			//	.WithOne()
+			//	.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

@@ -12,11 +12,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 	{
 		private readonly ApplicationDbContext _context;
 
-<<<<<<< HEAD
 		public SearchStudentModel(ApplicationDbContext context)
-=======
-		public SearchStudentModel(UserManager<AppUser> userManager, ApplicationDbContext context)
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 		{
 			_context = context;
 		}
@@ -148,11 +144,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 			return new JsonResult(new { message = "OK", students = unassignedStudents });
 		}
 
-<<<<<<< HEAD
 		public async Task<JsonResult> OnGetAllStudentAsync([FromQuery] int sectionId, int schoolYearId, byte? year, int currentPage, int pageSize)
-=======
-		public async Task<JsonResult> OnGetAllStudentAsync([FromQuery] int sectionId, int schoolYearId, byte year, int currentPage, int pageSize)
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 		{
 			var unassignedStudents = await _context.Students
 					.Where(m => m.Active)
@@ -163,11 +155,7 @@ namespace QuizMakerDb.Pages.SectionStudents
 
 			if (sectionId != 0)
 			{
-<<<<<<< HEAD
 				if (year != null)
-=======
-				if (year != 0)
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 				{
 					List<int> assignedIrregularStudents;
 					List<int> assignedStudents;

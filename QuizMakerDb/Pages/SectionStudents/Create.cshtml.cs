@@ -22,7 +22,16 @@ namespace QuizMakerDb.Pages.SectionStudents
 			_context = context;
 		}
 
-		public async Task<JsonResult> OnPostAsync([FromBody] object data, [FromQuery] string operation)
+		public class SectionStudentData
+		{
+            public int SectionId { get; set; }
+
+            public int StudentId { get; set; }
+
+            public int SchoolYearId { get; set; }
+        }
+
+        public async Task<JsonResult> OnPostAsync([FromBody] IList<SectionStudentData> studentSections)
 		{
 			var creator = await _userManager.GetUserAsync(User);
 
@@ -30,8 +39,6 @@ namespace QuizMakerDb.Pages.SectionStudents
 			{
 				return new JsonResult("NOT FOUND");
 			}
-
-			var studentSections = JsonConvert.DeserializeObject<List<SectionStudent>>(data.ToString());
 
 			if (studentSections == null || !studentSections.Any())
 			{

@@ -16,7 +16,7 @@ namespace QuizMakerDb.Data.Models
 
         public bool ShowAnswer { get; set; }
 
-        public int? Order { get; set; }
+        public string? Order { get; set; }
 
         public byte[]? Image { get; set; }
 

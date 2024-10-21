@@ -42,9 +42,7 @@ namespace QuizMakerDb.Pages.QuizSubjects
 			if (quizId != 0 && teacherId != 0)
 			{
 				var assignedSections = await _context.QuizSubjects
-					.Where(m => m.QuizId == quizId
-						&& m.QuizInfo.TeacherId == teacherId
-						&& m.Active)
+					.Where(m => m.QuizId == quizId && m.QuizInfo.TeacherId == teacherId)
 					.Select(m => m.SectionId)
 					.ToListAsync();
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using QuizMakerDb.Data.Configurations;
 using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
+using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Data
 {
@@ -16,8 +17,8 @@ namespace QuizMakerDb.Data
         }
 
 		public DbSet<Quiz> Quizzes { get; set; }
-        public DbSet<QuizSection> QuizSections { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
+        public DbSet<QuizSubject> QuizSubjects { get; set; }
         public DbSet<QuestionItem> QuestionItems { get; set; }
 		public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public DbSet<AnswerStudent> AnswerStudents { get; set; }
@@ -37,7 +38,7 @@ namespace QuizMakerDb.Data
             base.OnModelCreating(builder);
 
 			builder.ApplyConfiguration(new AnswerStudentConfig());
-			//builder.ApplyConfiguration(new TeacherSubjectConfig());
+			builder.ApplyConfiguration(new QuizSubjectConfig());
 
 			builder.Entity<AppUser>().ToTable("IdentityUsers");
             builder.Entity<AppRole>().ToTable("IdentityRoles");
@@ -47,7 +48,7 @@ namespace QuizMakerDb.Data
             builder.Entity<AppRoleClaim>().ToTable("IdentityRoleClaims");
             builder.Entity<AppUserToken>().ToTable("IdentityUserTokens");
 
-            //Seed(builder);
+            Seed(builder);
         }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)

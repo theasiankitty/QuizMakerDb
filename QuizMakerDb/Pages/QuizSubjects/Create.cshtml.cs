@@ -2,14 +2,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizMakerDb.Data.Identity;
-using QuizMakerDb.Data;
 using QuizMakerDb.Data.Models;
+using QuizMakerDb.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace QuizMakerDb.Pages.QuizSections
+namespace QuizMakerDb.Pages.QuizSubjects
 {
-    public class CreateModel : PageModel
-    {
+	public class CreateModel : PageModel
+	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly ApplicationDbContext _context;
 		private static Random random = new Random();
@@ -58,7 +58,7 @@ namespace QuizMakerDb.Pages.QuizSections
 							SectionId = subject.SectionId,
 							SubjectId = subject.SubjectId,
 							Code = GenerateRandomCode(),
-							Active = true,
+							Active = false,
 							CreatedBy = creator.Id,
 							CreatedDate = DateTime.Now
 						};
@@ -89,4 +89,5 @@ namespace QuizMakerDb.Pages.QuizSections
 				.Select(s => s[random.Next(s.Length)]).ToArray());
 		}
 	}
+
 }

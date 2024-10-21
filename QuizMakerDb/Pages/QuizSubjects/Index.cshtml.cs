@@ -87,7 +87,7 @@ namespace QuizMakerDb.Pages.QuizSubjects
 						.Include(m => m.SubjectInfo)
 						.Include(m => m.SectionInfo)
 						.ThenInclude(s => s.CourseYearInfo)
-						.Where(m => m.QuizId == quiz.Id && m.Active);
+						.Where(m => m.QuizId == quiz.Id);
 
 					if (!string.IsNullOrEmpty(searchSection))
 					{
@@ -104,8 +104,8 @@ namespace QuizMakerDb.Pages.QuizSubjects
 								: quizSubjects.OrderByDescending(o => o.Id);
 							break;
 						case "subject":
-							quizSubjects = SortOrder == "asc" ? quizSubjects.OrderBy(o => o.SubjectInfo.Name)
-								: quizSubjects.OrderByDescending(o => o.SubjectInfo.Name);
+							quizSubjects = SortOrder == "asc" ? quizSubjects.OrderBy(o => o.SubjectInfo.Code)
+								: quizSubjects.OrderByDescending(o => o.SubjectInfo.Code);
 							break;
 						case "course_year":
 							quizSubjects = SortOrder == "asc" ? quizSubjects.OrderBy(o => o.SectionInfo.CourseYearInfo.Name)
@@ -129,10 +129,11 @@ namespace QuizMakerDb.Pages.QuizSubjects
 						quizSubjects.Select(m => new QuizSubjectVM
 						{
 							Id = m.Id,
-							Subject = m.SubjectInfo.Name,
+							Subject = m.SubjectInfo.Code,
 							CourseYear = m.SectionInfo.CourseYearInfo.Name,
 							Section = m.SectionInfo.Name,
-							Code = m.Code
+							Code = m.Code,
+							Active = m.Active
 						}).AsNoTracking(),
 						pageIndex ?? 1,
 						pageSize

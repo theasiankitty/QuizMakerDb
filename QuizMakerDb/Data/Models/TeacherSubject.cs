@@ -10,9 +10,7 @@ namespace QuizMakerDb.Data.Models
 
         public int TeacherId { get; set; }
 
-        public int CourseYearId { get; set; }
-
-        public int SubjectId { get; set; }
+        public int CourseYearSubjectId { get; set; }
 
         public bool Active { get; set; }
 
@@ -27,10 +25,7 @@ namespace QuizMakerDb.Data.Models
         [ForeignKey(nameof(TeacherId))]
         public Teacher TeacherInfo { get; set; } = null!;
 
-        [ForeignKey(nameof(CourseYearId))]
-        public CourseYear CourseYearInfo { get; set; } = null!;
-
-        [ForeignKey(nameof(SubjectId))]
-        public Subject SubjectInfo { get; set; } = null!;
+        [ForeignKey(nameof(CourseYearSubjectId))]
+        public CourseYearSubject CourseYearSubjectInfo { get; set; } = null!;
     }
 }

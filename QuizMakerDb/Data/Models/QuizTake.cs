@@ -3,19 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuizMakerDb.Data.Models
 {
-	public class QuizSubject
+	public class QuizTake
 	{
 		[Key]
-        public int Id { get; set; }
+		public int Id { get; set; }
+
+        public int StudentId { get; set; }
 
         public int QuizId { get; set; }
 
-        public int SubjectId { get; set; }
+        public DateTime StartTime { get; set; }
 
-        public int SectionId { get; set; }
+        public int Duration { get; set; }
 
-        [MaxLength(6)]
-        public string Code { get; set; } = string.Empty!;
+        public byte Takes { get; set; }
 
 		public bool Active { get; set; }
 
@@ -27,13 +28,10 @@ namespace QuizMakerDb.Data.Models
 
 		public DateTime? UpdatedDate { get; set; }
 
+		[ForeignKey(nameof(StudentId))]
+		public Student StudentInfo { get; set; } = null!;
+
 		[ForeignKey(nameof(QuizId))]
 		public Quiz QuizInfo { get; set; } = null!;
-
-		[ForeignKey(nameof(SubjectId))]
-		public Subject SubjectInfo { get; set; } = null!;
-
-		[ForeignKey(nameof(SectionId))]
-		public Section SectionInfo { get; set; } = null!;
-	}
+    }
 }

@@ -239,15 +239,34 @@
 													</div>
 												</a>
 											</th>
-											@if (isAdmin)
-											{
-												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
-											}
-
-											else
-											{
-												<th class="bg-body-secondary bg-gradient" style="min-width: 45px; width: 50px;"></th>
-											}
+											<th class="bg-body-secondary bg-gradient" style="min-width: 145px; width: 150px;">
+												<a class="text-decoration-none text-dark"
+												   asp-page="./Index"
+												   asp-route-sortColumn="active"
+												   asp-route-sortOrder="@(Model.SortOrder == "asc" ? "desc" : "asc")"
+												   asp-route-quizId="@Model.QuizVM.Id"
+												   asp-route-searchSubject="@Model.SearchSubject"
+												   asp-route-searchSection="@Model.SearchSection">
+													<div class="container-fluid">
+														<div class="row">
+															<div class="col-10">
+																@Html.DisplayNameFor(model => model.QuizSubjects[0].Active)
+															</div>
+															<div class="col-2 text-end p-0">
+																@if (Model.SortColumn == "active")
+																{
+																	<i class="bi bi-sort-up" @(Model.SortOrder == "asc" ? "hidden" : "")></i>
+																	<i class="bi bi-sort-down-alt" @(Model.SortOrder == "asc" ? "" : "hidden")></i>
+																}
+																else
+																{
+																	<i class="bi bi-arrow-down-up" style="font-size: 13px;"></i>
+																}
+															</div>
+														</div>
+													</div>
+												</a>
+											</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -269,13 +288,10 @@
 												<td class="d-none d-sm-table-cell">
 													@Html.DisplayFor(modelItem => item.Code)
 												</td>
-												<td class="text-center">
-													@if (isAdmin)
-													{
-														<button type="button" class="btn btn-danger btn-sm btn-block" onclick="editQuizSection(@item.Id)">
-															<i class="bi bi-x-lg"></i>
-														</button>
-													}
+												<td class="text-center d-flex align-items-center justify-content-center">
+													<div class="form-check form-switch">
+														<input class="form-check-input custom-switch" type="checkbox" role="switch" data-id="@item.Id" data-code="@item.Code" @(item.Active ? "checked" : "")>
+													</div>
 												</td>
 											</tr>
 										}
@@ -479,6 +495,14 @@
 				$('#hiddenSubjectId').val(subjectId);
 			});
 
+			$('.form-check-input').change(function () {
+				const activeId = $(this).data('id');
+				const isChecked = $(this).is(':checked');
+				const code = $(this).data('code');
+
+				updateActiveStatus(activeId, isChecked, code);
+			});
+
 			updateAddButton();
 		});
 
@@ -631,7 +655,7 @@
 
 			$.ajax({
 				type: 'POST',
-				url: '/QuizSections/Create',
+				url: '/QuizSubjects/Create',
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
@@ -643,6 +667,34 @@
 					window.location.href = newUrl;
 				}
 			});
+		}
+
+		function updateActiveStatus(id, status, code) {
+			var data = {
+				id: id,
+				active: status
+			};
+
+			$.ajax({
+				type: 'POST',
+				url: '/QuizSubjects/Update',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify(data),
+				success: function (data) {
+					var newUrl = `${window.location.pathname}?quizId=${@Model.QuizVM.Id}`;
+					window.location.href = newUrl;
+
+					showUpdateModal(code);
+				}
+			});
+		}
+
+		function showUpdateModal(code) {
+			console.log(code);
 		}
 
 		// function getSearchSection(section) {

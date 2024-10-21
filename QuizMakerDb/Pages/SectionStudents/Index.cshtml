@@ -1,9 +1,12 @@
 ﻿@page
 @using QuizMakerDb.Data.Identity
 @model QuizMakerDb.Pages.SectionStudents.IndexModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @inject UserManager<AppUser> userManager
 @{
 	ViewData["Title"] = "Index";
+
+	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
 
 	var user = await userManager.GetUserAsync(User);
 
@@ -44,6 +47,8 @@
 		}
 	}
 }
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <div class="container-fluid">
 	<nav aria-label="breadcrumb">
@@ -337,11 +342,6 @@
 	</div>
 </div>
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 <div class="modal fade" id="addStudentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content">
@@ -389,11 +389,6 @@
 	</div>
 </div>
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
-
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 <div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -696,11 +691,13 @@
 
 		function submitStudents() {
 			var sectionStudents = [];
+
 			$("[name=selectedStudentIds]:checked").each(function (i, elem) {
 				sectionStudents.push({
-					"sectionId": "@Model.SectionVM.Id",
-					"studentId": elem.value,
-					"schoolYearId": "@Model.SectionVM.SchoolYearId" });
+					sectionId: parseInt("@Model.SectionVM.Id"),
+					studentId: parseInt(elem.value),
+					schoolYearId: parseInt("@Model.SectionVM.SchoolYearId")
+				});
 			});
 
 			$.ajax({
@@ -709,8 +706,7 @@
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
-					RequestVerificationToken:
-						$('input:hidden[name="__RequestVerificationToken"]').val()
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
 				data: JSON.stringify(sectionStudents),
 				success: function (data) {
@@ -727,8 +723,7 @@
 				dataType: 'json',
 				contentType: 'application/json',
 				headers: {
-					RequestVerificationToken:
-						$('input:hidden[name="__RequestVerificationToken"]').val()
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
 				data: JSON.stringify(studentSectionId),
 				success: function (response) {

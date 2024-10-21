@@ -38,17 +38,7 @@ namespace QuizMakerDb.Pages.CourseYearSubjects
 				return new JsonResult("NOT FOUND");
 			}
 
-<<<<<<< Updated upstream
-			var courseYearSubjects = JsonConvert.DeserializeObject<List<CourseYearSubject>>(data.ToString());
-
-<<<<<<< HEAD
-			if (courseYearSubjects.Any())
-=======
-			if (courseYearSubjects == null)
->>>>>>> Stashed changes
-=======
 			if (courseYearSubjects == null || !courseYearSubjects.Any())
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
 			{
 				return new JsonResult("No subjects provided");
 			}

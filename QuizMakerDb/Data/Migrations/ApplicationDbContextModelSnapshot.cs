@@ -52,43 +52,19 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("3a193220-b5eb-46bc-bd84-c756583c6887"),
-=======
-                            Id = new Guid("fb7dc09f-201e-45a9-b387-b8d4c0ea8407"),
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("5617a662-7420-44ab-9ff3-76bfa67b2c52"),
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            Id = new Guid("bbdaac0f-ad90-45ba-bab8-959e6ac10fec"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("f4bf64a4-5b11-4099-8639-cd905362b963"),
-=======
-                            Id = new Guid("d2d0e4de-17dc-49e4-b9ee-846784652a54"),
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("5cde413c-fc3c-4cd5-8d97-5fee8ca28e0d"),
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            Id = new Guid("38bbb7f3-f9f9-4790-96a2-1f60fb61c4df"),
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("6b0a0eb3-8514-43ff-9c2b-4b1b5b77c231"),
-=======
-                            Id = new Guid("9858076e-2e32-43ad-83f5-b4a692176296"),
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("c1623f62-f123-4e06-841e-87449daa44f6"),
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            Id = new Guid("fefa8b45-64ba-434e-9ea7-0a51c92610c9"),
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -192,127 +168,52 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("80869283-ea00-44c1-8cad-ef41850851b7"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e05028d6-d1d0-486b-bcd9-99c40f8ed796",
-=======
-                            Id = new Guid("391affc7-508b-4bf4-b1e5-284aba2a0a34"),
+                            Id = new Guid("8a4ec372-bb08-4096-9ad6-6b21be19c6f7"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "c8685a8b-fb2c-4f1f-a4a2-57b485c1ed54",
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("2dbe676c-4deb-41f5-bdc1-45c47c1167ef"),
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "1bc8c3ed-07ac-4748-9cf2-4231b3a8cae2",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            ConcurrencyStamp = "e340dad9-2863-4f01-ac36-0f11e4bcfb5e",
                             Email = "sysadmin@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSADMIN@DOMAIN.COM",
                             NormalizedUserName = "SYSADMIN",
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            PasswordHash = "AQAAAAIAAYagAAAAEOJY4GW13Uq/ud0lDp18yJoVa4K7Lz9EjgBjG5sfElJhfz7uT15V9jKVva7ALZfkMw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENMgYiZRBmVhyB2QN6dOhMysj4IDJQa8P8g4eV7qifHtkVNDJje3+qtjEwQSsg1syA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fa6bc9ba-ddf5-4a66-94ad-bb3f496a1947",
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAEBeHgo6rrBVG/cE76ne8z5WM9w4Bozh3sszbQnveDZ4TxQ3G4eADYX2LNI/S6Kj89A==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "464e2548-3e71-4b0c-9e33-26419cddd279",
->>>>>>> Stashed changes
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAENGzJHyipASbwNgzY1bjH5uV5xBMA94ECIxrBzwkPHAuy7PPtsApV9z8PKZz7BZdTw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "92286580-3bfb-471e-8445-cc426cb4fd63",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            SecurityStamp = "5aedea41-64f4-4769-9600-f4e6a878e58c",
                             TwoFactorEnabled = false,
                             UserName = "SysAdmin"
                         },
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("ed501a42-91cf-4910-929d-18f08d6a3909"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "d6120998-2321-45c6-854a-afef7f2ad5f9",
-=======
-                            Id = new Guid("5c9758d6-fb68-46f1-ba72-08ebb4017c26"),
+                            Id = new Guid("ecdf97dc-cff6-4af4-8a67-fd7d45430a4d"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "6f9e05b7-288e-4237-ad40-17c10aa4a403",
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("9a3b29f8-4f1d-41c8-973b-f3e38f8bce26"),
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "73266ad0-445a-433c-b77e-54d29b0762d7",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            ConcurrencyStamp = "ff33dd81-89d1-47c7-b83d-5bdca86061df",
                             Email = "teacher@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TEACHER@DOMAIN.COM",
                             NormalizedUserName = "TEACHER",
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            PasswordHash = "AQAAAAIAAYagAAAAEPassVwBX9WqIJT9WPcJh9EOdo0ziH48EzL6WbojeZr4R7ODhsRKkS3EPK/FCeZvNw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEATvuei5K9W8J8Q8MxCEKb2BWIsbX3PLlNkqFBQBnGmbxoFzCSzs5M7MceX2+v+KXA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7a634bc5-460c-43ae-a627-a1d3e58a4bfc",
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAEKcueDzLkx9oH0SzV7mysOVnjRBkxKtAALWmbtsOSMptoR8yTzdfHjfm31E35IHJFA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "cdc23666-38ed-4b8b-b46b-5ceb5fe7bd0b",
->>>>>>> Stashed changes
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAED8ywIjHxFS2xJoNBU+6jGJOCw2Ne1hIluArPKxvfRMabAnaC+Z03yiQR2jwAUQ6ew==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a4861005-4ade-4d30-8e96-90e4208ea8fb",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            SecurityStamp = "729d2996-98d2-4df1-91d6-a742db3d2e60",
                             TwoFactorEnabled = false,
                             UserName = "Teacher"
                         },
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            Id = new Guid("99e8f98f-f7b7-4f6e-9d4c-01b7aabee16b"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "4a56b01a-5a28-48a6-a79b-551623c25aa5",
-=======
-                            Id = new Guid("019ebbbd-aaf7-4cde-8087-c48616b430ce"),
+                            Id = new Guid("55c9344c-b50b-4c27-8f30-a4ab52281ac2"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "0e4a2453-b30c-40fb-ad02-630ac9407650",
->>>>>>> Stashed changes
-=======
-                            Id = new Guid("8f5be169-bd02-4f0d-8501-5a1d5e11d97a"),
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "7cb69e03-e584-4dba-9b26-70bdfc7201b4",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            ConcurrencyStamp = "e880644d-6218-4310-acfe-bca19b4b15e5",
                             Email = "student@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "STUDENT@DOMAIN.COM",
                             NormalizedUserName = "STUDENT",
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            PasswordHash = "AQAAAAIAAYagAAAAEDkHlFRKsQJ5uf90OmxyzE08CemQbfrVppAxEDT2yDG7jqsm3MK1j04XKL8Aj1qO4Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGTvbfyWiF0bErgcQwdh92Scaokg0k5DgEBkLzmV7Nad3DGYuG5YWydVvHR5tdmjCA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f96b9b84-513b-4262-85f0-db694f6669fc",
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAEOuwqXQssKaXxd56ggYUjMed+WR9djgnfnlZDbsAOl4mSMaX0E0tya5J7SG6SSjBaQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "c2885d85-c1bc-4bbb-a31a-2785592e82de",
->>>>>>> Stashed changes
-=======
-                            PasswordHash = "AQAAAAIAAYagAAAAEJb4zc7mx1rGgnTmdlPNWJMJQx444LuEniN10iIiryV/RmmNIlBedRMOJ5mjLuT36Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "9e21a665-484a-4eff-b585-5f7103c0615d",
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            SecurityStamp = "1eb6336e-e282-4244-989f-fcfcc83c74e1",
                             TwoFactorEnabled = false,
                             UserName = "Student"
                         });
@@ -382,43 +283,18 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                            UserId = new Guid("80869283-ea00-44c1-8cad-ef41850851b7"),
-                            RoleId = new Guid("3a193220-b5eb-46bc-bd84-c756583c6887")
-=======
-                            UserId = new Guid("2dbe676c-4deb-41f5-bdc1-45c47c1167ef"),
-                            RoleId = new Guid("5617a662-7420-44ab-9ff3-76bfa67b2c52")
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            UserId = new Guid("8a4ec372-bb08-4096-9ad6-6b21be19c6f7"),
+                            RoleId = new Guid("bbdaac0f-ad90-45ba-bab8-959e6ac10fec")
                         },
                         new
                         {
-                            UserId = new Guid("9a3b29f8-4f1d-41c8-973b-f3e38f8bce26"),
-                            RoleId = new Guid("5cde413c-fc3c-4cd5-8d97-5fee8ca28e0d")
+                            UserId = new Guid("ecdf97dc-cff6-4af4-8a67-fd7d45430a4d"),
+                            RoleId = new Guid("38bbb7f3-f9f9-4790-96a2-1f60fb61c4df")
                         },
                         new
                         {
-<<<<<<< HEAD
-                            UserId = new Guid("99e8f98f-f7b7-4f6e-9d4c-01b7aabee16b"),
-                            RoleId = new Guid("6b0a0eb3-8514-43ff-9c2b-4b1b5b77c231")
-=======
-                            UserId = new Guid("391affc7-508b-4bf4-b1e5-284aba2a0a34"),
-                            RoleId = new Guid("fb7dc09f-201e-45a9-b387-b8d4c0ea8407")
-                        },
-                        new
-                        {
-                            UserId = new Guid("5c9758d6-fb68-46f1-ba72-08ebb4017c26"),
-                            RoleId = new Guid("d2d0e4de-17dc-49e4-b9ee-846784652a54")
-                        },
-                        new
-                        {
-                            UserId = new Guid("019ebbbd-aaf7-4cde-8087-c48616b430ce"),
-                            RoleId = new Guid("9858076e-2e32-43ad-83f5-b4a692176296")
->>>>>>> Stashed changes
-=======
-                            UserId = new Guid("8f5be169-bd02-4f0d-8501-5a1d5e11d97a"),
-                            RoleId = new Guid("c1623f62-f123-4e06-841e-87449daa44f6")
->>>>>>> 64989993402aa9d467121889e5da6b3cb58f9ffd
+                            UserId = new Guid("55c9344c-b50b-4c27-8f30-a4ab52281ac2"),
+                            RoleId = new Guid("fefa8b45-64ba-434e-9ea7-0a51c92610c9")
                         });
                 });
 
@@ -628,8 +504,8 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("Order")
-                        .HasColumnType("int");
+                    b.Property<string>("Order")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuizQuestionId")
                         .HasColumnType("int");
@@ -653,8 +529,6 @@ namespace QuizMakerDb.Data.Migrations
                     b.ToTable("QuestionAnswers");
                 });
 
-<<<<<<< Updated upstream
-=======
             modelBuilder.Entity("QuizMakerDb.Data.Models.QuestionItem", b =>
                 {
                     b.Property<int>("Id")
@@ -696,7 +570,6 @@ namespace QuizMakerDb.Data.Migrations
                     b.ToTable("QuestionItems");
                 });
 
->>>>>>> Stashed changes
             modelBuilder.Entity("QuizMakerDb.Data.Models.Quiz", b =>
                 {
                     b.Property<int>("Id")
@@ -727,8 +600,8 @@ namespace QuizMakerDb.Data.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<byte>("Minutes")
-                        .HasColumnType("tinyint");
+                    b.Property<short>("Minutes")
+                        .HasColumnType("smallint");
 
                     b.Property<bool>("ShowResults")
                         .HasColumnType("bit");
@@ -821,14 +694,11 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-<<<<<<< Updated upstream
-=======
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
->>>>>>> Stashed changes
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -852,14 +722,11 @@ namespace QuizMakerDb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId")
-                        .IsUnique();
+                    b.HasIndex("QuizId");
 
-                    b.HasIndex("SectionId")
-                        .IsUnique();
+                    b.HasIndex("SectionId");
 
-                    b.HasIndex("SubjectId")
-                        .IsUnique();
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("QuizSubjects");
                 });
@@ -998,12 +865,9 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-<<<<<<< Updated upstream
-=======
                     b.Property<int?>("CurrentSectionId")
                         .HasColumnType("int");
 
->>>>>>> Stashed changes
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1157,7 +1021,7 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int>("CourseYearId")
+                    b.Property<int>("CourseYearSubjectId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("CreatedBy")
@@ -1165,9 +1029,6 @@ namespace QuizMakerDb.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
@@ -1180,9 +1041,7 @@ namespace QuizMakerDb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseYearId");
-
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("CourseYearSubjectId");
 
                     b.HasIndex("TeacherId");
 
@@ -1336,21 +1195,21 @@ namespace QuizMakerDb.Data.Migrations
             modelBuilder.Entity("QuizMakerDb.Data.Models.QuizSubject", b =>
                 {
                     b.HasOne("QuizMakerDb.Data.Models.Quiz", "QuizInfo")
-                        .WithOne()
-                        .HasForeignKey("QuizMakerDb.Data.Models.QuizSubject", "QuizId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany()
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("QuizMakerDb.Data.Models.Section", "SectionInfo")
-                        .WithOne()
-                        .HasForeignKey("QuizMakerDb.Data.Models.QuizSubject", "SectionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany()
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("QuizMakerDb.Data.Models.Section", "SubjectInfo")
-                        .WithOne()
-                        .HasForeignKey("QuizMakerDb.Data.Models.QuizSubject", "SubjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("QuizMakerDb.Data.Models.Subject", "SubjectInfo")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("QuizInfo");
@@ -1422,15 +1281,9 @@ namespace QuizMakerDb.Data.Migrations
 
             modelBuilder.Entity("QuizMakerDb.Data.Models.TeacherSubject", b =>
                 {
-                    b.HasOne("QuizMakerDb.Data.Models.CourseYear", "CourseYearInfo")
+                    b.HasOne("QuizMakerDb.Data.Models.CourseYearSubject", "CourseYearSubjectInfo")
                         .WithMany()
-                        .HasForeignKey("CourseYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizMakerDb.Data.Models.Subject", "SubjectInfo")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
+                        .HasForeignKey("CourseYearSubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1440,9 +1293,7 @@ namespace QuizMakerDb.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourseYearInfo");
-
-                    b.Navigation("SubjectInfo");
+                    b.Navigation("CourseYearSubjectInfo");
 
                     b.Navigation("TeacherInfo");
                 });

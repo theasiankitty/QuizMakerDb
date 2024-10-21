@@ -4,6 +4,7 @@ namespace QuizMakerDb.Data.ViewModels
 {
 	public class QuizSubjectVM
 	{
+		[DisplayFormat(DataFormatString = "{0:000000000#}")]
 		public int Id { get; set; }
 
 		public int QuizId { get; set; }

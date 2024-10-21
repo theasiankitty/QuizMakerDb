@@ -29,7 +29,7 @@
 							<h4>Total Points: <span id="totalPoints"></span></h4>
 						</div>
 						<div class="col-md-12 text-center mb-2">
-							<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#questionTypeModal" type="button">Add Question</button>
+							<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#questionTypeModal">Add Question</button>
 						</div>
 						<div class="col-md-12 text-center">
 							<a href="/QuizSubjects?quizId=@Model.QuizVM.Id" class="btn btn-success">
@@ -45,7 +45,7 @@
 			<div class="row d-flex align-items-center justify-content-center gap-3" id="questionContainer">
 			</div>
 		</div>
-	
+
 	</div>
 </div>
 
@@ -124,8 +124,8 @@
 						</div>
 						<div class="col-sm-12 col-md-3 order-first order-sm-first order-md-last mb-4">
 							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-								style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
-								onclick="uploadImage('#mc_question_image_container', '#mc_input_image_file')">
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#mc_question_image_container', '#mc_input_image_file')">
 								<div id="mc_question_image_container" class="custom-image-container rounded">
 									<i class="bi bi-card-image fs-3 text-secondary"></i>
 								</div>
@@ -171,8 +171,8 @@
 						</div>
 						<div class="col-sm-12 col-md-3 order-first order-sm-first order-md-last mb-4">
 							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-								style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
-								onclick="uploadImage('#e_mc_question_image_container', '#e_mc_input_image_file')">
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_mc_question_image_container', '#e_mc_input_image_file')">
 								<div id="e_mc_question_image_container" class="custom-image-container rounded">
 									<i class="bi bi-card-image fs-3 text-secondary"></i>
 								</div>
@@ -197,7 +197,6 @@
 		</form>
 	</div>
 </div>
-
 
 <!-- True Or False Modal -->
 <div class="modal fade" id="trueOrFalseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="trueOrFalseModalLabel" aria-hidden="true">
@@ -973,7 +972,7 @@
 			$(containerId).empty().append('<i class="bi bi-card-image fs-3 text-secondary"></i>');
 			$(fileId).val('');
 		}
-		
+
 		function showImage(containerId, fileId, base64) {
 			if (!base64.startsWith('data:image/')) {
 				console.error('Invalid Base64 image data.');
@@ -1138,10 +1137,10 @@
 				headers: {
 					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
-				data: JSON.stringify({ 
+				data: JSON.stringify({
 					questionId: questionId
 				}),
-				success: function(response) {
+				success: function (response) {
 					if (response === 'OK') {
 						closeModal(questionType, 'edit');
 
@@ -1153,7 +1152,7 @@
 						}).toast('show');
 					}
 				},
-				error: function(xhr) {
+				error: function (xhr) {
 					console.error("Error updating order:", xhr.responseText);
 				}
 			});
@@ -1170,16 +1169,16 @@
 				headers: {
 					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
 				},
-				data: JSON.stringify({ 
-					questionId: questionId, 
-					direction: direction 
+				data: JSON.stringify({
+					questionId: questionId,
+					direction: direction
 				}),
-				success: function(response) {
+				success: function (response) {
 					if (response === 'OK') {
 						loadQuestions();
 					}
 				},
-				error: function(xhr) {
+				error: function (xhr) {
 					console.error("Error updating order:", xhr.responseText);
 				}
 			});
@@ -1291,13 +1290,13 @@
 
 			if (data.length === 0) {
 				var emptyQuestions = `
-						<div class="col-12">
-							<div class="text-center text-secondary">
-								<i class="bi bi-question-circle" style="font-size: 5rem;"></i>
-								<h1>No questions available.</h1>
-							</div>
-						</div>
-					`;
+								<div class="col-12">
+									<div class="text-center text-secondary">
+										<i class="bi bi-question-circle" style="font-size: 5rem;"></i>
+										<h1>No questions available.</h1>
+									</div>
+								</div>
+							`;
 
 				questionContainer.append(emptyQuestions);
 				$('#publishButton').prop('disabled', true);
@@ -1343,30 +1342,30 @@
 					}
 
 					var questionCard = `
-							<div class="col-12">
-								<div class="card custom-card" data-question='${JSON.stringify(question)}' style="cursor: pointer;" onclick="editQuestion(this)">
-									<div class="card-body">
-										<div class="row">
-											<div class="col-10 col-md-11">
-												<h4>${questionType}</h4>
-												<p>${questionDescription}</p>
-												<div class="answerContainer d-flex align-items-center"><span id="answerType"></span>${questionAnswers}</div>
-											</div>
-											<div class="col-2 col-md-1 text-end">
-												<div class="btn-group-vertical" role="group">
-													<button type="button" class="btn btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'up')">
-														<i class="bi bi-chevron-up"></i>
-													</button>
-													<button type="button" class="btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'down')">
-														<i class="bi bi-chevron-down"></i>
-													</button>
+									<div class="col-12">
+										<div class="card custom-card" data-question='${JSON.stringify(question)}' style="cursor: pointer;" onclick="editQuestion(this)">
+											<div class="card-body">
+												<div class="row">
+													<div class="col-10 col-md-11">
+														<h4>${questionType}</h4>
+														<p>${questionDescription}</p>
+														<div class="answerContainer d-flex align-items-center"><span id="answerType"></span>${questionAnswers}</div>
+													</div>
+													<div class="col-2 col-md-1 text-end">
+														<div class="btn-group-vertical" role="group">
+															<button type="button" class="btn btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'up')">
+																<i class="bi bi-chevron-up"></i>
+															</button>
+															<button type="button" class="btn btn-outline-secondary" onclick="changeOrder(${question.id}, 'down')">
+																<i class="bi bi-chevron-down"></i>
+															</button>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-						`;
+								`;
 
 					questionContainer.append(questionCard);
 
@@ -1544,7 +1543,7 @@
 
 		function deactivateAnswer(answerId) {
 			const answer = e_multipleChoiceData.answers.find(ans => ans.id === answerId);
-    
+
 			if (answer) {
 				answer.active = false;
 				console.log(`Answer with id ${answerId} is now inactive.`);
@@ -1556,7 +1555,7 @@
 				$(inputElement).closest('.e-choice-container').slideUp(300, function () {
 					deactivateAnswer(id);
 					$(this).remove();
-					
+
 					if ($('.form-check-input:checked').length === 0) {
 						$('#e_mc_choice_radio_1').prop('checked', true);
 					}
@@ -1568,30 +1567,30 @@
 			e_mc_choices++;
 
 			var choice = `
-					<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${e_mc_choices}" style="display: none;">
-						<div class="row">
-							<div class="col-sm-12 col-md-10 mb-2">
-								<div class="form-check d-flex align-items-center gap-3">
-									<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${e_mc_choices}" style="transform: scale(1.2);">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="e_mc_choice_${e_mc_choices}" placeholder="Choice #${e_mc_choices}" maxlength="100" value="Another Choice" onchange="e_checkAnotherChoiceInput(this)">
-										<label for="e_mc_choice_${e_mc_choices}">Another Choice</label>
+							<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${e_mc_choices}" style="display: none;">
+								<div class="row">
+									<div class="col-sm-12 col-md-10 mb-2">
+										<div class="form-check d-flex align-items-center gap-3">
+											<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${e_mc_choices}" style="transform: scale(1.2);">
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="e_mc_choice_${e_mc_choices}" placeholder="Choice #${e_mc_choices}" maxlength="100" value="Another Choice" onchange="e_checkAnotherChoiceInput(this)">
+												<label for="e_mc_choice_${e_mc_choices}">Another Choice</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+										<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+											style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+											onclick="uploadImage('#e_mc_choice_image_container_${e_mc_choices}', '#e_mc_choice_input_image_file_${e_mc_choices}')">
+											<div id="e_mc_choice_image_container_${e_mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+												<i class="bi bi-card-image fs-3 text-secondary"></i>
+											</div>
+										</div>
+										<input type="file" id="e_mc_choice_input_image_file_${e_mc_choices}" accept="image/*" style="display: none;" />
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
-								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-									onclick="uploadImage('#e_mc_choice_image_container_${e_mc_choices}', '#e_mc_choice_input_image_file_${e_mc_choices}')">
-									<div id="e_mc_choice_image_container_${e_mc_choices}" class="custom-image-container rounded" style="height: 55px;">
-										<i class="bi bi-card-image fs-3 text-secondary"></i>
-									</div>
-								</div>
-								<input type="file" id="e_mc_choice_input_image_file_${e_mc_choices}" accept="image/*" style="display: none;" />
-							</div>
-						</div>
-					</div>
-				`;
+						`;
 
 			$('#e_addMoreButtonContainer').before(choice);
 			$(`#e_choice_container_${e_mc_choices}`).slideDown(300);
@@ -1621,49 +1620,49 @@
 
 			e_mc_choices_container.empty();
 
-			$.each(data.answers, function(index, answer) {
+			$.each(data.answers, function (index, answer) {
 				index++;
 
 				var isChecked = answer.isCorrect ? 'checked' : '';
 
 				if (index <= mc_minimum_choices) {
 					var choice = `
-						<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
-							<input type="hidden" id="e_mc_id" value="${data.id}" />
-							<input type="hidden" id="e_mc_order" value="${data.order}" />
-							<div class="row">
-								<div class="col-sm-12 col-md-10 mb-2">
-									<div class="form-check d-flex align-items-center gap-3">
-										<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
-										<div class="form-floating w-100">
-											<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" value="${answer.answer}">
-											<label for="e_mc_choice_${index}">Choice #${index}</label>
+								<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
+									<input type="hidden" id="e_mc_id" value="${data.id}" />
+									<input type="hidden" id="e_mc_order" value="${data.order}" />
+									<div class="row">
+										<div class="col-sm-12 col-md-10 mb-2">
+											<div class="form-check d-flex align-items-center gap-3">
+												<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
+												<div class="form-floating w-100">
+													<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" value="${answer.answer}">
+													<label for="e_mc_choice_${index}">Choice #${index}</label>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+											<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+												style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+												onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
+												<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
+													<i class="bi bi-card-image fs-3 text-secondary"></i>
+												</div>
+											</div>
+											<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
-									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-										onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
-										<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
-											<i class="bi bi-card-image fs-3 text-secondary"></i>
-										</div>
-									</div>
-									<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
-								</div>
-							</div>
-						</div>
-					`;
+							`;
 
 					e_mc_choices_container.append(choice);
 					$(`#e_choice_container_${index}`).slideDown(300);
 
 					if (index === mc_minimum_choices) {
 						var addMoreButton = `
-								<div class="col-12 mt-2 mb-2 text-end" id="e_addMoreButtonContainer">
-									<button class="btn btn-outline-secondary" type="button" onclick="e_addMoreMultipleChoice()">Add Another Choice</button>
-								</div>
-							`;
+										<div class="col-12 mt-2 mb-2 text-end" id="e_addMoreButtonContainer">
+											<button class="btn btn-outline-secondary" type="button" onclick="e_addMoreMultipleChoice()">Add Another Choice</button>
+										</div>
+									`;
 
 						e_mc_choices_container.append(addMoreButton);
 					}
@@ -1671,30 +1670,30 @@
 					e_mc_choices = index;
 				} else {
 					var choice = `
-							<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
-								<div class="row">
-									<div class="col-sm-12 col-md-10 mb-2">
-										<div class="form-check d-flex align-items-center gap-3">
-											<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
-											<div class="form-floating w-100">
-												<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" data-answer='${JSON.stringify(answer)}' value="${answer.answer}" onchange="e_checkAnotherChoiceInput(this, ${answer.id})">
-												<label for="e_mc_choice_${index}">Another Choice</label>
+									<div class="col-12 mb-2 e-choice-container" id="e_choice_container_${index}" style="display: none;">
+										<div class="row">
+											<div class="col-sm-12 col-md-10 mb-2">
+												<div class="form-check d-flex align-items-center gap-3">
+													<input class="form-check-input" type="radio" name="e_mc_choice_radio" id="e_mc_choice_radio_${index}" style="transform: scale(1.2);" ${isChecked}>
+													<div class="form-floating w-100">
+														<input type="text" class="form-control" id="e_mc_choice_${index}" placeholder="Choice #${index}" maxlength="100" data-answer='${JSON.stringify(answer)}' value="${answer.answer}" onchange="e_checkAnotherChoiceInput(this, ${answer.id})">
+														<label for="e_mc_choice_${index}">Another Choice</label>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+												<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+													style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+													onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
+													<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
+														<i class="bi bi-card-image fs-3 text-secondary"></i>
+													</div>
+												</div>
+												<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
 											</div>
 										</div>
 									</div>
-									<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
-										<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-											style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-											onclick="uploadImage('#e_mc_choice_image_container_${index}', '#e_mc_choice_input_image_file_${index}')">
-											<div id="e_mc_choice_image_container_${index}" class="custom-image-container rounded" style="height: 55px;">
-												<i class="bi bi-card-image fs-3 text-secondary"></i>
-											</div>
-										</div>
-										<input type="file" id="e_mc_choice_input_image_file_${index}" accept="image/*" style="display: none;" />
-									</div>
-								</div>
-							</div>
-						`;
+								`;
 
 					$('#e_addMoreButtonContainer').before(choice);
 					$(`#e_choice_container_${index}`).slideDown(300);
@@ -1814,30 +1813,30 @@
 			mc_choices++;
 
 			var choice = `
-					<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
-						<div class="row">
-							<div class="col-sm-12 col-md-10 mb-2">
-								<div class="form-check d-flex align-items-center gap-3">
-									<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100" value="Another Choice" onchange="checkAnotherChoiceInput(this)">
-										<label for="mc_choice_${mc_choices}">Another Choice</label>
+							<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
+								<div class="row">
+									<div class="col-sm-12 col-md-10 mb-2">
+										<div class="form-check d-flex align-items-center gap-3">
+											<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);">
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100" value="Another Choice" onchange="checkAnotherChoiceInput(this)">
+												<label for="mc_choice_${mc_choices}">Another Choice</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+										<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+											style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+											onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
+											<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+												<i class="bi bi-card-image fs-3 text-secondary"></i>
+											</div>
+										</div>
+										<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
-								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-									onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
-									<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
-										<i class="bi bi-card-image fs-3 text-secondary"></i>
-									</div>
-								</div>
-								<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
-							</div>
-						</div>
-					</div>
-				`;
+						`;
 
 			$('#addMoreButtonContainer').before(choice);
 			$(`#choice_container_${mc_choices}`).slideDown(300);
@@ -1873,40 +1872,40 @@
 				var isChecked = mc_choices === 1 ? 'checked' : '';
 
 				var choice = `
-					<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
-						<div class="row">
-							<div class="col-sm-12 col-md-10 mb-2">
-								<div class="form-check d-flex align-items-center gap-3">
-									<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);" ${isChecked}>
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100">
-										<label for="mc_choice_${mc_choices}">Choice #${mc_choices}</label>
+							<div class="col-12 mb-2 choice-container" id="choice_container_${mc_choices}" style="display: none;">
+								<div class="row">
+									<div class="col-sm-12 col-md-10 mb-2">
+										<div class="form-check d-flex align-items-center gap-3">
+											<input class="form-check-input" type="radio" name="mc_choice_radio" id="mc_choice_radio_${mc_choices}" style="transform: scale(1.2);" ${isChecked}>
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="mc_choice_${mc_choices}" placeholder="Choice #${mc_choices}" maxlength="100">
+												<label for="mc_choice_${mc_choices}">Choice #${mc_choices}</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
+										<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+											style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+											onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
+											<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
+												<i class="bi bi-card-image fs-3 text-secondary"></i>
+											</div>
+										</div>
+										<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-12 col-md-2 ps-md-0 mb-2">
-								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-									onclick="uploadImage('#mc_choice_image_container_${mc_choices}', '#mc_choice_input_image_file_${mc_choices}')">
-									<div id="mc_choice_image_container_${mc_choices}" class="custom-image-container rounded" style="height: 55px;">
-										<i class="bi bi-card-image fs-3 text-secondary"></i>
-									</div>
-								</div>
-								<input type="file" id="mc_choice_input_image_file_${mc_choices}" accept="image/*" style="display: none;" />
-							</div>
-						</div>
-					</div>
-				`;
+						`;
 
 				mc_container.append(choice);
 				$(`#choice_container_${mc_choices}`).slideDown(300);
 			}
 
 			var addMoreButton = `
-					<div class="col-12 mt-2 mb-2 text-end" id="addMoreButtonContainer">
-						<button class="btn btn-outline-secondary" type="button" onclick="addMoreMultipleChoice()">Add Another Choice</button>
-					</div>
-				`;
+							<div class="col-12 mt-2 mb-2 text-end" id="addMoreButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="addMoreMultipleChoice()">Add Another Choice</button>
+							</div>
+						`;
 
 			mc_container.append(addMoreButton);
 		}
@@ -1925,7 +1924,7 @@
 			items: [],
 			active: false
 		};
-		
+
 		var e_trueOrFalseData = {
 			id: 0,
 			description: '',
@@ -1998,7 +1997,7 @@
 			$('#e_tf_question').val(data.description);
 			$('#e_tf_id').val(data.id);
 			$('#e_tf_order').val(data.order);
-			
+
 			var deleteButtonContainer = $('#e_tf_deleteButtonContainer');
 
 			deleteButtonContainer.empty();
@@ -2013,7 +2012,7 @@
 				removeImage('#e_tf_question_image_container', '#e_tf_input_image_file', event);
 			}
 
-			$.each(data.answers, function(index, answer) {
+			$.each(data.answers, function (index, answer) {
 				$('#e_tf_a_id').val(answer.id);
 				$('#e_tf_a_order').val(answer.order);
 
@@ -2213,11 +2212,11 @@
 			e_promptContainer.empty();
 
 			var emptyPrompt = `
-					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyPrompt" style="display: none;">
-						<i class="bi bi-border-width fs-1 text-secondary"></i>
-						<span class="fs-3 text-secondary">Empty Prompt</span>
-					</div>
-				`;
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyPrompt" style="display: none;">
+								<i class="bi bi-border-width fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty Prompt</span>
+							</div>
+						`;
 
 			e_promptContainer.append(emptyPrompt);
 			$('#e_emptyPrompt').slideDown(200);
@@ -2227,11 +2226,11 @@
 			e_itemListContainer.empty();
 
 			var emptyList = `
-					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyItemList" style="display: none;">
-						<i class="bi bi-list-ol fs-1 text-secondary"></i>
-						<span class="fs-3 text-secondary">Empty List</span>
-					</div>
-				`;
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyItemList" style="display: none;">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						`;
 
 			e_itemListContainer.append(emptyList);
 			$('#e_emptyItemList').slideDown(300);
@@ -2271,33 +2270,33 @@
 			$('#e_emptyPrompt').remove();
 
 			e_mo_prompts++;
-				
+
 			var promptItem = `
-				<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
-					<div class="row">
-						<div class="col-3 col-md-3">
-							<select class="form-select form-select-lg e-mo-prompt-item-select-list" id="e_mo_prompt_item_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
-							</select>
-						</div>
-						<div class="col-9 col-md-6">
-							<div class="form-floating w-100">
-								<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="e_checkPromptValue(this)">
-								<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
-							</div>
-						</div>
-						<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-								style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-								onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
-								<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-									<i class="bi bi-card-image fs-3 text-secondary"></i>
+						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<select class="form-select form-select-lg e-mo-prompt-item-select-list" id="e_mo_prompt_item_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
+									</select>
+								</div>
+								<div class="col-9 col-md-6">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="e_checkPromptValue(this)">
+										<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
+										<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
 								</div>
 							</div>
-							<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
 						</div>
-					</div>
-				</div>
-			`;
+					`;
 
 			e_promptContainer.append(promptItem);
 			$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
@@ -2324,10 +2323,10 @@
 				e_addPrompt();
 
 				var addMorePromptButton = `
-					<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
-						<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
-					</div>
-				`;
+							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
+							</div>
+						`;
 
 				e_addPromptButtonContainer.append(addMorePromptButton);
 			}
@@ -2357,14 +2356,14 @@
 					value.order = marker;
 
 					var list = `
-						<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
-							<input type="hidden" class="e-mo-i-id" value="${value.id}" />
-							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-								${marker}.<strong class="ms-1">${value.name}</strong>
-								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
-							</span>
-						</li>
-						`;
+								<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
+									<input type="hidden" class="e-mo-i-id" value="${value.id}" />
+									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+										${marker}.<strong class="ms-1">${value.name}</strong>
+										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
+									</span>
+								</li>
+								`;
 
 					e_orderedListContainer.append(list);
 					$(`#e_mo_item_li_${index}`).fadeIn(200);
@@ -2510,7 +2509,7 @@
 			$('#e_mo_order').val(data.order);
 			$('#e_mo_input_points').val(data.points);
 			$('#e_mo_instruction').val(data.description);
-			
+
 			var deleteButtonContainer = $('#e_mo_deleteButtonContainer');
 
 			deleteButtonContainer.empty();
@@ -2544,14 +2543,14 @@
 
 				$.each(data.items, function (index, item) {
 					var list = `
-						<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
-							<input type="hidden" class="e-mo-i-id" value="${item.id}" />
-							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-								${item.order}.<strong class="ms-1">${item.name}</strong>
-								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
-							</span>
-						</li>
-						`;
+								<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
+									<input type="hidden" class="e-mo-i-id" value="${item.id}" />
+									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+										${item.order}.<strong class="ms-1">${item.name}</strong>
+										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
+									</span>
+								</li>
+								`;
 
 					e_orderedListContainer.append(list);
 				});
@@ -2567,42 +2566,42 @@
 
 				e_mo_prompt_container.append(headerTitle);
 
-				$.each(data.answers, function(index, answer) {
+				$.each(data.answers, function (index, answer) {
 					e_mo_prompts++;
 
 					var promptItem = `
-						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
-							<input type="hidden" class="e-mo-a-id" value="${answer.id}" />
-							<input type="hidden" class="e-mo-a-order" value="${answer.order}" />
-							<div class="row">
-								<div class="col-3 col-md-3">
-									<select class="form-select form-select-lg e-mo-prompt-item-select-list" name="promptItemSelect" id="e_mo_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
-									</select>
-								</div>
-								<div class="col-9 col-md-6">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_checkPromptValue(this)">
-										<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
-									</div>
-								</div>
-								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-										 style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-										 onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
-										<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-											<i class="bi bi-card-image fs-3 text-secondary"></i>
+								<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
+									<input type="hidden" class="e-mo-a-id" value="${answer.id}" />
+									<input type="hidden" class="e-mo-a-order" value="${answer.order}" />
+									<div class="row">
+										<div class="col-3 col-md-3">
+											<select class="form-select form-select-lg e-mo-prompt-item-select-list" name="promptItemSelect" id="e_mo_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
+											</select>
+										</div>
+										<div class="col-9 col-md-6">
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_checkPromptValue(this)">
+												<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+											<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+												 style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+												 onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
+												<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+													<i class="bi bi-card-image fs-3 text-secondary"></i>
+												</div>
+											</div>
+											<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
 										</div>
 									</div>
-									<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
 								</div>
-							</div>
-						</div>
-					`;
+							`;
 
 					e_mo_prompt_container.append(promptItem);
 					$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
 
-					$.each(data.items, function(itemIndex, item) {
+					$.each(data.items, function (itemIndex, item) {
 						var isSelected = item.order == answer.order ? "selected" : "";
 						var list = `<option value="${item.order}" ${isSelected}>${item.order}</option>`;
 						$(`#e_mo_select_list_${e_mo_prompts}`).append(list);
@@ -2615,10 +2614,10 @@
 			}
 
 			var addMorePromptButton = `
-					<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
-						<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
-					</div>
-				`;
+							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
+							</div>
+						`;
 
 			e_addPromptButtonContainer.append(addMorePromptButton);
 
@@ -2635,7 +2634,7 @@
 			var listMarker;
 
 			console.log($('#mo_input_points').val());
-			
+
 			matchingOrOrderingData.quizId = parseInt("@Model.QuizVM.Id");
 			matchingOrOrderingData.questionType = 2;
 			matchingOrOrderingData.description = $('#mo_instruction').val();
@@ -2672,7 +2671,7 @@
 			$('.prompt-container').each(function () {
 				var selectedItem = $(this).find('.mo-prompt-item-select-list').val();
 				var inputText = $(this).find('input[type="text"]').val();
-				var tempImage = $(this).find('.custom-image-container img').attr('src') 
+				var tempImage = $(this).find('.custom-image-container img').attr('src')
 				var imageSrc = null;
 
 				if (tempImage != null) {
@@ -2726,11 +2725,11 @@
 
 		function showEmptyPrompt() {
 			var emptyPrompt = `
-					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyPrompt" style="display: none;">
-						<i class="bi bi-border-width fs-1 text-secondary"></i>
-						<span class="fs-3 text-secondary">Empty Prompt</span>
-					</div>
-				`;
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyPrompt" style="display: none;">
+								<i class="bi bi-border-width fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty Prompt</span>
+							</div>
+						`;
 
 			promptContainer.append(emptyPrompt);
 			$('#emptyPrompt').slideDown(200);
@@ -2752,33 +2751,33 @@
 			$('#emptyPrompt').remove();
 
 			mo_prompts++;
-				
+
 			var promptItem = `
-				<div class="col-sm-12 col-md-12 mb-4 mb-md-2 prompt-container" id="mo_prompt_container_${mo_prompts}" style="display: none;">
-					<div class="row">
-						<div class="col-3 col-md-3">
-							<select class="form-select form-select-lg mo-prompt-item-select-list" aria-label="Items" style="height: 55px;">
-							</select>
-						</div>
-						<div class="col-9 col-md-6">
-							<div class="form-floating w-100">
-								<input type="text" class="form-control" id="mo_prompt_${mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="checkPromptValue(this)">
-								<label for="mo_prompt_${mo_prompts}">Prompt</label>
-							</div>
-						</div>
-						<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-								style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-								onclick="uploadImage('#mo_prompt_image_container_${mo_prompts}', '#mo_prompt_input_image_file_${mo_prompts}')">
-								<div id="mo_prompt_image_container_${mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-									<i class="bi bi-card-image fs-3 text-secondary"></i>
+						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 prompt-container" id="mo_prompt_container_${mo_prompts}" style="display: none;">
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<select class="form-select form-select-lg mo-prompt-item-select-list" aria-label="Items" style="height: 55px;">
+									</select>
+								</div>
+								<div class="col-9 col-md-6">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="mo_prompt_${mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="checkPromptValue(this)">
+										<label for="mo_prompt_${mo_prompts}">Prompt</label>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										onclick="uploadImage('#mo_prompt_image_container_${mo_prompts}', '#mo_prompt_input_image_file_${mo_prompts}')">
+										<div id="mo_prompt_image_container_${mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="mo_prompt_input_image_file_${mo_prompts}" accept="image/*" style="display: none;" />
 								</div>
 							</div>
-							<input type="file" id="mo_prompt_input_image_file_${mo_prompts}" accept="image/*" style="display: none;" />
 						</div>
-					</div>
-				</div>
-			`;
+					`;
 
 			promptContainer.append(promptItem);
 			$(`#mo_prompt_container_${mo_prompts}`).slideDown(300);
@@ -2791,11 +2790,11 @@
 			container.empty();
 
 			var emptyList = `
-					<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyItemList" style="display: none;">
-						<i class="bi bi-list-ol fs-1 text-secondary"></i>
-						<span class="fs-3 text-secondary">Empty List</span>
-					</div>
-				`;
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyItemList" style="display: none;">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						`;
 
 			container.append(emptyList);
 			$('#emptyItemList').slideDown(300);
@@ -2837,13 +2836,13 @@
 					}
 
 					var list = `
-						<li class="m-1" id="mo_item_li_${index}" style="display: none;">
-							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-								${marker}.<strong class="ms-1">${value}</strong>
-								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="removeItem(${index})"></i>
-							</span>
-						</li>
-						`;
+								<li class="m-1" id="mo_item_li_${index}" style="display: none;">
+									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+										${marker}.<strong class="ms-1">${value}</strong>
+										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="removeItem(${index})"></i>
+									</span>
+								</li>
+								`;
 
 					orderedListContainer.append(list);
 					$(`#mo_item_li_${index}`).fadeIn(200);
@@ -2889,16 +2888,16 @@
 			if (itemList.length == 2) {
 				var headerTitle = '<h4>Prompts</h4>'
 				promptContainer.append(headerTitle);
-				
+
 				addPromptButtonContainer.empty();
 
 				addPrompt();
 
 				var addMorePromptButton = `
-					<div class="col-12 mt-2 mb-2 text-end" id="addMorePromptButtonContainer">
-						<button class="btn btn-outline-secondary" type="button" onclick="addPrompt()">Add Prompt</button>
-					</div>
-				`;
+							<div class="col-12 mt-2 mb-2 text-end" id="addMorePromptButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="addPrompt()">Add Prompt</button>
+							</div>
+						`;
 
 				addPromptButtonContainer.append(addMorePromptButton);
 			}
@@ -2913,11 +2912,11 @@
 				$('#addItemButton').prop('disabled', false);
 			}
 		}
-		
+
 		function addItem() {
 			if (item.val() != '') {
 				var listTitle = '<h4>Items</h4>';
-				
+
 				itemList.push(item.val());
 
 				container.empty();
@@ -3056,7 +3055,7 @@
 			$('#e_num_question').val(data.description);
 			$('#e_num_id').val(data.id);
 			$('#e_num_order').val(data.order);
-			
+
 			var deleteButtonContainer = $('#e_num_deleteButtonContainer');
 
 			deleteButtonContainer.empty();
@@ -3071,7 +3070,7 @@
 				removeImage('#e_num_question_image_container', '#e_num_input_image_file', event);
 			}
 
-			$.each(data.answers, function(index, answer) {
+			$.each(data.answers, function (index, answer) {
 				$('#e_num_a_id').val(answer.id);
 				$('#e_num_a_order').val(answer.order);
 				$('#e_num_input_answer').val(answer.answer).change();
@@ -3214,21 +3213,21 @@
 			e_fill_answers++;
 
 			var alternativeAnswer = `
-					<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
-						<input type="hidden" class="e-fill-a-id" />
-						<div class="row">
-							<div class="col-11">
-								<div class="form-floating w-100">
-									<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="e_checkAlternativeAnswerInput(this)">
-									<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+							<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+								<input type="hidden" class="e-fill-a-id" />
+								<div class="row">
+									<div class="col-11">
+										<div class="form-floating w-100">
+											<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="e_checkAlternativeAnswerInput(this)">
+											<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+										</div>
+									</div>
+									<div class="col-1 d-flex align-items-center">
+										<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+									</div>
 								</div>
 							</div>
-							<div class="col-1 d-flex align-items-center">
-								<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
-							</div>
-						</div>
-					</div>
-				`;
+						`;
 
 			e_fill_container.append(alternativeAnswer);
 			$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
@@ -3288,7 +3287,7 @@
 			var question = e_fillInTheBlankData.description;
 			var fillInTheBlankAnswer = '';
 
-			$.each(e_fillInTheBlankData.answers, function(index, answer) {
+			$.each(e_fillInTheBlankData.answers, function (index, answer) {
 				if (answer.showAnswer == 1) {
 					fillInTheBlankAnswer = answer.answer;
 				}
@@ -3319,7 +3318,7 @@
 			$('#e_fill_question').val(data.description);
 			$('#e_fill_id').val(data.id);
 			$('#e_fill_order').val(data.order);
-			
+
 			var deleteButtonContainer = $('#e_fill_deleteButtonContainer');
 
 			deleteButtonContainer.empty();
@@ -3336,7 +3335,7 @@
 
 			e_fill_container.empty();
 
-			$.each(data.answers, function(index, answer) {
+			$.each(data.answers, function (index, answer) {
 				if (answer.showAnswer) {
 					$('#e_fill_a_id').val(answer.id);
 					$('#e_fill_a_order').val(answer.order);
@@ -3345,21 +3344,21 @@
 					e_fill_answers++;
 
 					var alternativeAnswer = `
-						<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
-							<input type="hidden" class="e-fill-a-id" value="${answer.id}" />
-							<div class="row">
-								<div class="col-11">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="${answer.answer}" onchange="e_checkAlternativeAnswerInput(this)">
-										<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+								<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+									<input type="hidden" class="e-fill-a-id" value="${answer.id}" />
+									<div class="row">
+										<div class="col-11">
+											<div class="form-floating w-100">
+												<input type="text" class="form-control e-alternative-answer-input" id="e_fill_alt_answer_${e_fill_answers}" placeholder="Alternative Answer" maxlength="100" value="${answer.answer}" onchange="e_checkAlternativeAnswerInput(this)">
+												<label for="e_fill_alt_answer_${e_fill_answers}">Alternative Answer</label>
+											</div>
+										</div>
+										<div class="col-1 d-flex align-items-center">
+											<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+										</div>
 									</div>
 								</div>
-								<div class="col-1 d-flex align-items-center">
-									<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
-								</div>
-							</div>
-						</div>
-					`;
+							`;
 
 					e_fill_container.append(alternativeAnswer);
 					$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
@@ -3457,20 +3456,20 @@
 			fill_answers++;
 
 			var alternativeAnswer = `
-					<div class="col-12 mb-2 answer-container" id="answer_container_${fill_answers}" style="display: none;">
-						<div class="row">
-							<div class="col-11">
-								<div class="form-floating w-100">
-									<input type="text" class="form-control alternative-answer-input" id="fill_alt_answer_${fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="checkAlternativeAnswerInput(this)">
-									<label for="fill_alt_answer_${fill_answers}">Alternative Answer</label>
+							<div class="col-12 mb-2 answer-container" id="answer_container_${fill_answers}" style="display: none;">
+								<div class="row">
+									<div class="col-11">
+										<div class="form-floating w-100">
+											<input type="text" class="form-control alternative-answer-input" id="fill_alt_answer_${fill_answers}" placeholder="Alternative Answer" maxlength="100" value="Other Answer" onchange="checkAlternativeAnswerInput(this)">
+											<label for="fill_alt_answer_${fill_answers}">Alternative Answer</label>
+										</div>
+									</div>
+									<div class="col-1 d-flex align-items-center">
+										<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
+									</div>
 								</div>
 							</div>
-							<div class="col-1 d-flex align-items-center">
-								<i class="bi bi-eye-slash fs-4 text-success" title="This answer will not be visible for the participants."></i>
-							</div>
-						</div>
-					</div>
-				`;
+						`;
 
 			fill_container.append(alternativeAnswer);
 			$(`#answer_container_${fill_answers}`).slideDown(300);
