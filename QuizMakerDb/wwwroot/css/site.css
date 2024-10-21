@@ -166,3 +166,39 @@ html {
 .form-group {
     margin-bottom: 15px;
 }
+
+@-webkit-keyframes bounce {
+    0% {
+        transform: translateY(-5px)
+    }
+
+    50% {
+        transform: translateY(10px)
+    }
+
+    100% {
+        transform: translateY(-5px)
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(-5px)
+    }
+
+    50% {
+        transform: translateY(10px)
+    }
+
+    100% {
+        transform: translateY(-5px)
+    }
+}
+
+.smiley {
+    -webkit-animation: bounce 1s infinite ease-in-out;
+    -o-animation: bounce 1s infinite ease-in-out;
+    -ms-animation: bounce 1s infinite ease-in-out;
+    -moz-animation: bounce 1s infinite ease-in-out;
+    animation: bounce 1s infinite ease-in-out;
+}

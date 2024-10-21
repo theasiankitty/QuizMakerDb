@@ -1,0 +1,161 @@
+﻿@page
+@model QuizMakerDb.Pages.QuizTakes.IndexModel
+@{
+}
+
+<div class="container-fluid">
+    <div class="row d-flex align-items-center justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center d-flex flex-column align-items-center justify-content-center" style="height: 400px;">
+                    <i class="bi bi-emoji-smile smiley" style="font-size: 4rem"></i>
+                    <h1>Welcome Participant!</h1>
+                    <p>Please enter the Quiz Code to start.</p>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <input type="search" class="form-control" id="codeInput" maxlength="6" placeholder="Code" autocomplete="off" style="text-align: center;">
+                            <button type="button" class="btn btn-primary w-100 mt-2" onclick="checkCode()">Enter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-light">
+                <h5 class="modal-title" id="alertModalLabel">Alert</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="alertText"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quiz Info Modal -->
+<div class="modal fade" id="quizInfoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="quizInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quizInfoModal">Quiz Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="quizInfoContainer">
+                </div>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function checkCode() {
+            var codeInput = $('#codeInput').val().trim();
+
+            if (codeInput.length < 6) {
+                $('#alertText').text('Please enter a valid code!');
+                $('#alertModal').modal('show');
+            } else {
+                submitCode(codeInput);
+            }
+        }
+
+        function submitCode(code) {
+            var studentData = {
+                studentId: parseInt("@Model.StudentVM.Id"),
+                code: code
+            }
+
+            console.log(studentData);
+
+            $.ajax({
+				type: 'GET',
+				url: '/QuizTakes/CheckQuiz?handler=Quiz',
+				data: studentData,
+				success: function (data) {
+					console.log(data);
+
+                    if (data.message === 'OK') {
+                        var quizInfoContainer = $('#quizInfoContainer');
+                        var modalFooter = $('#modalFooter');
+                        var quizId = data.quizData[0].id;
+                        var title = data.quizData[0].title;
+                        var introduction = data.quizData[0].introduction;
+                        var minutes = data.quizData[0].minutes;
+                        var takes = data.quizData[0].takes;
+                        var isQuestionRandomized = data.quizData[0].isQuestionRandomized;
+                        var alloyEmptyAnswers = data.quizData[0].allowEmptyAnswers;
+
+                        quizInfoContainer.empty();
+
+                        var info = `
+                                <div class="col-md-12">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h2>${title}</h2>
+                                            </div>
+                                            <div class="col-md-12 mt-3">
+                                                <p>${introduction}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="container-fluid">
+                                        <div class="row border rounded p-3">
+                                            <div class="col-md-12 mt-2">
+                                                <h4>Quiz Guidelines</h4>
+                                            </div>
+                                            <div class="col-md-12 mt-3">
+                                                <span>Minutes:<strong class="ms-2">${minutes}</strong></span>
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <span>Takes:<strong class="ms-2">${takes}</strong></span>
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <span>Randomized Question Sequence:<strong class="ms-2">${isQuestionRandomized}</strong></span>
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <span>Allow Empty Answers:<strong class="ms-2">${alloyEmptyAnswers}</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                        quizInfoContainer.append(info);
+                        modalFooter.empty();
+
+                        var startButton = `
+                                <a href="/QuizTakes/StudentQuiz?studentId=${studentData.studentId}&code=${studentData.code}" class="btn btn-primary">Proceed to Quiz</a>
+                            `;
+
+                        modalFooter.append(startButton);
+
+                        $('#quizInfoModal').modal('show');
+                    } else {
+                        $('#alertText').text('Quiz is Invalid. Make sure your code is valid.');
+                        $('#alertModal').modal('show');
+                    }
+				},
+				error: function (xhr, status, error) {
+					console.error("Error: " + error);
+				}
+			});
+        }
+
+        function initializeStartQuiz(id) {
+            console.log(id);
+        }
+    </script>
+}

@@ -1,0 +1,227 @@
+﻿@page
+@model QuizMakerDb.Pages.QuizTakes.QuizModel
+@{
+}
+
+<div class="container-fluid">
+    <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-md-12 text-center mt-4">
+            <h1 id="countdown"></h1>
+        </div>
+        <div class="col-md-8">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12 mt-4">
+                            <div id="quizContainer"></div>
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <button class="btn btn-primary" id="nextButton">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        var currentQuestionIndex = 0;
+        var questions = [];
+
+        $(document).ready(function () {
+            var remainingTime = "@Model.RemainingTime";
+
+            function formatTime(seconds) {
+                var hours = Math.floor(seconds / 3600);
+                var minutes = Math.floor((seconds % 3600) / 60);
+                var secs = seconds % 60;
+
+                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            function startCountdown(seconds) {
+                var countdownInterval = setInterval(function () {
+                    seconds--;
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        alert("Time is up! Redirecting to results.");
+                        //window.location.href = '/Results';
+                    } else {
+                        $('#countdown').text(formatTime(seconds));
+                    }
+                }, 1000);
+            }
+
+            if (remainingTime > 0) {
+                $('#countdown').text(formatTime(remainingTime));
+                startCountdown(remainingTime);
+            } else {
+                $('#countdown').text("No time left.");
+                //window.location.href = '/Results';
+            }
+
+            initializeQuestions();
+        });
+
+        function initializeQuestions() {
+            $.ajax({
+                type: 'GET',
+                url: '/QuizTakes/GetQuizQuestions?handler=Questions',
+                data: {
+                    quizId: parseInt("@Model.QuizId"),
+                    studentId: parseInt("@Model.StudentId")
+                },
+                success: function (data) {
+                    if (data.message === "OK") {
+                        questions = data.questions;
+                        displayQuestion(currentQuestionIndex);
+                    } else {
+                        console.error(data.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching questions:', textStatus, errorThrown);
+                }
+            });
+        }
+
+        function displayQuestion(index) {
+            $('#quizContainer').empty();
+            const question = questions[index];
+
+            if (question) {
+                const questionHtml = generateQuestionHtml(question);
+                $('#quizContainer').append(questionHtml);
+
+                // Determine if empty answers are allowed
+                const allowEmptyAnswers = question.answers.some(answer => answer.allowEmptyAnswers);
+                console.log("Allow Empty Answers:", allowEmptyAnswers);
+                $('#nextButton').toggle(allowEmptyAnswers);
+                console.log("Next Button Visible:", allowEmptyAnswers);
+
+                if (!allowEmptyAnswers) {
+                    $('#nextButton').hide(); // Hide next button initially
+                    enableNextButtonOnAnswer(question);
+                } else {
+                    // Show next button immediately if empty answers are allowed
+                    $('#nextButton').show();
+                }
+            }
+        }
+
+        function generateQuestionHtml(question) {
+            let html = `<div class="question" data-id="${question.id}">
+                            <h4>${question.description}</h4>`;
+
+            switch (question.questionType) {
+                case 0: // Multiple Choice
+                    question.answers.forEach(answer => {
+                        html += `<div>
+                                    <input type="radio" name="question-${question.id}" value="${answer.id}"> ${answer.answer}
+                                  </div>`;
+                    });
+                    break;
+                case 1: // True Or False
+                    html += `
+                            <div class="row mt-4">
+						        <div class="col-6">
+							        <div class="p-3 border rounded" style="cursor: pointer;">
+								        <div class="form-check d-flex align-items-center gap-3">
+									        <input type="radio" name="question-${question.id}" value="True">
+									        <label class="form-check-label" for="tf_radio_true" style="cursor: pointer;">
+										        True
+									        </label>
+								        </div>
+							        </div>
+						        </div>
+						        <div class="col-6">
+							        <div class="p-3 border rounded" style="cursor: pointer;">
+								        <div class="form-check d-flex align-items-center gap-3">
+									        <input type="radio" name="question-${question.id}" value="False">
+									        <label class="form-check-label" for="tf_radio_false" style="cursor: pointer;">
+										        False
+									        </label>
+								        </div>
+							        </div>
+						        </div>
+					        </div>
+                            `;
+                    break;
+                case 2: // Matching Or Ordering
+                    const referenceItems = question.items.map(item => `<span class="border rounded-5 p-1 ps-2 pe-2">${item.order}. ${item.name}</span>`).join(' ');
+                        html += `<div class="reference-items mb-5 mt-5">${referenceItems}</div>`; // Display the reference above the answers
+
+                        question.answers.forEach(answer => {
+                            html += `<div>
+                                        <label>${answer.answer}</label>
+                                        <select class="form-control mb-2" data-item-id="${answer.id}">
+                                            <option value="">Select...</option>
+                                            ${question.items.map(option => `<option value="${option.id}">${option.order}</option>`).join('')}
+                                        </select>
+                                      </div>`;
+                        });
+                    break;
+                case 3: // Numeric
+                    html += `<input type="text" placeholder="Your answer" class="form-control" oninput="this.value = this.value.replace(/[^0-9.,%!-]/g,'')">`;
+                    break;
+                case 4: // Fill in the Blank
+                    html += `<input type="text" placeholder="Fill in the blank" class="form-control">`;
+                    break;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function enableNextButtonOnAnswer(question) {
+            $('input[name="question-' + question.id + '"]').on('change', function () {
+                console.log("Question answered: ", question.id);
+                $('#nextButton').show();
+            });
+
+            $('[data-item-id]').on('change', function () {
+                const allSelected = $('[data-item-id]').toArray().every(select => $(select).val() !== '');
+                $('#nextButton').toggle(allSelected);
+                console.log("All items selected for matching:", allSelected);
+            });
+
+            $('input[type="number"], input[type="text"]').on('input', function () {
+                console.log("Input detected, showing next button.");
+                $('#nextButton').show();
+            });
+        }
+
+        $('#nextButton').on('click', function () {
+            // Allow moving to the next question regardless of whether answered
+            currentQuestionIndex++; 
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion(currentQuestionIndex);
+            } else {
+                alert("Quiz completed! Redirecting to results.");
+                // window.location.href = '/Results';
+            }
+        });
+
+        function isQuestionAnswered(question) {
+            if (question.answers.some(answer => answer.allowEmptyAnswers)) {
+                return true; // If empty answers are allowed, auto-skip
+            }
+
+            switch (question.questionType) {
+                case 0: // Multiple Choice
+                case 1: // True Or False
+                    return $('input[name="question-' + question.id + '"]:checked').length > 0;
+                case 2: // Matching Or Ordering
+                    return $('[data-item-id]').toArray().every(select => $(select).val() !== '');
+                case 3: // Numeric
+                    return $('input[type="number"]').val().trim() !== '';
+                case 4: // Fill in the Blank
+                    return $('input[type="text"]').val().trim() !== '';
+            }
+            return false;
+        }
+    </script>
+}

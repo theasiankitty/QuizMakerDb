@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
+using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data.Models;
 using QuizMakerDb.Data.ViewModels;
 using QuizMakerDb.Infrastructure;
@@ -9,10 +11,12 @@ namespace QuizMakerDb.Pages.Quizzes
 {
 	public class IndexModel : PageModel
 	{
+		private readonly UserManager<AppUser> _userManager;
 		private readonly ApplicationDbContext _context;
 
-		public IndexModel(ApplicationDbContext context)
+		public IndexModel(UserManager<AppUser> userManager, ApplicationDbContext context)
 		{
+			_userManager = userManager;
 			_context = context;
 		}
 
@@ -26,12 +30,19 @@ namespace QuizMakerDb.Pages.Quizzes
 			SortColumn = string.IsNullOrEmpty(sortColumn) ? "" : sortColumn;
 			SortOrder = string.IsNullOrEmpty(sortOrder) ? "" : sortOrder;
 
+			var user = await _userManager.GetUserAsync(User);
+
+			if (user == null) 
+			{
+				return;
+			}
+
 			if (_context.Quizzes != null)
 			{
 				IQueryable<Quiz> quizzes = _context.Quizzes.AsQueryable();
 
 				quizzes = quizzes
-					.Where(m => m.Active == true)
+					.Where(m => m.TeacherInfo.UserId == user.Id && m.Active)
 					.OrderByDescending(o => o.Id);
 
 				int pageSize = 10;

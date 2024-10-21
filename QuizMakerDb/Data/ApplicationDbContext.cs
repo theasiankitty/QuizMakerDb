@@ -21,6 +21,7 @@ namespace QuizMakerDb.Data
         public DbSet<QuizSubject> QuizSubjects { get; set; }
         public DbSet<QuestionItem> QuestionItems { get; set; }
 		public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+        public DbSet<QuizTake> QuizTakes { get; set; }
         public DbSet<AnswerStudent> AnswerStudents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -39,8 +40,9 @@ namespace QuizMakerDb.Data
 
 			builder.ApplyConfiguration(new AnswerStudentConfig());
 			builder.ApplyConfiguration(new QuizSubjectConfig());
+			builder.ApplyConfiguration(new QuizTakeConfig());
 
-			builder.Entity<AppUser>().ToTable("IdentityUsers");
+            builder.Entity<AppUser>().ToTable("IdentityUsers");
             builder.Entity<AppRole>().ToTable("IdentityRoles");
             builder.Entity<AppUserClaim>().ToTable("IdentityUserClaims");
             builder.Entity<AppUserRole>().ToTable("IdentityUserRoles");

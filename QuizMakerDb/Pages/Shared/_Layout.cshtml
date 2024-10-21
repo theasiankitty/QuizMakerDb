@@ -60,8 +60,8 @@
 		<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
 			<div class="sidebar-brand">
 				<a asp-area="" asp-page="/Index" class="brand-link">
-					<img src="~/assets/images/dhvsu-logo.png" alt="DHVSU Logo" class="brand-image img-circle elevation-3 m-1">
-					<span class="brand-text fw-light fs-5 m-0">DHVSU Quiz Maker</span>
+					<img src="~/assets/images/dhvsu-dpc-logo.png" alt="DPC Logo" class="brand-image img-circle elevation-3 m-2">
+					<span class="brand-text fw-light fs-5 m-0">DPC Quiz Maker</span>
 				</a>
 			</div>
 			<div class="sidebar-wrapper sidebar-no-expand">
@@ -136,6 +136,17 @@
 								<a asp-area="" asp-page="/Quizzes/Index" class="nav-link">
 									<i class="nav-icon bi bi-clipboard2-check-fill"></i>
 									<p>Quizzes</p>
+								</a>
+							</li>
+						}
+
+						@if (studentPage)
+						{
+							<li class="nav-header">Student Quiz</li>
+							<li class="nav-item">
+								<a asp-area="" asp-page="/QuizTakes/Index" class="nav-link">
+									<i class="nav-icon bi bi-pencil-square"></i>
+									<p>Take Quiz</p>
 								</a>
 							</li>
 						}

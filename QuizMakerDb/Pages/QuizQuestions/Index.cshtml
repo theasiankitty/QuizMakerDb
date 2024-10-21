@@ -531,7 +531,7 @@
 					<div class="row" id="e_num_answer_container">
 						<div class="col-12 mb-2">
 							<div class="form-floating">
-								<input type="text" class="form-control" id="num_input_answer" placeholder="Numeric Only" maxlength="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<input type="text" class="form-control" id="num_input_answer" placeholder="Numeric Only" maxlength="100" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9,.\-%!]/g,'')">
 								<label for="num_input_answer">Answer</label>
 							</div>
 						</div>
