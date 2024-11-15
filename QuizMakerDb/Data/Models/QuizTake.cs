@@ -16,8 +16,6 @@ namespace QuizMakerDb.Data.Models
 
         public int Duration { get; set; }
 
-        public byte Takes { get; set; }
-
 		public bool Active { get; set; }
 
 		public Guid CreatedBy { get; set; }

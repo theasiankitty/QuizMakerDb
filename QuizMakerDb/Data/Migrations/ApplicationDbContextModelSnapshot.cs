@@ -52,19 +52,19 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("99beb5de-7182-4f13-b034-58e38e2f93f6"),
+                            Id = new Guid("795cfd9f-5e09-4f7d-b44a-856789fcdcad"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("af64cec5-45f8-4aed-9364-ccca590e6d1f"),
+                            Id = new Guid("e3e5c196-ee79-4f63-840a-e2d5bcb3b21d"),
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = new Guid("72cd39fe-6d96-4672-bf95-06931603f9b3"),
+                            Id = new Guid("717ffccb-404d-4a28-987a-c4e7358b37fc"),
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -168,52 +168,52 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c275c726-babe-4506-81d3-98b2a297034f"),
+                            Id = new Guid("6d6664aa-3e7b-47d3-b51c-312373b4dca9"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "0d8ce928-83c8-446a-b65e-faba7335b4fb",
+                            ConcurrencyStamp = "45bdde27-6d39-4d40-85d1-5d8e158507eb",
                             Email = "sysadmin@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSADMIN@DOMAIN.COM",
                             NormalizedUserName = "SYSADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPsZkI+YGn2W4i8gXvfduMgRgFoU0t5ulrrf09YUrENRvdOnnW/J1aRt0a5L2N7Jcw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHhOI1snsbr8b10p5Rda2I9Vy/oyIuyYFMzrTORv+KNU5U/q+w2JGIJpTQ3aHIYkFg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "19f93a44-4d9a-4012-ac4d-75dadfaeb8a3",
+                            SecurityStamp = "c8df69ed-0de8-4e06-9424-4883c87851d8",
                             TwoFactorEnabled = false,
                             UserName = "SysAdmin"
                         },
                         new
                         {
-                            Id = new Guid("1ad82121-5fa2-42b2-b19b-07327fd2fb55"),
+                            Id = new Guid("5a0f6d7e-b8f9-4d3b-a522-7c56fb29aad4"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "07d998a7-565d-4c72-a59f-e016e4af3cdf",
+                            ConcurrencyStamp = "f5539664-b6d9-4bc4-8310-bb16a969af54",
                             Email = "teacher@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TEACHER@DOMAIN.COM",
                             NormalizedUserName = "TEACHER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE2blyjvPNYxxySwehrboGNLb/BemV9AAR5YDW9wYYf52rX9Dr4yVabFlUZ6tW3cCg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKqOYNpf3s/W6ftKtoOwF0Ajep42yBPZuUUYm8Dx8yfrPtrIcCW8radWamqVgSIXfw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1d7b8b02-cd11-4fa6-8f17-6d023d308df4",
+                            SecurityStamp = "d2808fd2-d9ea-4ac7-9574-b1318b23ebd6",
                             TwoFactorEnabled = false,
                             UserName = "Teacher"
                         },
                         new
                         {
-                            Id = new Guid("c246b3b6-48cc-4d09-badd-481a5a2ece51"),
+                            Id = new Guid("c0a1e5b0-1e06-4d35-b9aa-01e79e12a622"),
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "4ce0b60e-3faf-49f8-b256-887e8f5dcaf6",
+                            ConcurrencyStamp = "37ff4343-22b8-494f-994a-2d33ff935dce",
                             Email = "student@domain.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "STUDENT@DOMAIN.COM",
                             NormalizedUserName = "STUDENT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ/rr12Hrdt2HO03aL3tPnvjGrrkNNNkm7RGlQ9MfI7lph0P/LNOaWt7/Rj19xSNKw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHBDH0nWIFMNZXVW7bLCuFo7fDDKftkwwakKWF+4EN3DUnzvbCbw+hZnptz2evhOUg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6620d173-8941-49df-b450-2b859222f17e",
+                            SecurityStamp = "904eab70-e267-4928-8928-63eeb140d574",
                             TwoFactorEnabled = false,
                             UserName = "Student"
                         });
@@ -283,18 +283,18 @@ namespace QuizMakerDb.Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("c275c726-babe-4506-81d3-98b2a297034f"),
-                            RoleId = new Guid("99beb5de-7182-4f13-b034-58e38e2f93f6")
+                            UserId = new Guid("6d6664aa-3e7b-47d3-b51c-312373b4dca9"),
+                            RoleId = new Guid("795cfd9f-5e09-4f7d-b44a-856789fcdcad")
                         },
                         new
                         {
-                            UserId = new Guid("1ad82121-5fa2-42b2-b19b-07327fd2fb55"),
-                            RoleId = new Guid("af64cec5-45f8-4aed-9364-ccca590e6d1f")
+                            UserId = new Guid("5a0f6d7e-b8f9-4d3b-a522-7c56fb29aad4"),
+                            RoleId = new Guid("e3e5c196-ee79-4f63-840a-e2d5bcb3b21d")
                         },
                         new
                         {
-                            UserId = new Guid("c246b3b6-48cc-4d09-badd-481a5a2ece51"),
-                            RoleId = new Guid("72cd39fe-6d96-4672-bf95-06931603f9b3")
+                            UserId = new Guid("c0a1e5b0-1e06-4d35-b9aa-01e79e12a622"),
+                            RoleId = new Guid("717ffccb-404d-4a28-987a-c4e7358b37fc")
                         });
                 });
 
@@ -584,11 +584,6 @@ namespace QuizMakerDb.Data.Migrations
                     b.Property<bool>("AllowEmptyAnswers")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ConclusionDescription")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -624,6 +619,12 @@ namespace QuizMakerDb.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isQuestionRandomized")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isUnlimitedMinutes")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isUnlimitedTakes")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -759,9 +760,6 @@ namespace QuizMakerDb.Data.Migrations
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
-
-                    b.Property<byte>("Takes")
-                        .HasColumnType("tinyint");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");

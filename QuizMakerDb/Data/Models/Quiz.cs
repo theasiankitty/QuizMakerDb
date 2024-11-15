@@ -18,10 +18,11 @@ namespace QuizMakerDb.Data.Models
 
 		public bool AllowEmptyAnswers { get; set; }
 
-		[StringLength(300)]
-		public string ConclusionDescription { get; set; } = string.Empty!;
+		public bool isUnlimitedMinutes { get; set; }
 
-        public Int16 Minutes { get; set; }
+		public Int16 Minutes { get; set; }
+
+        public bool isUnlimitedTakes { get; set; }
 
         public byte Takes { get; set; }
 

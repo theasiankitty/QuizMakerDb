@@ -78,7 +78,7 @@
                             </div>
                             <div class="col-md-12 mb-4">
                                 <div class="form-check">
-                                    <input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox">
+                                    <input asp-for="StudentVM.isIrregular" class="form-check-input" type="checkbox" onchange="toggleCourseYearSelection()">
                                     <label asp-for="StudentVM.isIrregular" class="form-check-label">
                                         Check if the Student is irregular.
                                     </label>

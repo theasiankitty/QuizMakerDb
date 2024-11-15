@@ -13,11 +13,13 @@ namespace QuizMakerDb.Data.ViewModels
 
 		public bool isQuestionRandomized { get; set; }
 
-		public string ConclusionDescription { get; set; } = string.Empty!;
+        public bool isUnlimitedMinutes { get; set; }
 
-		public Int16 Minutes { get; set; }
+        public Int16 Minutes { get; set; }
 
-		public byte Takes { get; set; }
+        public bool isUnlimitedTakes { get; set; }
+
+        public byte Takes { get; set; }
 
 		public bool ShowResults { get; set; }
 

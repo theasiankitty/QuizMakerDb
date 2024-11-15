@@ -100,13 +100,13 @@
 										<div class="col-12 fs-5 d-flex gap-3">
 											<i class="bi bi-stopwatch"></i>
 											<span>
-												@Html.DisplayFor(modelItem => item.Minutes) minutes
+												@(item.Minutes == 0 ? "Unlimited minutes" : $"{item.Minutes} minutes")
 											</span>
 										</div>
 										<div class="col-12 fs-5 d-flex gap-3">
 											<i class="bi bi-clipboard2-check"></i>
 											<span>
-												@Html.DisplayFor(modelItem => item.Takes) take
+												@(item.Takes == 0 ? "Unlimited takes" : $"{item.Takes} takes")
 											</span>
 										</div>
 									</div>

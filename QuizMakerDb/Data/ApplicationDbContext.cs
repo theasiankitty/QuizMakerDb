@@ -50,7 +50,7 @@ namespace QuizMakerDb.Data
             builder.Entity<AppRoleClaim>().ToTable("IdentityRoleClaims");
             builder.Entity<AppUserToken>().ToTable("IdentityUserTokens");
 
-            Seed(builder);
+            //Seed(builder);
         }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)

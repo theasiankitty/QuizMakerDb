@@ -47,10 +47,16 @@ namespace QuizMakerDb.Pages.QuizTakes
             }
 
             var sectionStudent = await _context.SectionStudents
+                .Include(m => m.StudentInfo)
                 .Where(m => m.StudentId == studentData.StudentId && m.Active)
                 .FirstOrDefaultAsync();
 
             if (sectionStudent == null)
+            {
+                return NotFound();
+            }
+
+            if (sectionStudent.StudentInfo.UserId != user.Id)
             {
                 return NotFound();
             }
@@ -78,7 +84,7 @@ namespace QuizMakerDb.Pages.QuizTakes
                     QuizId = quizSubject.QuizId,
                     StartTime = DateTime.Now,
                     Duration = quizSubject.QuizInfo.Minutes,
-                    Takes = 1,
+                    //Takes = 1,
                     Active = true,
                     CreatedBy = user.Id,
                     CreatedDate = DateTime.Now
@@ -93,8 +99,20 @@ namespace QuizMakerDb.Pages.QuizTakes
 
                 if (remainingTime <= TimeSpan.Zero)
                 {
-                    quizTake.StartTime = DateTime.Now;
-                    quizTake.Takes += 1;
+                    // don't add takes if it is equal or more than the quizSubject.QuizInfo.Takes
+                    //if (quizTake.Takes < quizSubject.QuizInfo.Takes)
+                    //{
+                    //    quizTake.StartTime = DateTime.Now;
+                    //    //quizTake.Takes += 1;
+                    //    quizTake.UpdatedBy = user.Id;
+                    //    quizTake.UpdatedDate = DateTime.Now;
+                    //}
+                    //else
+                    //{
+                    //    // should show result if time is up and took the limit of the quizSubject.QuizInfo.Takes
+                    //    RemainingTime = 0;
+                    //    return Page();
+                    //}
                 }
                 else
                 {

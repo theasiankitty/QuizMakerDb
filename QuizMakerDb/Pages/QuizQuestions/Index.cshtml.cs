@@ -41,7 +41,6 @@ namespace QuizMakerDb.Pages.QuizQuestions
 				Id = quiz.Id,
 				Title = quiz.Title,
 				Introduction = quiz.Introduction,
-				ConclusionDescription = quiz.ConclusionDescription,
 			};
 
 			return Page();

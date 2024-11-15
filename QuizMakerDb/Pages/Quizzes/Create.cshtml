@@ -14,6 +14,8 @@
     </nav>
     <form class="row justify-content-center mt-3" method="post">
         @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="QuizVM.isUnlimitedMinutes" />
+        <input type="hidden" asp-for="QuizVM.isUnlimitedTakes" />
         <input type="hidden" asp-for="QuizVM.Minutes" />
         <input type="hidden" asp-for="QuizVM.Takes" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -56,30 +58,6 @@
                                             <div class="form-group">
                                                 <textarea asp-for="QuizVM.Introduction" class="form-control" placeholder="Introduction" maxlength="300" style="height: 150px; resize: none;"></textarea>
                                                 <span for="QuizVM_Introduction" class="text-danger field-validation-error" style="display: none;">Introduction is required.</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 text-end">
-                                            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
-                                            <button type="button" class="btn btn-success next-btn">Next</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="card card-primary mb-4">
-                            <div class="card-body">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-12 mt-3">
-                                            <h1>Conclusion Description</h1>
-                                            <div class="p-2">
-                                                <p>This conclusion description is displayed after the quiz is submitted. It should thank participants for completing the quiz and inform them that their responses have been recorded.</p>
-                                            </div>
-                                            <div class="form-group">
-                                                <textarea asp-for="QuizVM.ConclusionDescription" class="form-control" placeholder="Conclusion Description" maxlength="300" style="height: 150px; resize: none;"></textarea>
-                                                <span for="QuizVM_ConclusionDescription" class="text-danger field-validation-error" style="display: none;">Conclusion Description is required.</span>
                                             </div>
                                         </div>
                                         <div class="col-12 text-end">
@@ -148,7 +126,7 @@
                                                     <input class="form-check-input" id="limitedTakeRadio" type="radio" name="quizTake" />
                                                     <input class="form-control" id="limitedTakeInput" type="number" for="limitedTakeRadio" min="0" max="5" style="max-width: 100px;" />
                                                     <label class="form-check-label fw-bold" for="limitedTakeRadio">
-                                                        times
+                                                        time/s
                                                     </label>
                                                 </div>
                                             </div>
@@ -275,6 +253,8 @@
             $('#submit-btn').click(function () {
                 $('#QuizVM_Minutes').val($('#limitedTimeInput').val());
                 $('#QuizVM_Takes').val($('#limitedTakeInput').val());
+                $('#QuizVM_isUnlimitedMinutes').val($('#unlimitedTimeRadio').prop('checked'));
+                $('#QuizVM_isUnlimitedTakes').val($('#unlimitedTakeRadio').prop('checked'));
                 $('form').submit();
             });
         });
