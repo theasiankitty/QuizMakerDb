@@ -422,6 +422,78 @@
 	</div>
 </div>
 
+<div class="modal fade" id="editMatchingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editMatchingModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="e_m_form" class="modal-content">
+			<input type="hidden" id="e_m_id" />
+			<input type="hidden" id="e_m_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editMatchingModalLabel">Matching (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_m_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_m_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Instruction" id="e_m_instruction" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_m_instruction">Instruction</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_m_instruction_image_container', '#e_m_input_image_file')">
+								<div id="e_m_instruction_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_m_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-12 mb-4">
+							<div class="input-group input-group-lg">
+								<div class="form-floating">
+									<input type="search" class="form-control" id="e_m_item_input" placeholder="Item Name" aria-describedby="e_m_addItem" autocomplete="off" maxlength="100" oninput="e_m_checkItemInput()">
+									<label for="e_m_item_input">Item Name</label>
+								</div>
+								<button class="btn btn-outline-secondary" type="button" id="e_m_addItemButton" onclick="e_m_addItem()">Add Item</button>
+							</div>
+						</div>
+						<div class="col-12" id="e_m_itemListContainer">
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_m_emptyItemList">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3" id="e_m_prompt_container"></div>
+					<div class="row mt-3" id="e_m_add_prompt_button_container"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_m_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_m_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
 <!-- Sequencing -->
 <div class="modal fade" id="sequencingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sequencingModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
@@ -470,12 +542,76 @@
 						</div>
 					</div>
 					<div class="row mt-3" id="s_prompt_container"></div>
-					<div class="row mt-3" id="s_add_prompt_button_container"></div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 				<button type="button" class="btn btn-primary" id="s_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editSequencingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSequencingModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="e_s_form" class="modal-content">
+			<input type="hidden" id="e_s_id" />
+			<input type="hidden" id="e_s_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editSequencingModalLabel">Sequencing (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_s_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_s_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Instruction" id="e_s_instruction" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_s_instruction">Instruction</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_s_instruction_image_container', '#e_s_input_image_file')">
+								<div id="e_s_instruction_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_s_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-12 mb-4">
+							<div class="input-group input-group-lg">
+								<div class="form-floating">
+									<input type="search" class="form-control" id="e_s_item_input" placeholder="Prompt Name" aria-describedby="e_s_addItem" autocomplete="off" maxlength="100" oninput="e_s_checkItemInput()">
+									<label for="e_s_item_input">Prompt Name</label>
+								</div>
+								<button class="btn btn-outline-secondary" type="button" id="e_s_addItemButton" onclick="e_s_addItem()">Add Prompt</button>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3" id="e_s_prompt_container"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_s_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_s_submit_button">Save</button>
+					</div>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -747,7 +883,120 @@
 	</div>
 </div>
 
-<!-- Long Answer / Fill In The Blank Modal -->
+<!-- Short Answer / Enumeration -->
+<div class="modal fade" id="enumerationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="enumerationModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="enum_form" class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="enumerationModalLabel">Short Answer</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="enum_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="enum_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="enum_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="enum_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#enum_question_image_container', '#enum_input_image_file')">
+								<div id="enum_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="enum_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="enum_answer_container"></div>
+					<div class="row" id="add_more_answer_container">
+						<div class="col-12 mt-2 mb-2 text-end">
+							<button class="btn btn-outline-secondary" type="button" onclick="addMoreAnswer()">Add More Answer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="enum_submit_button">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="editEnumerationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editEnumerationModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+		<form id="enum_form" class="modal-content">
+			<input type="hidden" id="e_enum_id" />
+			<input type="hidden" id="e_enum_order" />
+			<input type="hidden" id="e_enum_a_id" />
+			<input type="hidden" id="e_enum_a_order" />
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="editEnumerationModalLabel">Short Answer (Edit)</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 mb-4">
+							<div class="form-floating">
+								<input type="number" class="form-control" id="e_enum_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+								<label for="e_enum_input_points">Points</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
+							<div class="form-floating">
+								<textarea class="form-control" placeholder="Question" id="e_enum_question" maxlength="500" style="height: 150px; resize: none"></textarea>
+								<label for="e_enum_question">Question</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
+							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
+								 onclick="uploadImage('#e_enum_question_image_container', '#e_enum_input_image_file')">
+								<div id="e_enum_question_image_container" class="custom-image-container rounded">
+									<i class="bi bi-card-image fs-3 text-secondary"></i>
+								</div>
+							</div>
+							<input type="file" id="e_enum_input_image_file" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+					<div class="row" id="e_enum_answer_container"></div>
+					<div class="row" id="e_add_more_answer_container">
+						<div class="col-12 mt-2 mb-2 text-end">
+							<button class="btn btn-outline-secondary" type="button" onclick="e_addMoreAnswer()">Add More Answer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="row w-100">
+					<div class="col-6" id="e_enum_deleteButtonContainer">
+					</div>
+					<div class="col-6 text-end">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="e_enum_submit_button">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Long Answer / fill In The Blank Modal -->
 <div class="modal fade" id="fillInTheBlankModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="fillInTheBlankModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
 		<form id="fill_form" class="modal-content">
@@ -876,58 +1125,6 @@
 	</div>
 </div>
 
-<!-- Short Answer / Enumeration -->
-<div class="modal fade" id="enumerationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="enumerationModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
-		<form id="enum_form" class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="enumerationModalLabel">Long Answer</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-3 mb-4">
-							<div class="form-floating">
-								<input type="number" class="form-control" id="enum_input_points" placeholder="Points" min="1" max="100" value="1" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
-								<label for="enum_input_points">Points</label>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 col-md-9 order-last order-sm-last order-md-first mb-4">
-							<div class="form-floating">
-								<textarea class="form-control" placeholder="Question" id="enum_question" maxlength="500" style="height: 150px; resize: none"></textarea>
-								<label for="enum_question">Question</label>
-							</div>
-						</div>
-						<div class="col-sm-12 col-md-3 order-first order-sm-last order-md-first mb-4">
-							<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-								 style="min-height: 150px; border: #dee2e6; border-style: dashed; cursor: pointer;"
-								 onclick="uploadImage('#enum_question_image_container', '#enum_input_image_file')">
-								<div id="enum_question_image_container" class="custom-image-container rounded">
-									<i class="bi bi-card-image fs-3 text-secondary"></i>
-								</div>
-							</div>
-							<input type="file" id="enum_input_image_file" accept="image/*" style="display: none;" />
-						</div>
-					</div>
-					<div class="row" id="enum_answer_container"></div>
-					<div class="row" id="add_more_answer_container">
-						<div class="col-12 mt-2 mb-2 text-end">
-							<button class="btn btn-outline-secondary" type="button" onclick="addMoreAnswer()">Add More Answer</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary" id="enum_submit_button">Create</button>
-			</div>
-		</form>
-	</div>
-</div>
-
 <!-- Image View Modal -->
 <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
@@ -1021,6 +1218,14 @@
 		var totalPoints = 0;
 
 		$(document).ready(function () {
+			$('#e_enum_submit_button').on('click', function () {
+				checkEditedEnumeration();
+			});
+
+			$('#editEnumerationModal').on('hidden.bs.modal', function () {
+				editEnumerationHidden();
+			});
+
 			$('#enum_submit_button').on('click', function () {
 				checkEnumeration();
 			});
@@ -1088,29 +1293,12 @@
 				$('#numericModal').modal('show');
 			});
 
-			$('#e_mo_submit_button').on('click', function () {
-				checkEditedMatchingOrOrdering();
+			$('#e_s_submit_button').on('click', function () {
+				checkEditedSequencing();
 			});
 
-			$('#editMatchingOrOrderingModal').on('hidden.bs.modal', function () {
-				editMatchingOrOrderingHidden();
-			});
-
-			$('#mo_submit_button').on('click', function () {
-				checkMatchingOrOrdering();
-			});
-
-			$('#matchingOrOrderingModal').on('hidden.bs.modal', function () {
-				matchingOrOrderingHidden();
-			});
-
-			$('#matchingOrOrderingModal').on('shown.bs.modal', function () {
-				matchingOrOrderingShown();
-			});
-
-			$('#matchingOrOrderingBtn').on('click', function () {
-				$('#questionTypeModal').modal('hide');
-				$('#matchingOrOrderingModal').modal('show');
+			$('#editSequencingModal').on('hidden.bs.modal', function () {
+				editSequencingHidden();
 			});
 
 			$('#s_submit_button').on('click', function () {
@@ -1128,6 +1316,14 @@
 			$('#sequencingBtn').on('click', function () {
 				$('#questionTypeModal').modal('hide');
 				$('#sequencingModal').modal('show');
+			});
+
+			$('#e_m_submit_button').on('click', function () {
+				checkEditedMatching();
+			});
+
+			$('#editMatchingModal').on('hidden.bs.modal', function () {
+				editMatchingHidden();
 			});
 
 			$('#m_submit_button').on('click', function () {
@@ -1276,21 +1472,18 @@
 					$('#e_tf_question').removeClass('is-invalid');
 					break;
 
-				// case 2:
-				// 	$('#mo_input_points').removeClass('is-invalid');
-				// 	$('#mo_instruction').removeClass('is-invalid');
-				// 	$('#e_mo_input_points').removeClass('is-invalid');
-				// 	$('#e_mo_instruction').removeClass('is-invalid');
-				// 	break;
-
 				case 2:
 					$('#m_input_points').removeClass('is-invalid');
 					$('#m_instruction').removeClass('is-invalid');
+					$('#e_m_input_points').removeClass('is-invalid');
+					$('#e_m_instruction').removeClass('is-invalid');
 					break;
 
 				case 3:
 					$('#s_input_points').removeClass('is-invalid');
 					$('#s_instruction').removeClass('is-invalid');
+					$('#e_s_input_points').removeClass('is-invalid');
+					$('#e_s_instruction').removeClass('is-invalid');
 					break;
 
 				case 4:
@@ -1307,15 +1500,19 @@
 					$('#enum_question').removeClass('is-invalid');
 					$('#enum_more_answer_1').removeClass('is-invalid');
 					$('#enum_more_answer_2').removeClass('is-invalid');
+					$('#e_enum_input_points').removeClass('is-invalid');
+					$('#e_enum_question').removeClass('is-invalid');
+					$('#e_enum_more_answer_1').removeClass('is-invalid');
+					$('#e_enum_more_answer_2').removeClass('is-invalid');
 					break;
 
 				case 6:
-					$('#fill_input_points').removeClass('is-invalid');
-					$('#fill_question').removeClass('is-invalid');
-					$('#fill_input_answer').removeClass('is-invalid');
-					$('#e_fill_input_points').removeClass('is-invalid');
-					$('#e_fill_question').removeClass('is-invalid');
-					$('#e_fill_input_answer').removeClass('is-invalid');
+					$('#enum_input_points').removeClass('is-invalid');
+					$('#enum_question').removeClass('is-invalid');
+					$('#enum_input_answer').removeClass('is-invalid');
+					$('#e_enum_input_points').removeClass('is-invalid');
+					$('#e_enum_question').removeClass('is-invalid');
+					$('#e_enum_input_answer').removeClass('is-invalid');
 					break;
 
 				default:
@@ -1348,10 +1545,6 @@
 						$('#trueOrFalseModal').modal('hide');
 						break;
 
-					// case 2:
-					// 	$('#matchingOrOrderingModal').modal('hide');
-					// 	break;
-
 					case 2:
 						$('#matchingModal').modal('hide');
 						break;
@@ -1366,7 +1559,6 @@
 
 					case 5:
 						$('#enumerationModal').modal('hide');
-						console.log('close modal');
 						break;
 
 					case 6:
@@ -1385,10 +1577,6 @@
 					case 1:
 						$('#editTrueOrFalseModal').modal('hide');
 						break;
-
-					// case 2:
-					// 	$('#editMatchingOrOrderingModal').modal('hide');
-					// 	break;
 
 					case 2:
 						$('#editMatchingModal').modal('hide');
@@ -1417,8 +1605,6 @@
 		}
 
 		function removeQuestion(questionId, questionType) {
-			console.log(questionId, questionType);
-
 			$.ajax({
 				url: '/QuizQuestions/Update?handler=RemoveQuestion',
 				type: 'POST',
@@ -1500,6 +1686,7 @@
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					console.error('Error submitting question:', textStatus, errorThrown);
+					console.log('Response:', jqXHR.responseText);
 
 					$('#dangerToast').toast({
 						autohide: true,
@@ -1510,8 +1697,6 @@
 		}
 
 		function submitQuestion(questionData, questionType) {
-			console.log("Data being sent:", questionData);
-
 			$.ajax({
 				type: 'POST',
 				url: '/QuizQuestions/Create',
@@ -1548,8 +1733,6 @@
 			var question = $(card).data('question');
 			var questionType = question.questionType;
 
-			console.log(question);
-
 			switch (questionType) {
 				case 0:
 					editMultipleChoice(question);
@@ -1558,10 +1741,6 @@
 				case 1:
 					editTrueOrFalse(question);
 					break;
-
-				// case 2:
-				// 	editMatchingOrOrdering(question);
-				// 	break;
 
 				case 2:
 					editMatching(question);
@@ -1640,11 +1819,6 @@
 							questionDescription = `Question: ${question.description}`;
 							break;
 
-						// case 2:
-						// 	questionType = 'Matching Or Ordering';
-						// 	questionDescription = `Instruction: ${question.description}`;
-						// 	break;
-
 						case 2:
 							questionType = 'Matching';
 							questionDescription = `Instruction: ${question.description}`;
@@ -1661,12 +1835,12 @@
 							break;
 
 						case 5:
-							questionType = 'Enumeration';
+							questionType = 'Short Answer';
 							questionDescription = `Question: ${question.description}`;
 							break;
 
 						case 6:
-							questionType = 'Fill In The Blank';
+							questionType = 'Long Answer';
 							questionDescription = `Question: ${question.description}`;
 							break;
 
@@ -1710,7 +1884,7 @@
 
 					var answerContainer = questionContainer.find('.answerContainer').last();
 
-					if (question.questionType === 2) {
+					if (question.questionType === 2 || question.questionType === 3) {
 						answerContainer.find('#answerType').text('Prompts:');
 					} else {
 						answerContainer.find('#answerType').text('Answers:');
@@ -1740,7 +1914,6 @@
 				success: function (data) {
 					if (data.message === "OK") {
 						tempQuestionData = data.questions;
-						console.log(data.questions);
 						displayQuestions(data.questions);
 					} else {
 						console.error(data.message);
@@ -1748,6 +1921,7 @@
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					console.error('Error submitting question:', textStatus, errorThrown);
+					console.log('Response:', jqXHR.responseText);
 				}
 			});
 		}
@@ -1885,7 +2059,6 @@
 
 			if (answer) {
 				answer.active = false;
-				console.log(`Answer with id ${answerId} is now inactive.`);
 			}
 		}
 
@@ -2454,13 +2627,21 @@
 	<!-- Matching Script -->
 	<script>
 		var m_itemList = [];
+		var e_m_itemList = [];
 		var m_container = $('#m_itemListContainer');
+		var e_m_container = $('#e_m_itemListContainer');
 		var m_prompts = 0;
+		var e_m_prompts = 0;
 		var m_minimum_prompts = 2;
+		var e_m_minimum_prompts = 2;
 		var m_orderedListContainer = $('<ol class="custom-ordered-list d-flex flex-wrap m-2 p-0" id="m_orderedListContainer"></ol>');
+		var e_m_orderedListContainer = $('<ol class="custom-ordered-list d-flex flex-wrap m-2 p-0" id="e_m_orderedListContainer"></ol>');
 		var m_promptContainer = $('#m_prompt_container');
+		var e_m_promptContainer = $('#e_m_prompt_container');
 		var m_addPromptButtonContainer = $('#m_add_prompt_button_container');
+		var e_m_addPromptButtonContainer = $('#e_m_add_prompt_button_container');
 		var m_item = $('#m_item_input');
+		var e_m_item = $('#e_m_item_input');
 		var m_matchingData = {
 			quizId: 0,
 			description: '',
@@ -2472,6 +2653,462 @@
 			answers: [],
 			active: false
 		};
+
+		var e_m_matchingData = {
+			id: 0,
+			description: '',
+			order: '',
+			questionTyp: 0,
+			points: 0,
+			image: '',
+			items: [],
+			answers: [],
+			active: false
+		};
+
+		function gatherEditedMatchingData() {
+			var listMarker;
+
+			e_m_matchingData.id = parseInt($('#e_m_id').val());
+			e_m_matchingData.questionType = 2;
+			e_m_matchingData.description = $('#e_m_instruction').val();
+			e_m_matchingData.points = parseInt($('#e_m_input_points').val());
+			e_m_matchingData.order = parseInt($('#e_m_order').val());
+			e_m_matchingData.image = null;
+			e_m_matchingData.items = [];
+			e_m_matchingData.answers = [];
+			e_m_matchingData.active = true;
+
+			if ($('#e_m_instruction_image_container img').attr('src') != null) {
+				var base64Image = $('#e_m_instruction_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_m_matchingData.image = base64Data;
+			}
+
+			$('#e_m_orderedListContainer').find('li').each(function (index) {
+				var itemText = $(this).find('strong').text();
+				listMarker = String.fromCharCode(65 + index);
+				
+				var answerId = $(this).find('input.e-m-i-id').val();
+				var hasId = answerId != '' ? answerId : 0;
+
+				e_m_matchingData.items.push({
+					id: parseInt(hasId),
+					name: itemText,
+					order: listMarker,
+					quizQuestionId: parseInt($('#e_m_id').val()),
+					active: true
+				});
+			});
+
+			$('.e-m-prompt-container').each(function () {
+				var selectedItem = $(this).find('.e-m-prompt-item-select-list').val();
+				var inputText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('.custom-image-container img').attr('src')
+				var imageSrc = null;
+
+				var answerId = $(this).find('input.e-m-a-id').val();
+				var hasId = answerId != '' ? answerId : 0;
+
+				if (tempImage != null) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					imageSrc = base64Data;
+				}
+
+				e_m_matchingData.answers.push({
+					id: parseInt(hasId),
+					answer: inputText,
+					order: selectedItem,
+					image: imageSrc,
+					isCorrect: true,
+					showAnswer: true,
+					active: true
+				});
+			});
+		}
+
+		function checkEditedMatching() {
+			event.preventDefault();
+			gatherEditedMatchingData();
+			clearValidationMessages(2);
+
+			var points = e_m_matchingData.points;
+			var instruction = e_m_matchingData.description;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_m_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(instruction)) {
+				showError('#e_m_instruction', 'Please enter an instruction.');
+				valid = false;
+			}
+
+			if (e_m_matchingData.items.length < 2) {
+				$('#alertText').text('Please enter at least two items.');
+				$('#alertModal').modal('show');
+				valid = false;
+			} else if (e_m_matchingData.answers.length === 0) {
+				$('#alertText').text('Please enter at least one prompt.');
+				$('#alertModal').modal('show');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_m_matchingData, 2);
+		}
+
+		function e_m_appendItemMarker() {
+			e_m_orderedListContainer.empty();
+			var marker;
+
+			if (e_m_matchingData.items.length !== 0) {
+				$.each(e_m_matchingData.items, function (index, item) {
+					index + 1;
+					marker = String.fromCharCode(65 + index);
+
+					var list = `
+						<li class="m-1" id="e_m_item_li_${index}" style="display: none;">
+							<input type="hidden" class="e-m-i-id" value="${item.id}" />
+							<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+								${marker}.<strong class="ms-1">${item.name}</strong>
+								<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_m_removeItem(${index})"></i>
+							</span>
+						</li>
+					`;
+
+					e_m_orderedListContainer.append(list);
+
+					setTimeout(function() {
+						$(`#e_m_item_li_${index}`).fadeIn(200);
+					}, 10);
+				});
+			}
+		}
+
+		function e_m_appendItemsOnPrompt() {
+			var selectList = $('.e-m-prompt-item-select-list');
+
+			selectList.empty();
+
+			if (e_m_matchingData.items.length !== 0) {
+				$.each(e_m_matchingData.items, function (index, value) {
+					var marker;
+					var list;
+
+					marker = String.fromCharCode(65 + index);
+					list = `<option value="${marker}">${marker}</option>`;
+
+					selectList.append(list);
+				});
+			}
+		}
+
+		function e_m_emptyPromptContainer() {
+			e_m_promptContainer.slideUp(300, function () {
+				$(this).empty().fadeIn();
+				e_m_addPromptButtonContainer.empty();
+			});
+		}
+
+		function e_m_showEmptyList() {
+			e_m_addPromptButtonContainer.empty();
+			e_m_container.empty();
+
+			var emptyList = `
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_m_emptyItemList" style="display: none;">
+								<i class="bi bi-list-ol fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty List</span>
+							</div>
+						`;
+
+			e_m_container.append(emptyList);
+			$('#e_m_emptyItemList').slideDown(300);
+		}
+
+		function e_m_checkPrompt() {
+			if (e_m_matchingData.items.length == 0) {
+				e_m_showEmptyList();
+			}
+
+			if (e_m_matchingData.items.length < 2) {
+				e_m_emptyPromptContainer();
+			}
+		}
+
+		function e_m_removeItem(index) {
+			if (index >= 0 && index < e_m_matchingData.items.length) {
+				e_m_matchingData.items.splice(index, 1);
+			}
+
+			e_m_appendItemsOnPrompt();
+			e_m_appendItemMarker();
+			e_m_checkPrompt();
+		}
+
+		function e_m_addItem() {
+			if (e_m_item.val() != '') {
+				var listTitle = '<h4>Items</h4>';
+
+				var lastItem = e_m_matchingData.items.length;
+
+				var listMarker = String.fromCharCode(65 + lastItem);
+
+				e_m_matchingData.items.push({
+					id: 0,
+					name: e_m_item.val(),
+					order: listMarker,
+					quizQuestionId: parseInt($('#e_m_id').val()),
+					active: true
+				});
+
+				e_m_container.empty();
+				e_m_container.append(listTitle);
+
+				e_m_appendItemMarker();
+
+				e_m_container.append(e_m_orderedListContainer);
+				e_m_item.val('');
+			}
+
+			e_m_checkItemInput();
+			e_m_checkItemList();
+			e_m_changeListType();
+		}
+
+		function e_m_changeListType() {
+			if (e_m_orderedListContainer.length !== 0) {
+				e_m_appendItemMarker();
+				e_m_appendItemsOnPrompt();
+			}
+		}
+
+		function e_m_showEmptyPrompt() {
+			var emptyPrompt = `
+							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_m_emptyPrompt" style="display: none;">
+								<i class="bi bi-border-width fs-1 text-secondary"></i>
+								<span class="fs-3 text-secondary">Empty Prompt</span>
+							</div>
+						`;
+
+			e_m_promptContainer.append(emptyPrompt);
+			$('#e_m_emptyPrompt').slideDown(200);
+		}
+
+		function e_m_checkPromptValue(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.e-m-prompt-container').slideUp(300, function () {
+					$(this).remove();
+
+					if ($('.e-m-prompt-container').length === 0) {
+						e_m_showEmptyPrompt();
+					}
+				});
+			}
+		}
+
+		function e_m_addPrompt() {
+			$('#e_m_emptyPrompt').remove();
+
+			e_m_prompts++;
+
+			var promptItem = `
+						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-m-prompt-container" id="e_m_prompt_container_${e_m_prompts}" style="display: none;">
+							<input type="hidden" class="e-m-a-id" />
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<select class="form-select form-select-lg e-m-prompt-item-select-list" aria-label="Items" style="height: 55px;">
+									</select>
+								</div>
+								<div class="col-9 col-md-6">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="e_m_prompt_${e_m_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="e_m_checkPromptValue(this)">
+										<label for="e_m_prompt_${e_m_prompts}">Prompt</label>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										onclick="uploadImage('#e_m_prompt_image_container_${e_m_prompts}', '#e_m_prompt_input_image_file_${e_m_prompts}')">
+										<div id="e_m_prompt_image_container_${e_m_prompts}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="e_m_prompt_input_image_file_${e_m_prompts}" accept="image/*" style="display: none;" />
+								</div>
+							</div>
+						</div>
+					`;
+
+			e_m_promptContainer.append(promptItem);
+			$(`#e_m_prompt_container_${e_m_prompts}`).slideDown(300);
+
+			e_m_appendItemsOnPrompt();
+		}
+
+		function e_m_checkItemList() {
+			if (e_m_matchingData.items.length == 2) {
+				var headerTitle = '<h4>Prompts</h4>'
+				e_m_promptContainer.append(headerTitle);
+
+				e_m_addPromptButtonContainer.empty();
+
+				e_m_addPrompt();
+
+				var addMorePromptButton = `
+							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="e_m_addPrompt()">Add Prompt</button>
+							</div>
+						`;
+
+				e_m_addPromptButtonContainer.append(addMorePromptButton);
+			}
+		}
+
+		function e_m_checkItemInput() {
+			var trimmedItem = e_m_item.val().trim();
+
+			if (trimmedItem === '') {
+				$('#e_m_addItemButton').prop('disabled', true);
+			} else {
+				$('#e_m_addItemButton').prop('disabled', false);
+			}
+		}
+
+		function editMatching(data) {
+			e_m_checkItemInput();
+			e_m_matchingData = data;
+
+			var e_m_selectList = $('.e-m-prompt-item-select-list');
+			$('#e_m_input_points').val(data.points);
+			$('#e_m_instruction').val(data.description);
+			$('#e_m_id').val(data.id);
+			$('#e_m_order').val(data.order);
+
+			var deleteButtonContainer = $('#e_m_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_m_instruction_image_container', '#e_m_input_image_file', data.image);
+			} else {
+				removeImage('#e_m_instruction_image_container', '#e_m_input_image_file', event);
+			}
+
+			e_m_selectList.empty();
+			e_m_promptContainer.empty();
+			e_m_container.empty();
+
+			if (data.items.length >= 2) {
+				var listTitle = '<h4>Items</h4>';
+
+				e_m_container.append(listTitle);
+
+				if (/^[A-Z]$/.test(data.items[0].order)) {
+					$('#e_m_list_type').val('upper-alpha').change();
+				} else {
+					$('#e_m_list_type').val('decimal').change();
+				}
+
+				e_m_orderedListContainer.empty();
+
+				$.each(data.items, function (index, item) {
+					var list = `
+							<li class="m-1 e-item-container" id="e_m_item_li_${index}" style="display: none;">
+								<input type="hidden" class="e-m-i-id" value="${item.id}" />
+								<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
+									${item.order}.<strong class="ms-1">${item.name}</strong>
+									<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_m_removeItem(${index})"></i>
+								</span>
+							</li>
+							`;
+
+					e_m_orderedListContainer.append(list);
+				});
+
+				e_m_orderedListContainer.find('li').fadeIn(200);
+				e_m_container.append(e_m_orderedListContainer);
+			}
+
+			if (data.answers.length != 0) {
+				e_m_addPromptButtonContainer.empty();
+
+				var headerTitle = '<h4>Prompts</h4>';
+
+				e_m_promptContainer.append(headerTitle);
+
+				$.each(data.answers, function (index, answer) {
+					e_m_prompts++;
+
+					var promptItem = `
+								<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-m-prompt-container" id="e_m_prompt_container_${e_m_prompts}" style="display: none;">
+									<input type="hidden" class="e-m-a-id" value="${answer.id}" />
+									<input type="hidden" class="e-m-a-order" value="${answer.order}" />
+									<div class="row">
+										<div class="col-3 col-md-3">
+											<select class="form-select form-select-lg e-m-prompt-item-select-list" name="promptItemSelect" id="e_m_select_list_${e_m_prompts}" aria-label="Items" style="height: 55px;">
+											</select>
+										</div>
+										<div class="col-9 col-md-6">
+											<div class="form-floating w-100">
+												<input type="text" class="form-control" id="e_m_prompt_${e_m_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_m_checkPromptValue(this)">
+												<label for="e_m_prompt_${e_m_prompts}">Prompt</label>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+											<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+													style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+													onclick="uploadImage('#e_m_prompt_image_container_${e_m_prompts}', '#e_m_prompt_input_image_file_${e_m_prompts}')">
+												<div id="e_m_prompt_image_container_${e_m_prompts}" class="custom-image-container rounded" style="height: 55px;">
+													<i class="bi bi-card-image fs-3 text-secondary"></i>
+												</div>
+											</div>
+											<input type="file" id="e_m_prompt_input_image_file_${e_m_prompts}" accept="image/*" style="display: none;" />
+										</div>
+									</div>
+								</div>
+							`;
+
+					e_m_promptContainer.append(promptItem);
+					$(`#e_m_prompt_container_${e_m_prompts}`).slideDown(300);
+
+					$.each(data.items, function (itemIndex, item) {
+						var isSelected = item.order == answer.order ? "selected" : "";
+						var list = `<option value="${item.order}" ${isSelected}>${item.order}</option>`;
+						$(`#e_m_select_list_${e_m_prompts}`).append(list);
+					});
+
+					if (answer.image) {
+						showImage(`#e_m_prompt_image_container_${e_m_prompts}`, `#e_m_prompt_input_image_file_${e_m_prompts}`, answer.image);
+					}
+				});
+			}
+
+			var addMorePromptButton = `
+							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
+								<button class="btn btn-outline-secondary" type="button" onclick="e_m_addPrompt()">Add Prompt</button>
+							</div>
+						`;
+
+			e_m_addPromptButtonContainer.append(addMorePromptButton);
+
+			$('#editMatchingModal').modal('show');
+		}
+
+		function editMatchingHidden() {
+			loadQuestions();
+			clearValidationMessages(2);
+			e_m_item.val('');
+		}
 
 		function gatherMatchingData() {
 			var listMarker;
@@ -2536,8 +3173,6 @@
 			var points = m_matchingData.points;
 			var instruction = m_matchingData.description;
 
-			console.log(instruction);
-
 			var valid = true;
 
 			if (!isValidNumber(points)) {
@@ -2561,7 +3196,6 @@
 			}
 
 			if (valid) submitQuestion(m_matchingData, 2);
-			// console.log(matchingOrOrderingData);
 		}
 
 		function m_appendItemMarker() {
@@ -2708,8 +3342,6 @@
 		function m_addPrompt() {
 			$('#m_emptyPrompt').remove();
 
-			console.log('here');
-
 			m_prompts++;
 
 			var promptItem = `
@@ -2809,13 +3441,18 @@
 	<!-- Sequence Script -->
 	<script>
 		var s_itemList = [];
+		var e_s_itemList = [];
 		var s_container = $('#s_itemListContainer');
+		var e_s_container = $('#e_s_itemListContainer');
 		var s_prompts = 0;
+		var e_s_prompts = 0;
 		var s_minimum_prompts = 2;
 		var s_orderedListContainer = $('<ol class="custom-ordered-list d-flex flex-wrap m-2 p-0" id="s_orderedListContainer"></ol>');
+		var e_s_orderedListContainer = $('<ol class="e-custom-ordered-list d-flex flex-wrap m-2 p-0" id="e_s_orderedListContainer"></ol>');
 		var s_promptContainer = $('#s_prompt_container');
-		var s_addPromptButtonContainer = $('#s_add_prompt_button_container');
+		var e_s_promptContainer = $('#e_s_prompt_container');
 		var s_item = $('#s_item_input');
+		var e_s_item = $('#e_s_item_input');
 		var s_sequencingData = {
 			quizId: 0,
 			description: '',
@@ -2828,9 +3465,315 @@
 			active: false
 		};
 
-		function gatherSequencingData() {
-			var listMarker;
+		var e_s_sequencingData = {
+			id: 0,
+			description: '',
+			order: '',
+			questionTyp: 0,
+			points: 0,
+			image: '',
+			items: [],
+			answers: [],
+			active: false
+		};
 
+		function gatherEditedSequencingData() {
+			e_s_sequencingData.id = parseInt($('#e_s_id').val());
+			e_s_sequencingData.questionType = 3;
+			e_s_sequencingData.description = $('#e_s_instruction').val();
+			e_s_sequencingData.points = parseInt($('#e_s_input_points').val());
+			e_s_sequencingData.order = parseInt($('#e_s_order').val());
+			e_s_sequencingData.image = null;
+			e_s_sequencingData.items = [];
+			e_s_sequencingData.answers = [];
+			e_s_sequencingData.active = true;
+
+			if ($('#e_s_instruction_image_container img').attr('src') != null) {
+				var base64Image = $('#e_s_instruction_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_s_sequencingData.image = base64Data;
+			}
+
+			$('#e_s_orderedListContainer').find('li').each(function (index) {
+				var itemText = $(this).find('strong').text();
+				index + 1;
+
+				e_s_sequencingData.items.push({
+					name: itemText,
+					order: index,
+					active: true
+				});
+			});
+
+			$('.e-s-prompt-container').each(function () {
+				var selectedItem = $(this).find('.e-s-prompt-item-select-list').val();
+				var inputText = $(this).find('input[type="text"]').val();
+				var tempImage = $(this).find('.custom-image-container img').attr('src')
+				var imageSrc = null;
+				var answerId = $(this).find('input.e-s-a-id').val();
+				var hasId = answerId != '' ? answerId : 0;
+
+				if (tempImage != null) {
+					var base64Image = tempImage;
+					var base64Data = base64Image.split(',')[1];
+
+					imageSrc = base64Data;
+				}
+
+				e_s_sequencingData.answers.push({
+					id: parseInt(hasId),
+					answer: inputText,
+					order: selectedItem,
+					image: imageSrc,
+					isCorrect: true,
+					showAnswer: true,
+					active: true
+				});
+			});
+		}
+
+		function checkEditedSequencing() {
+			event.preventDefault();
+			gatherEditedSequencingData();
+			clearValidationMessages(3);
+
+			var points = e_s_sequencingData.points;
+			var instruction = e_s_sequencingData.description;
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_s_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(instruction)) {
+				showError('#e_s_instruction', 'Please enter an instruction.');
+				valid = false;
+			}
+
+			if (e_s_sequencingData.answers.length !== 0) {
+				var seenOrders = new Set();
+
+				for (var i = 0; i < e_s_sequencingData.answers.length; i++) {
+					var orderValue = e_s_sequencingData.answers[i].order;
+
+					if (seenOrders.has(orderValue)) {
+						$('#alertText').text('One of the orders is the same as another.');
+						$('#alertModal').modal('show');
+						valid = false;
+						return;
+					}
+
+					seenOrders.add(orderValue);
+				}
+			}
+
+			if (e_s_sequencingData.answers.length < 2) {
+				$('#alertText').text('Please enter at least 2 or more prompt.');
+				$('#alertModal').modal('show');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_s_sequencingData, 3);
+		}
+
+		function editSequencing(data) {
+			$('#e_s_input_points').val(data.points);
+			$('#e_s_instruction').val(data.description);
+			$('#e_s_id').val(data.id);
+			$('#e_s_order').val(data.order);
+
+			var deleteButtonContainer = $('#e_s_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_s_instruction_image_container', '#e_s_input_image_file', data.image);
+			} else {
+				removeImage('#e_s_instruction_image_container', '#e_s_input_image_file', event);
+			}
+
+			e_s_promptContainer.empty();
+
+			var items = data.answers.length;
+
+			for (var i = 1; i <= items; i++) {
+				e_s_itemList.push(i);
+			}
+
+			$.each(data.answers, function (index, answer) {
+				e_s_prompts++;
+
+				var promptItem = `
+					<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-s-prompt-container" id="e_s_prompt_container_${e_s_prompts}" style="display: none;">
+						<input type="hidden" class="e-s-a-id" value="${answer.id}" />
+						<div class="row">
+							<div class="col-3 col-md-3">
+								<select class="form-select form-select-lg e-s-prompt-item-select-list" id="e_s_select_list_${e_s_prompts}" aria-label="Items" style="height: 55px;">
+								</select>
+							</div>
+							<div class="col-9 col-md-6">
+								<div class="form-floating w-100">
+									<input type="text" class="form-control" id="e_s_prompt_${e_s_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_s_checkPromptValue(this)">
+									<label for="e_s_prompt_${e_s_prompts}">Prompt</label>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+								<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+									style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+									onclick="uploadImage('#e_s_prompt_image_container_${e_s_prompts}', '#e_s_prompt_input_image_file_${e_s_prompts}')">
+									<div id="e_s_prompt_image_container_${e_s_prompts}" class="custom-image-container rounded" style="height: 55px;">
+										<i class="bi bi-card-image fs-3 text-secondary"></i>
+									</div>
+								</div>
+								<input type="file" id="e_s_prompt_input_image_file_${e_s_prompts}" accept="image/*" style="display: none;" />
+							</div>
+						</div>
+					</div>
+				`;
+
+				e_s_promptContainer.append(promptItem);
+				$(`#e_s_prompt_container_${e_s_prompts}`).slideDown(300);
+
+				$.each(e_s_itemList, function (itemIndex, item) {
+					var isSelected = item == answer.order ? "selected" : "";
+					var list = `<option value="${item}" ${isSelected}>${item}</option>`;
+					$(`#e_s_select_list_${e_s_prompts}`).append(list);
+				});
+
+				if (answer.image) {
+					showImage(`#e_s_prompt_image_container_${e_s_prompts}`, `#e_s_prompt_input_image_file_${e_s_prompts}`, answer.image);
+				}
+			});
+
+			$('#editSequencingModal').modal('show');
+			e_s_checkItemInput();
+		}
+
+		function editSequencingHidden() {
+			loadQuestions();
+			clearValidationMessages(3);
+			e_s_itemList = [];
+		}
+
+		function e_s_addItem() {
+			if (e_s_item.val() != '') {
+				var lastIndex = e_s_itemList[e_s_itemList.length - 1];
+
+				e_s_itemList.push(lastIndex++);
+			}
+
+			e_s_checkItemInput();
+			e_s_checkItemList();
+			e_s_appendItemsOnPrompt();
+			e_s_item.val('');
+		}
+
+		function e_s_appendItemsOnPrompt() {
+			var selectList = $('.e-s-prompt-item-select-list');
+
+			selectList.empty();
+
+			if (e_s_itemList.length !== 0) {
+				$.each(e_s_itemList, function (index, value) {
+					var list;
+					var itemValue = index + 1;
+
+					list = `<option value="${itemValue}">${itemValue}</option>`;
+
+					selectList.append(list);
+				});
+			}
+		}
+
+		function e_s_checkPromptValue(inputElement) {
+			if ($(inputElement).val().trim() === '') {
+				$(inputElement).closest('.e-s-prompt-container').slideUp(300, function () {
+					$(this).remove();
+
+					e_s_itemList.pop();
+					e_s_appendItemsOnPrompt();
+
+					if ($('.e-s-prompt-container').length === 0) {
+						e_s_showEmptyPrompt();
+					}
+				});
+			}
+		}
+
+		function e_s_addPrompt() {
+			$('#e_s_emptyPrompt').remove();
+
+			e_s_prompts++;
+
+			var lastItem = e_s_itemList[e_s_itemList.length - 1];
+
+			var promptValue = e_s_item.val();
+
+			var promptItem = `
+						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-s-prompt-container" id="e_s_prompt_container_${e_s_prompts}" style="display: none;">
+							<input type="hidden" class="e-s-a-id" value="0" />
+							<div class="row">
+								<div class="col-3 col-md-3">
+									<select class="form-select form-select-lg e-s-prompt-item-select-list" aria-label="Items" style="height: 55px;">
+									</select>
+								</div>
+								<div class="col-9 col-md-6">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control" id="e_s_prompt_${e_s_prompts}" placeholder="Prompt" maxlength="100" value="${promptValue}" onchange="e_s_checkPromptValue(this)">
+										<label for="e_s_prompt_${e_s_prompts}">Prompt</label>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
+									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
+										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
+										onclick="uploadImage('#e_s_prompt_image_container_${e_s_prompts}', '#e_s_prompt_input_image_file_${e_s_prompts}')">
+										<div id="e_s_prompt_image_container_${e_s_prompts}" class="custom-image-container rounded" style="height: 55px;">
+											<i class="bi bi-card-image fs-3 text-secondary"></i>
+										</div>
+									</div>
+									<input type="file" id="e_s_prompt_input_image_file_${e_s_prompts}" accept="image/*" style="display: none;" />
+								</div>
+							</div>
+						</div>
+					`;
+
+			e_s_promptContainer.append(promptItem);
+			$(`#e_s_prompt_container_${e_s_prompts}`).slideDown(300);
+
+			e_s_appendItemsOnPrompt();
+		}
+
+		function e_s_checkItemList() {
+			if (e_s_itemList.length >= 1) {
+				if (e_s_itemList.length === 1) {
+					e_s_promptContainer.empty();
+
+					const headerTitle = '<h4>Prompts</h4>';
+					e_s_promptContainer.append(headerTitle);
+				}
+
+				e_s_addPrompt();
+			}
+		}
+
+		function e_s_checkItemInput() {
+			var trimmedItem = e_s_item.val().trim();
+
+			if (trimmedItem === '') {
+				$('#e_s_addItemButton').prop('disabled', true);
+			} else {
+				$('#e_s_addItemButton').prop('disabled', false);
+			}
+		}
+
+		function gatherSequencingData() {
 			s_sequencingData.quizId = parseInt("@Model.QuizVM.Id");
 			s_sequencingData.questionType = 3;
 			s_sequencingData.description = $('#s_instruction').val();
@@ -2926,32 +3869,7 @@
 				valid = false;
 			}
 
-			if (valid) submitQuestion(s_sequencingData, 3); // console.log(s_sequencingData);
-		}
-
-		function s_appendItemMarker() {
-			s_orderedListContainer.empty();
-
-			if (s_itemList.length !== 0) {
-				$.each(s_itemList, function (index, value) {
-					var adjustedIndex = index + 1;
-
-					var list = `
-							<li class="m-1" id="s_item_li_${adjustedIndex}" style="display: none;">
-								<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-									${adjustedIndex}.<strong class="ms-1">${value}</strong>
-									<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="s_removeItem(${adjustedIndex})"></i>
-								</span>
-							</li>
-						`;
-
-					s_orderedListContainer.append(list);
-
-					setTimeout(function () {
-						$(`#s_item_li_${adjustedIndex}`).fadeIn(200);
-					}, 10);
-				});
-			}
+			if (valid) submitQuestion(s_sequencingData, 3);
 		}
 
 		function s_appendItemsOnPrompt() {
@@ -2974,12 +3892,10 @@
 		function s_emptyPromptContainer() {
 			s_promptContainer.slideUp(300, function () {
 				$(this).empty().fadeIn();
-				s_addPromptButtonContainer.empty();
 			});
 		}
 
 		function s_showEmptyList() {
-			s_addPromptButtonContainer.empty();
 			s_container.empty();
 
 			var emptyList = `
@@ -3003,38 +3919,17 @@
 			}
 		}
 
-		function s_removeItem(index) {
-			var zeroBasedIndex = index - 1;
-
-			if (zeroBasedIndex >= 0 && zeroBasedIndex < s_itemList.length) {
-				s_itemList.splice(zeroBasedIndex, 1);
-			}
-
-			s_appendItemsOnPrompt();
-			s_appendItemMarker();
-			s_checkPrompt();
-		}
-
 		function s_addItem() {
 			if (s_item.val() != '') {
-				s_itemList.push(s_item.val());
+				var lastIndex = s_itemList[s_itemList.length - 1];
 
-				s_appendItemMarker();
-
-				s_container.append(s_orderedListContainer);
-				s_item.val('');
+				s_itemList.push(lastIndex++);
 			}
 
 			s_checkItemInput();
 			s_checkItemList();
-			s_changeListType();
-		}
-
-		function s_changeListType() {
-			if (s_orderedListContainer.length !== 0) {
-				s_appendItemMarker();
-				s_appendItemsOnPrompt();
-			}
+			s_appendItemsOnPrompt();
+			s_item.val('');
 		}
 
 		function s_showEmptyPrompt() {
@@ -3069,7 +3964,7 @@
 
 			s_prompts++;
 
-			var lastItem = s_itemList[s_itemList.length - 1];
+			var promptValue = s_item.val();
 
 			var promptItem = `
 						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 s-prompt-container" id="s_prompt_container_${s_prompts}" style="display: none;">
@@ -3080,7 +3975,7 @@
 								</div>
 								<div class="col-9 col-md-6">
 									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="s_prompt_${s_prompts}" placeholder="Prompt" maxlength="100" value="${lastItem}" onchange="s_checkPromptValue(this)">
+										<input type="text" class="form-control" id="s_prompt_${s_prompts}" placeholder="Prompt" maxlength="100" value="${promptValue}" onchange="s_checkPromptValue(this)">
 										<label for="s_prompt_${s_prompts}">Prompt</label>
 									</div>
 								</div>
@@ -3111,8 +4006,6 @@
 
 					const headerTitle = '<h4>Prompts</h4>';
 					s_promptContainer.append(headerTitle);
-
-					s_addPromptButtonContainer.empty();
 				}
 
 				s_addPrompt();
@@ -3159,857 +4052,6 @@
 		}
 
 		s_checkItemInput();
-	</script>
-
-	<!-- Matching Or Ordering Script -->
-	<script>
-		var itemList = [];
-		var container = $('#itemListContainer');
-		var e_itemListContainer = $('#e_itemListContainer');
-		var mo_prompts = 0;
-		var e_mo_prompts = 0;
-		var mo_minimum_prompts = 2;
-		var orderedListContainer = $('<ol class="custom-ordered-list d-flex flex-wrap m-2 p-0" id="orderedListContainer"></ol>');
-		var e_orderedListContainer = $('<ol class="e-custom-ordered-list d-flex flex-wrap m-2 p-0" id="e_orderedListContainer"></ol>');
-		var promptContainer = $('#mo_prompt_container');
-		var e_promptContainer = $('#e_mo_prompt_container');
-		var addPromptButtonContainer = $('#mo_add_prompt_button_container');
-		var e_addPromptButtonContainer = $('#e_mo_add_prompt_button_container');
-		var item = $('#mo_item_input');
-		var e_item = $('#e_mo_item_input');
-		var matchingOrOrderingData = {
-			quizId: 0,
-			description: '',
-			order: '',
-			questionType: 0,
-			points: 0,
-			image: '',
-			items: [],
-			answers: [],
-			active: false
-		};
-
-		var e_matchingOrOrderingData = {
-			id: 0,
-			description: '',
-			order: 0,
-			questionType: 0,
-			points: 0,
-			image: '',
-			answers: [],
-			items: [],
-			active: false
-		};
-
-		var og_matchingOrOrderingData;
-
-		function e_removeItem(index) {
-			e_matchingOrOrderingData.items.splice(index, 1);
-			e_appendItemsOnPrompt();
-			e_appendItemMarker();
-			e_checkPrompt();
-		}
-
-		function getNextOrder() {
-			const items = e_matchingOrOrderingData.items;
-
-			if (items.length === 0) {
-				return $('#e_mo_list_type').val() === 'upper-alpha' ? 'A' : 1;
-			}
-
-			const lastItem = items[items.length - 1].order;
-
-			if ($('#e_mo_list_type').val() === 'upper-alpha') {
-				return String.fromCharCode(lastItem.charCodeAt(0) + 1);
-			} else if ($('#e_mo_list_type').val() === 'decimal') {
-				return parseInt(lastItem) + 1;
-			}
-		}
-
-		function e_addItem() {
-			var nextOrder = getNextOrder();
-
-			if (e_item.val() != '') {
-				var listTitle = '<h4>Items</h4>';
-
-				e_matchingOrOrderingData.items.push({
-					id: 0,
-					name: e_item.val(),
-					order: nextOrder,
-					quizQuestionId: $('#e_mo_id').val(),
-					active: true
-				});
-
-				e_itemListContainer.empty();
-				e_itemListContainer.append(listTitle);
-
-				e_appendItemMarker();
-
-				e_itemListContainer.append(e_orderedListContainer);
-				e_item.val('');
-			}
-
-			e_checkItemInput();
-			e_checkItemList();
-			e_changeListType();
-		}
-
-		function e_showEmptyPrompt() {
-			e_addPromptButtonContainer.empty();
-			e_promptContainer.empty();
-
-			var emptyPrompt = `
-							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyPrompt" style="display: none;">
-								<i class="bi bi-border-width fs-1 text-secondary"></i>
-								<span class="fs-3 text-secondary">Empty Prompt</span>
-							</div>
-						`;
-
-			e_promptContainer.append(emptyPrompt);
-			$('#e_emptyPrompt').slideDown(200);
-		}
-
-		function e_showEmptyList() {
-			e_itemListContainer.empty();
-
-			var emptyList = `
-							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="e_emptyItemList" style="display: none;">
-								<i class="bi bi-list-ol fs-1 text-secondary"></i>
-								<span class="fs-3 text-secondary">Empty List</span>
-							</div>
-						`;
-
-			e_itemListContainer.append(emptyList);
-			$('#e_emptyItemList').slideDown(300);
-		}
-
-		function e_checkPrompt() {
-			if (e_matchingOrOrderingData.items.length == 0) {
-				e_showEmptyList();
-			}
-
-			if (e_matchingOrOrderingData.items.length < 2) {
-				e_emptyPromptContainer();
-			}
-		}
-
-		function e_emptyPromptContainer() {
-			e_promptContainer.slideUp(300, function () {
-				$(this).empty().fadeIn();
-				e_addPromptButtonContainer.empty();
-				e_matchingOrOrderingData.answers = [];
-			});
-		}
-
-		function e_checkPromptValue(inputElement) {
-			if ($(inputElement).val().trim() === '') {
-				$(inputElement).closest('.e-prompt-container').slideUp(300, function () {
-					$(this).remove();
-
-					if ($('.e-prompt-container').length === 0) {
-						e_showEmptyPrompt();
-					}
-				});
-			}
-		}
-
-		function e_addPrompt() {
-			$('#e_emptyPrompt').remove();
-
-			e_mo_prompts++;
-
-			var promptItem = `
-						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
-							<div class="row">
-								<div class="col-3 col-md-3">
-									<select class="form-select form-select-lg e-mo-prompt-item-select-list" id="e_mo_prompt_item_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
-									</select>
-								</div>
-								<div class="col-9 col-md-6">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="e_checkPromptValue(this)">
-										<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
-									</div>
-								</div>
-								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-										onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
-										<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-											<i class="bi bi-card-image fs-3 text-secondary"></i>
-										</div>
-									</div>
-									<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
-								</div>
-							</div>
-						</div>
-					`;
-
-			e_promptContainer.append(promptItem);
-			$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
-
-			e_appendItemsOnPrompt();
-
-			e_matchingOrOrderingData.answers.push({
-				id: 0,
-				answer: $(`#e_mo_prompt_${e_mo_prompts}`).val(),
-				isCorrect: true,
-				showAnswer: true,
-				order: $(`#e_mo_prompt_item_select_list_${e_mo_prompts}`).val(),
-				quizQuestionId: $('#e_mo_id').val(),
-				image: null,
-				active: true
-			});
-		}
-
-		function e_checkItemList() {
-			if (e_matchingOrOrderingData.items.length == 2) {
-				var headerTitle = '<h4>Prompts</h4>'
-				e_promptContainer.append(headerTitle);
-
-				e_addPrompt();
-
-				var addMorePromptButton = `
-							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
-								<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
-							</div>
-						`;
-
-				e_addPromptButtonContainer.append(addMorePromptButton);
-			}
-		}
-
-		function e_checkItemInput() {
-			var trimmedItem = e_item.val().trim();
-
-			if (trimmedItem === '') {
-				$('#e_addItemButton').prop('disabled', true);
-			} else {
-				$('#e_addItemButton').prop('disabled', false);
-			}
-		}
-
-		function e_appendItemMarker() {
-			e_orderedListContainer.empty();
-
-			if (e_matchingOrOrderingData.items.length != 0) {
-				$.each(e_matchingOrOrderingData.items, function (index, value) {
-					if ($('#e_mo_list_type').val() === 'upper-alpha') {
-						marker = String.fromCharCode(65 + index);
-					} else {
-						marker = index + 1;
-					}
-
-					value.order = marker;
-
-					var list = `
-								<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
-									<input type="hidden" class="e-mo-i-id" value="${value.id}" />
-									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-										${marker}.<strong class="ms-1">${value.name}</strong>
-										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
-									</span>
-								</li>
-								`;
-
-					e_orderedListContainer.append(list);
-					$(`#e_mo_item_li_${index}`).fadeIn(200);
-				});
-			}
-		}
-
-		function e_changeListType() {
-			if (e_orderedListContainer.length !== 0) {
-				e_appendItemMarker();
-				e_appendItemsOnPrompt();
-			}
-		}
-
-		function e_appendItemsOnPrompt() {
-			var selectList = $('.e-mo-prompt-item-select-list');
-
-			selectList.empty();
-
-			if (e_matchingOrOrderingData.items.length != 0) {
-				$.each(e_matchingOrOrderingData.items, function (index, value) {
-					var marker;
-					var list;
-
-					if ($('#e_mo_list_type').val() === 'upper-alpha') {
-						marker = String.fromCharCode(65 + index);
-						list = `<option value="${marker}">${marker}</option>`;
-					}
-
-					if ($('#e_mo_list_type').val() === 'decimal') {
-						marker = index + 1;
-						list = `<option value="${marker}">${marker}</option>`;
-					}
-
-					selectList.append(list);
-				});
-			}
-		}
-
-		function gatherEditedMatchingOrOrderingData() {
-			e_matchingOrOrderingData.id = parseInt($('#e_mo_id').val());
-			e_matchingOrOrderingData.description = $('#e_mo_instruction').val();
-			e_matchingOrOrderingData.questionType = 2;
-			e_matchingOrOrderingData.order = parseInt($('#e_mo_order').val());
-			e_matchingOrOrderingData.points = parseInt($('#e_mo_input_points').val());
-			e_matchingOrOrderingData.image = null;
-			e_matchingOrOrderingData.active = true;
-			e_matchingOrOrderingData.answers = [];
-			e_matchingOrOrderingData.items = [];
-
-			if ($('#e_mo_instruction_image_container img').attr('src')) {
-				var base64Image = $('#e_mo_instruction_image_container img').attr('src');
-				var base64Data = base64Image.split(',')[1];
-
-				e_matchingOrOrderingData.image = base64Data;
-			}
-
-			$('.e-prompt-container').each(function (index) {
-				var promptId = $(this).find('input[type="hidden"].e-mo-a-id').val();
-				var promptOrder = $(this).find('select[name="promptItemSelect"]').val();
-				var promptText = $(this).find('input[type="text"]').val();
-				var tempImage = $(this).find('img').attr('src');
-				var promptImage = null;
-				var isCorrect = $(this).find('input[type="radio"]').is(':checked');
-
-				if (tempImage) {
-					var base64Image = tempImage;
-					var base64Data = base64Image.split(',')[1];
-
-					promptImage = base64Data;
-				}
-
-				if (promptText.trim() !== '') {
-					e_matchingOrOrderingData.answers.push({
-						id: promptId,
-						answer: promptText,
-						isCorrect: true,
-						showAnswer: true,
-						order: promptOrder,
-						image: promptImage == '' ? null : promptImage,
-						active: true
-					});
-				}
-			});
-
-			$('.e-item-container').each(function (index) {
-				var listItem = $(this);
-				var itemId = listItem.find('input[type="hidden"].e-mo-i-id').val();
-				var itemName = listItem.find('strong').text();
-				var spanText = listItem.find('span').text();
-				var itemOrder = spanText.split('.')[0].trim();
-
-				e_matchingOrOrderingData.items.push({
-					id: itemId,
-					name: itemName,
-					order: itemOrder,
-					quizQuestionId: $('#e_mo_id').val(),
-					active: true
-				});
-			});
-		}
-
-		function checkEditedMatchingOrOrdering() {
-			event.preventDefault();
-			gatherEditedMatchingOrOrderingData();
-			clearValidationMessages(2);
-
-			var points = e_matchingOrOrderingData.points;
-			var description = e_matchingOrOrderingData.description;
-			var choices = e_matchingOrOrderingData.answers;
-
-			var valid = true;
-
-			if (!isValidNumber(points)) {
-				showError('#e_mo_input_points', 'Points must be between 1 and 100.');
-				valid = false;
-			} else if (!isValidQuestion(description)) {
-				showError('#e_mo_instruction', 'Please enter an instruction.');
-				valid = false;
-			} else if (e_matchingOrOrderingData.items.length < 2) {
-				$('#alertText').text('Please enter at least two items.');
-				$('#alertModal').modal('show');
-				valid = false;
-			} else if (e_matchingOrOrderingData.answers.length === 0) {
-				$('#alertText').text('Please enter at least one prompt.');
-				$('#alertModal').modal('show');
-				valid = false;
-			}
-
-			if (valid) updateQuestion(e_matchingOrOrderingData, 2);
-		}
-
-		function editMatchingOrOrdering(data) {
-			e_checkItemInput();
-			e_matchingOrOrderingData = data;
-			og_matchingOrOrderingData = data;
-			var e_mo_prompt_container = $('#e_mo_prompt_container');
-			var e_selectList = $('.e-mo-prompt-item-select-list');
-
-			console.log(data.points);
-
-			$('#e_mo_id').val(data.id);
-			$('#e_mo_order').val(data.order);
-			$('#e_mo_input_points').val(data.points);
-			$('#e_mo_instruction').val(data.description);
-
-			var deleteButtonContainer = $('#e_mo_deleteButtonContainer');
-
-			deleteButtonContainer.empty();
-
-			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
-
-			deleteButtonContainer.append(deleteButton);
-
-			if (data.image != '') {
-				showImage('#e_mo_instruction_image_container', '#e_mo_input_image_file', data.image);
-			} else {
-				removeImage('#e_mo_instruction_image_container', '#e_mo_input_image_file', event);
-			}
-
-			e_selectList.empty();
-			e_mo_prompt_container.empty();
-			e_itemListContainer.empty();
-
-			if (data.items.length >= 2) {
-				var listTitle = '<h4>Items</h4>';
-
-				e_itemListContainer.append(listTitle);
-
-				if (/^[A-Z]$/.test(data.items[0].order)) {
-					$('#e_mo_list_type').val('upper-alpha').change();
-				} else {
-					$('#e_mo_list_type').val('decimal').change();
-				}
-
-				e_orderedListContainer.empty();
-
-				$.each(data.items, function (index, item) {
-					var list = `
-								<li class="m-1 e-item-container" id="e_mo_item_li_${index}" style="display: none;">
-									<input type="hidden" class="e-mo-i-id" value="${item.id}" />
-									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-										${item.order}.<strong class="ms-1">${item.name}</strong>
-										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="e_removeItem(${index})"></i>
-									</span>
-								</li>
-								`;
-
-					e_orderedListContainer.append(list);
-				});
-
-				e_orderedListContainer.find('li').fadeIn(200);
-				e_itemListContainer.append(e_orderedListContainer);
-			}
-
-			if (data.answers.length != 0) {
-				e_addPromptButtonContainer.empty();
-
-				var headerTitle = '<h4>Prompts</h4>';
-
-				e_mo_prompt_container.append(headerTitle);
-
-				$.each(data.answers, function (index, answer) {
-					e_mo_prompts++;
-
-					var promptItem = `
-								<div class="col-sm-12 col-md-12 mb-4 mb-md-2 e-prompt-container" id="e_mo_prompt_container_${e_mo_prompts}" style="display: none;">
-									<input type="hidden" class="e-mo-a-id" value="${answer.id}" />
-									<input type="hidden" class="e-mo-a-order" value="${answer.order}" />
-									<div class="row">
-										<div class="col-3 col-md-3">
-											<select class="form-select form-select-lg e-mo-prompt-item-select-list" name="promptItemSelect" id="e_mo_select_list_${e_mo_prompts}" aria-label="Items" style="height: 55px;">
-											</select>
-										</div>
-										<div class="col-9 col-md-6">
-											<div class="form-floating w-100">
-												<input type="text" class="form-control" id="e_mo_prompt_${e_mo_prompts}" placeholder="Prompt" maxlength="100" value="${answer.answer}" onchange="e_checkPromptValue(this)">
-												<label for="e_mo_prompt_${e_mo_prompts}">Prompt</label>
-											</div>
-										</div>
-										<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-											<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-												 style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-												 onclick="uploadImage('#e_mo_prompt_image_container_${e_mo_prompts}', '#e_mo_prompt_input_image_file_${e_mo_prompts}')">
-												<div id="e_mo_prompt_image_container_${e_mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-													<i class="bi bi-card-image fs-3 text-secondary"></i>
-												</div>
-											</div>
-											<input type="file" id="e_mo_prompt_input_image_file_${e_mo_prompts}" accept="image/*" style="display: none;" />
-										</div>
-									</div>
-								</div>
-							`;
-
-					e_mo_prompt_container.append(promptItem);
-					$(`#e_mo_prompt_container_${e_mo_prompts}`).slideDown(300);
-
-					$.each(data.items, function (itemIndex, item) {
-						var isSelected = item.order == answer.order ? "selected" : "";
-						var list = `<option value="${item.order}" ${isSelected}>${item.order}</option>`;
-						$(`#e_mo_select_list_${e_mo_prompts}`).append(list);
-					});
-
-					if (answer.image) {
-						showImage(`#e_mo_prompt_image_container_${e_mo_prompts}`, `#e_mo_prompt_input_image_file_${e_mo_prompts}`, answer.image);
-					}
-				});
-			}
-
-			var addMorePromptButton = `
-							<div class="col-12 mt-2 mb-2 text-end" id="e_addMorePromptButtonContainer">
-								<button class="btn btn-outline-secondary" type="button" onclick="e_addPrompt()">Add Prompt</button>
-							</div>
-						`;
-
-			e_addPromptButtonContainer.append(addMorePromptButton);
-
-			$('#editMatchingOrOrderingModal').modal('show');
-		}
-
-		function editMatchingOrOrderingHidden() {
-			loadQuestions();
-			e_mo_prompts = 0;
-			clearValidationMessages(2);
-		}
-
-		function gatherMatchingOrOrderingData() {
-			var listMarker;
-
-			//console.log($('#mo_input_points').val());
-
-			matchingOrOrderingData.quizId = parseInt("@Model.QuizVM.Id");
-			matchingOrOrderingData.questionType = 2;
-			matchingOrOrderingData.description = $('#mo_instruction').val();
-			matchingOrOrderingData.points = parseInt($('#mo_input_points').val());
-			matchingOrOrderingData.order = 0;
-			matchingOrOrderingData.image = null;
-			matchingOrOrderingData.items = [];
-			matchingOrOrderingData.answers = [];
-			matchingOrOrderingData.active = true;
-
-			if ($('#mo_instruction_image_container img').attr('src') != null) {
-				var base64Image = $('#mo_instruction_image_container img').attr('src');
-				var base64Data = base64Image.split(',')[1];
-
-				matchingOrOrderingData.image = base64Data;
-			}
-
-			$('#orderedListContainer').find('li').each(function (index) {
-
-				if ($('#mo_list_type').val() === 'upper-alpha') {
-					listMarker = String.fromCharCode(65 + index);
-				} else {
-					listMarker = (index + 1).toString();
-				}
-
-				var itemText = $(this).find('strong').text();
-				matchingOrOrderingData.items.push({
-					name: itemText,
-					order: listMarker,
-					active: true
-				});
-			});
-
-			$('.prompt-container').each(function () {
-				var selectedItem = $(this).find('.mo-prompt-item-select-list').val();
-				var inputText = $(this).find('input[type="text"]').val();
-				var tempImage = $(this).find('.custom-image-container img').attr('src')
-				var imageSrc = null;
-
-				if (tempImage != null) {
-					var base64Image = tempImage;
-					var base64Data = base64Image.split(',')[1];
-
-					imageSrc = base64Data;
-				}
-
-				matchingOrOrderingData.answers.push({
-					answer: inputText,
-					order: selectedItem,
-					image: imageSrc,
-					isCorrect: true,
-					showAnswer: true,
-					active: true
-				});
-			});
-		}
-
-		function checkMatchingOrOrdering() {
-			event.preventDefault();
-			gatherMatchingOrOrderingData();
-			clearValidationMessages(2);
-
-			var points = matchingOrOrderingData.points;
-			var instruction = matchingOrOrderingData.description;
-
-			var valid = true;
-
-			if (!isValidNumber(points)) {
-				showError('#mo_input_points', 'Points must be between 1 and 100.');
-				valid = false;
-			} else if (!isValidQuestion(instruction)) {
-				showError('#mo_instruction', 'Please enter an instruction.');
-				valid = false;
-			} else if (matchingOrOrderingData.items.length < 2) {
-				$('#alertText').text('Please enter at least two items.');
-				$('#alertModal').modal('show');
-				valid = false;
-			} else if (matchingOrOrderingData.answers.length === 0) {
-				$('#alertText').text('Please enter at least one prompt.');
-				$('#alertModal').modal('show');
-				valid = false;
-			}
-
-			if (valid) submitQuestion(matchingOrOrderingData, 2);
-
-			// console.log(matchingOrOrderingData);
-		}
-
-		function showEmptyPrompt() {
-			var emptyPrompt = `
-							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyPrompt" style="display: none;">
-								<i class="bi bi-border-width fs-1 text-secondary"></i>
-								<span class="fs-3 text-secondary">Empty Prompt</span>
-							</div>
-						`;
-
-			promptContainer.append(emptyPrompt);
-			$('#emptyPrompt').slideDown(200);
-		}
-
-		function checkPromptValue(inputElement) {
-			if ($(inputElement).val().trim() === '') {
-				$(inputElement).closest('.prompt-container').slideUp(300, function () {
-					$(this).remove();
-
-					if ($('.prompt-container').length === 0) {
-						showEmptyPrompt();
-					}
-				});
-			}
-		}
-
-		function addPrompt() {
-			$('#emptyPrompt').remove();
-
-			mo_prompts++;
-
-			var promptItem = `
-						<div class="col-sm-12 col-md-12 mb-4 mb-md-2 prompt-container" id="mo_prompt_container_${mo_prompts}" style="display: none;">
-							<div class="row">
-								<div class="col-3 col-md-3">
-									<select class="form-select form-select-lg mo-prompt-item-select-list" aria-label="Items" style="height: 55px;">
-									</select>
-								</div>
-								<div class="col-9 col-md-6">
-									<div class="form-floating w-100">
-										<input type="text" class="form-control" id="mo_prompt_${mo_prompts}" placeholder="Prompt" maxlength="100" value="Prompt" onchange="checkPromptValue(this)">
-										<label for="mo_prompt_${mo_prompts}">Prompt</label>
-									</div>
-								</div>
-								<div class="col-sm-12 col-md-3 mt-2 mt-md-0">
-									<div class="rounded w-100 h-100 d-flex align-items-center justify-content-center"
-										style="border: #dee2e6; border-style: dashed; cursor: pointer;"
-										onclick="uploadImage('#mo_prompt_image_container_${mo_prompts}', '#mo_prompt_input_image_file_${mo_prompts}')">
-										<div id="mo_prompt_image_container_${mo_prompts}" class="custom-image-container rounded" style="height: 55px;">
-											<i class="bi bi-card-image fs-3 text-secondary"></i>
-										</div>
-									</div>
-									<input type="file" id="mo_prompt_input_image_file_${mo_prompts}" accept="image/*" style="display: none;" />
-								</div>
-							</div>
-						</div>
-					`;
-
-			promptContainer.append(promptItem);
-			$(`#mo_prompt_container_${mo_prompts}`).slideDown(300);
-
-			appendItemsOnPrompt();
-		}
-
-		function showEmptyList() {
-			addPromptButtonContainer.empty();
-			container.empty();
-
-			var emptyList = `
-							<div class="d-flex flex-column align-items-center justify-content-center p-5 border rounded" id="emptyItemList" style="display: none;">
-								<i class="bi bi-list-ol fs-1 text-secondary"></i>
-								<span class="fs-3 text-secondary">Empty List</span>
-							</div>
-						`;
-
-			container.append(emptyList);
-			$('#emptyItemList').slideDown(300);
-		}
-
-		function emptyPromptContainer() {
-			promptContainer.slideUp(300, function () {
-				$(this).empty().fadeIn();
-				addPromptButtonContainer.empty();
-			});
-		}
-
-		function checkPrompt() {
-			if (itemList.length == 0) {
-				showEmptyList();
-			}
-
-			if (itemList.length < 2) {
-				emptyPromptContainer();
-			}
-		}
-
-		function removeItem(index) {
-			itemList.splice(index, 1);
-			appendItemsOnPrompt();
-			appendItemMarker();
-			checkPrompt();
-		}
-
-		function appendItemMarker() {
-			orderedListContainer.empty();
-
-			if (itemList.length != 0) {
-				$.each(itemList, function (index, value) {
-					if ($('#mo_list_type').val() === 'upper-alpha') {
-						marker = String.fromCharCode(65 + index);
-					} else {
-						marker = index + 1;
-					}
-
-					var list = `
-								<li class="m-1" id="mo_item_li_${index}" style="display: none;">
-									<span class="capsule d-flex align-items-center justify-content-center border border-2 border-secondary-subtle rounded-5 p-1 ps-2 pe-2">
-										${marker}.<strong class="ms-1">${value}</strong>
-										<i class="ms-2 bi bi-x-lg" style="cursor: pointer;" onclick="removeItem(${index})"></i>
-									</span>
-								</li>
-								`;
-
-					orderedListContainer.append(list);
-					$(`#mo_item_li_${index}`).fadeIn(200);
-				});
-			}
-		}
-
-		function changeListType() {
-			var orderedList = $('#orderedListContainer');
-
-			if (orderedList.length !== 0) {
-				appendItemMarker();
-				appendItemsOnPrompt();
-			}
-		}
-
-		function appendItemsOnPrompt() {
-			var selectList = $('.mo-prompt-item-select-list');
-
-			selectList.empty();
-
-			if (itemList.length != 0) {
-				$.each(itemList, function (index, value) {
-					var marker;
-					var list;
-
-					if ($('#mo_list_type').val() === 'upper-alpha') {
-						marker = String.fromCharCode(65 + index);
-						list = `<option value="${marker}">${marker}</option>`;
-					}
-
-					if ($('#mo_list_type').val() === 'decimal') {
-						marker = index + 1;
-						list = `<option value="${marker}">${marker}</option>`;
-					}
-
-					selectList.append(list);
-				});
-			}
-		}
-
-		function checkItemList() {
-			if (itemList.length == 2) {
-				var headerTitle = '<h4>Prompts</h4>'
-				promptContainer.append(headerTitle);
-
-				addPromptButtonContainer.empty();
-
-				addPrompt();
-
-				var addMorePromptButton = `
-							<div class="col-12 mt-2 mb-2 text-end" id="addMorePromptButtonContainer">
-								<button class="btn btn-outline-secondary" type="button" onclick="addPrompt()">Add Prompt</button>
-							</div>
-						`;
-
-				addPromptButtonContainer.append(addMorePromptButton);
-			}
-		}
-
-		function checkItemInput() {
-			var trimmedItem = item.val().trim();
-
-			if (trimmedItem === '') {
-				$('#addItemButton').prop('disabled', true);
-			} else {
-				$('#addItemButton').prop('disabled', false);
-			}
-		}
-
-		function addItem() {
-			if (item.val() != '') {
-				var listTitle = '<h4>Items</h4>';
-
-				itemList.push(item.val());
-
-				container.empty();
-				container.append(listTitle);
-
-				appendItemMarker();
-
-				container.append(orderedListContainer);
-				item.val('');
-			}
-
-			checkItemInput();
-			checkItemList();
-			changeListType();
-		}
-
-		function matchingOrOrderingHidden() {
-			$('#mo_instruction').val('');
-			$('#mo_input_points').val(1);
-			removeImage('#mo_instruction_image_container', '#mo_input_image_file', event);
-			showEmptyList();
-			promptContainer.empty();
-			itemList.length = 0;
-			item.val('');
-			mo_prompts = 0;
-			matchingOrOrderingData = {
-				quizId: 0,
-				description: '',
-				order: '',
-				questionType: 0,
-				points: 0,
-				image: '',
-				items: [],
-				answers: [],
-				active: false
-			};
-			clearValidationMessages(2);
-		}
-
-		function matchingOrOrderingShown() {
-			$('#mo_instruction').val('');
-			$('#mo_input_answer').val('');
-			$('#mo_input_points').val(1);
-		}
-
-		checkItemInput();
 	</script>
 
 	<!-- Numeric Script -->
@@ -4221,7 +4263,9 @@
 	<!-- Enumeration Script -->
 	<script>
 		var enum_container = $('#enum_answer_container');
+		var e_enum_container = $('#e_enum_answer_container');
 		var enum_answers = 0;
+		var e_enum_answers = 0;
 		var enum_minimum_answers = 2;
 		var enumerationData = {
 			quizId: 0,
@@ -4234,6 +4278,184 @@
 			items: [],
 			active: false
 		};
+
+		var e_enumerationData = {
+			id: 0,
+			description: '',
+			order: 0,
+			questionType: 0,
+			points: 0,
+			image: '',
+			answers: [],
+			items: [],
+			active: false
+		};
+
+		function gatherEditedEnumerationData() {
+			e_enumerationData.id = parseInt($('#e_enum_id').val());
+			e_enumerationData.description = $('#e_enum_question').val();
+			e_enumerationData.questionType = 5;
+			e_enumerationData.order = parseInt($('#e_enum_order').val());
+			e_enumerationData.points = parseInt($('#e_enum_input_points').val());
+			e_enumerationData.image = null;
+			e_enumerationData.active = true;
+			e_enumerationData.answers = [];
+			e_enumerationData.items = [];
+
+			if ($('#e_enum_question_image_container img').attr('src')) {
+				var base64Image = $('#e_enum_question_image_container img').attr('src');
+				var base64Data = base64Image.split(',')[1];
+
+				e_enumerationData.image = base64Data;
+			}
+
+			$('#e_enum_answer_container .e-more-answer-input').each(function (index) {
+				const answer = $(this).val().trim();
+				const answerId = $(this).closest('.e-enum-answer-container').find('input.e-enum-a-id').val();
+				const hasId = answerId != '' ? answerId : 0;
+
+				if (answer) e_enumerationData.answers.push({
+					id: parseInt(hasId),
+					answer: answer,
+					isCorrect: true,
+					showAnswer: false,
+					order: null,
+					image: null,
+					active: true
+				});
+			});
+		}
+
+		function checkEditedEnumeration() {
+			event.preventDefault();
+			gatherEditedEnumerationData();
+			clearValidationMessages(5);
+
+			var points = e_enumerationData.points;
+			var question = e_enumerationData.description;
+			var answer1 = $('#e_enum_more_answer_1').val().trim();
+			var answer2 = $('#e_enum_more_answer_2').val().trim();
+
+			$.each(e_enumerationData.answers, function (index, answer) {
+				if (answer.showAnswer == 1) {
+					enumerationAnswer = answer.answer;
+				}
+			});
+
+			var valid = true;
+
+			if (!isValidNumber(points)) {
+				showError('#e_enum_input_points', 'Points must be between 1 and 100.');
+				valid = false;
+			}
+
+			if (!isValidQuestion(question)) {
+				showError('#e_enum_question', 'Please enter a question.');
+				valid = false;
+			}
+
+			if (answer1 === '') {
+				showError('#e_enum_more_answer_1', 'Please enter an answer.');
+				valid = false;
+			}
+
+			if (answer2 === '') {
+				showError('#e_enum_more_answer_2', 'Please enter an answer.');
+				valid = false;
+			}
+
+			if (valid) updateQuestion(e_enumerationData, 5);
+		}
+
+		function e_checkMoreAnswerInput(inputElement) {
+			var enumAnswer = $('.e-enum-answer-container');
+
+			if ($(inputElement).val().trim() === '') {
+				if (enumAnswer.length > enum_minimum_answers) {
+					$(inputElement).closest('.e-enum-answer-container').slideUp(300, function () {
+						$(this).remove();
+					});
+				}
+			}
+		}
+
+		function e_addMoreAnswer() {
+			e_enum_answers++;
+
+			var moreAnswer = `
+						<div class="col-12 mb-2 e-enum-answer-container" id="e_enum_answer_container_${e_enum_answers}" style="display: none;">
+							<div class="row">
+								<div class="col-12">
+									<div class="form-floating w-100">
+										<input type="text" class="form-control e-more-answer-input" id="e_enum_more_answer_${e_enum_answers}" placeholder="Answer" maxlength="100" value="Answer ${e_enum_answers}" onchange="e_checkMoreAnswerInput(this)">
+										<label for="e_enum_more_answer_${e_enum_answers}">Answer</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					`;
+
+			e_enum_container.append(moreAnswer);
+			$(`#e_enum_answer_container_${e_enum_answers}`).slideDown(300);
+		}
+
+		function editEnumeration(data) {
+			$('#e_enum_input_points').val(data.points);
+			$('#e_enum_question').val(data.description);
+			$('#e_enum_id').val(data.id);
+			$('#e_enum_order').val(data.order);
+
+			var deleteButtonContainer = $('#e_enum_deleteButtonContainer');
+
+			deleteButtonContainer.empty();
+
+			var deleteButton = `<button type="button" class="btn btn-danger text-start" onclick="removeQuestion(${data.id}, ${data.questionType});;">Delete</button>`
+
+			deleteButtonContainer.append(deleteButton);
+
+			if (data.image != '') {
+				showImage('#e_enum_question_image_container', '#e_enum_input_image_file', data.image);
+			} else {
+				removeImage('#e_enum_question_image_container', '#e_enum_input_image_file', event);
+			}
+
+			e_enum_container.empty();
+
+			$.each(data.answers, function (index, answer) {
+				if (answer.showAnswer) {
+					$('#e_enum_a_id').val(answer.id);
+					$('#e_enum_a_order').val(answer.order);
+					$('#e_enum_input_answer').val(answer.answer).change();
+				} else {
+					e_enum_answers++;
+
+					var moreAnswer = `
+							<div class="col-12 mb-2 e-enum-answer-container" id="e_enum_answer_container_${e_enum_answers}" style="display: none;">
+								<input type="hidden" class="e-enum-a-id" value="${answer.id}" />
+								<div class="row">
+									<div class="col-12">
+										<div class="form-floating w-100">
+											<input type="text" class="form-control e-more-answer-input" id="e_enum_more_answer_${e_enum_answers}" placeholder="Answer" maxlength="100" value="${answer.answer}" onchange="e_checkMoreAnswerInput(this)">
+											<label for="e_enum_more_answer_${e_enum_answers}">Answer</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						`;
+
+					e_enum_container.append(moreAnswer);
+					$(`#e_enum_answer_container_${e_enum_answers}`).slideDown(300);
+				}
+			});
+
+			$('#editEnumerationModal').modal('show');
+		}
+
+		function editEnumerationHidden() {
+			loadQuestions();
+			clearValidationMessages(5);
+			e_enum_answers = 0;
+		}
 
 		function gatherEnumerationData() {
 			enumerationData.quizId = parseInt("@Model.QuizVM.Id");
@@ -4297,13 +4519,11 @@
 				valid = false;
 			}
 
-			if (valid) submitQuestion(enumerationData, 5); // console.log(enumerationData)
+			if (valid) submitQuestion(enumerationData, 5);
 		}
 
 		function checkAnswerInput() {
 			var enumAnswer = $('.enum-answer-container');
-
-			console.log('count: ' + enumAnswer.length);
 
 			if (enumAnswer.length < enum_minimum_answers) {
 				addMoreAnswer();
@@ -4328,8 +4548,6 @@
 
 		function addMoreAnswer() {
 			enum_answers++;
-
-			console.log('here' + enum_answers);
 
 			var moreAnswer = `
 						<div class="col-12 mb-2 enum-answer-container" id="answer_container_${enum_answers}" style="display: none;">
@@ -4409,7 +4627,7 @@
 
 		function e_checkAlternativeAnswerInput(inputElement) {
 			if ($(inputElement).val().trim() === '') {
-				$(inputElement).closest('.e-answer-container').slideUp(300, function () {
+				$(inputElement).closest('.e-fill-answer-container').slideUp(300, function () {
 					$(this).remove();
 				});
 			}
@@ -4419,7 +4637,7 @@
 			e_fill_answers++;
 
 			var alternativeAnswer = `
-							<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+							<div class="col-12 mb-2 e-fill-answer-container" id="e_fill_answer_container_${e_fill_answers}" style="display: none;">
 								<input type="hidden" class="e-fill-a-id" />
 								<div class="row">
 									<div class="col-11">
@@ -4436,7 +4654,7 @@
 						`;
 
 			e_fill_container.append(alternativeAnswer);
-			$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
+			$(`#e_fill_answer_container_${e_fill_answers}`).slideDown(300);
 		}
 
 		function gatherEditedFillInTheBlankData() {
@@ -4469,11 +4687,11 @@
 
 			$('#e_fill_answer_container .e-alternative-answer-input').each(function (index) {
 				const answer = $(this).val().trim();
-				const alternativeId = $(this).closest('.e-answer-container').find('input.e-fill-a-id').val();
+				const alternativeId = $(this).closest('.e-fill-answer-container').find('input.e-fill-a-id').val();
 				const hasId = alternativeId != '' ? alternativeId : 0;
 
 				if (answer) e_fillInTheBlankData.answers.push({
-					id: hasId,
+					id: parseInt(hasId),
 					answer: answer,
 					isCorrect: true,
 					showAnswer: false,
@@ -4550,7 +4768,7 @@
 					e_fill_answers++;
 
 					var alternativeAnswer = `
-								<div class="col-12 mb-2 e-answer-container" id="e_answer_container_${e_fill_answers}" style="display: none;">
+								<div class="col-12 mb-2 e-fill-answer-container" id="e_fill_answer_container_${e_fill_answers}" style="display: none;">
 									<input type="hidden" class="e-fill-a-id" value="${answer.id}" />
 									<div class="row">
 										<div class="col-11">
@@ -4567,7 +4785,7 @@
 							`;
 
 					e_fill_container.append(alternativeAnswer);
-					$(`#e_answer_container_${e_fill_answers}`).slideDown(300);
+					$(`#e_fill_answer_container_${e_fill_answers}`).slideDown(300);
 				}
 			});
 
@@ -4576,7 +4794,7 @@
 
 		function editFillInTheBlankHidden() {
 			loadQuestions();
-			clearValidationMessages(4);
+			clearValidationMessages(6);
 		}
 
 		function gatherFillInTheBlankData() {
@@ -4652,7 +4870,7 @@
 
 		function checkAlternativeAnswerInput(inputElement) {
 			if ($(inputElement).val().trim() === '') {
-				$(inputElement).closest('.answer-container').slideUp(300, function () {
+				$(inputElement).closest('.fill-answer-container').slideUp(300, function () {
 					$(this).remove();
 				});
 			}
@@ -4662,7 +4880,7 @@
 			fill_answers++;
 
 			var alternativeAnswer = `
-							<div class="col-12 mb-2 answer-container" id="answer_container_${fill_answers}" style="display: none;">
+							<div class="col-12 mb-2 fill-answer-container" id="fill_answer_container_${fill_answers}" style="display: none;">
 								<div class="row">
 									<div class="col-11">
 										<div class="form-floating w-100">
@@ -4678,7 +4896,7 @@
 						`;
 
 			fill_container.append(alternativeAnswer);
-			$(`#answer_container_${fill_answers}`).slideDown(300);
+			$(`#fill_answer_container_${fill_answers}`).slideDown(300);
 		}
 
 		function fillInTheBlankHidden() {
