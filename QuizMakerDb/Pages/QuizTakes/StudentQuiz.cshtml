@@ -1,212 +1,720 @@
 ﻿@page
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @model QuizMakerDb.Pages.QuizTakes.QuizModel
 @{
+	ViewData["Title"] = "Quiz";
+
+	var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
 }
 
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 <div class="container-fluid">
-    <div class="row d-flex align-items-center justify-content-center">
-        <div class="col-md-12 text-center mt-4">
-            <h1 id="countdown">00:00:00</h1>
-        </div>
-        <div class="col-md-8">
-            <div id="quizContainer"></div>
-        </div>
-    </div>
+	<div class="row d-flex align-items-center justify-content-center">
+		<div class="col-md-12 text-center mt-4">
+			<h1 id="countdown"></h1>
+		</div>
+		<div class="col-md-8">
+			<input type="hidden" id="questionType" />
+			<input type="hidden" id="quizQuestionId" />
+			<div class="text-center mt-5" id="questionContainer">
+			</div>
+			<div class="d-flex justify-content-center align-items-center flex-column" id="answerContainer">
+			</div>
+			<div class="mt-5 text-end">
+				<button class="btn btn-secondary" id="nextButton" style="display: none;" role="button" aria-disabled="true"></button>
+				<button class="btn btn-primary" id="answerButton" style="display: none;" role="button" aria-disabled="true"></button>
+			</div>
+		</div>
+	</div>
 </div>
 
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-light">
+				<h5 class="modal-title" id="alertModalLabel">Alert</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="alertText"></p>
+			</div>
+		</div>
+	</div>
+</div>
 
 @section Scripts {
-    <script>
+	<script>
+		$(document).ready(function () {
+			history.pushState(null, document.title, location.href);
 
-        $(document).ready(function () {
-            var remainingTime = "@Model.RemainingTime";
+			$(window).on('popstate', function () {
+				history.pushState(null, document.title, location.href);
+			});
 
-            function formatTime(seconds) {
-                var hours = Math.floor(seconds / 3600);
-                var minutes = Math.floor((seconds % 3600) / 60);
-                var secs = seconds % 60;
+			var isUnlimitedTime = "@Model.isUnlimitedTime";
+			var remainingTime = "@Model.RemainingTime";
 
-                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            }
+			function formatTime(seconds) {
+				var hours = Math.floor(seconds / 3600);
+				var minutes = Math.floor((seconds % 3600) / 60);
+				var secs = seconds % 60;
 
-            function startCountdown(seconds) {
-                var countdownInterval = setInterval(function () {
-                    seconds--;
-                    if (seconds <= 0) {
-                        clearInterval(countdownInterval);
-                        window.location.href = '/QuizTakes/StudentQuizResult';
-                    } else {
-                        $('#countdown').text(formatTime(seconds));
-                    }
-                }, 1000);
-            }
+				return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+			}
 
-            if (remainingTime > 0) {
-                $('#countdown').text(formatTime(remainingTime));
-                startCountdown(remainingTime);
-            } else {
-                $('#countdown').text('00:00:00');
-                window.location.href = '/QuizTakes/StudentQuizResult';
-            }
+			function startCountdown(seconds) {
+				var countdownInterval = setInterval(function () {
+					seconds--;
+					if (seconds <= 0) {
+						clearInterval(countdownInterval);
+						window.location.href = '/QuizTakes/StudentQuizResult?quizTakeId=' + '@Model.QuizTakeId';
+					} else {
+						$('#countdown').text(formatTime(seconds));
+					}
+				}, 1000);
+			}
 
-            initializeQuestions();
-        });
+			if (isUnlimitedTime === 'True') {
+				$('#countdown').text('');
+				initializeQuestion();
+			} else {
+				if (remainingTime > 0) {
+					$('#countdown').text(formatTime(remainingTime));
+					startCountdown(remainingTime);
+					initializeQuestion();
+				} else {
+					$('#countdown').text('00:00:00');
+					window.location.href = '/QuizTakes/StudentQuizResult?quizTakeId=' + '@Model.QuizTakeId';
+				}
+			}
+		});
 
-        function initializeQuestions() {
-            $.ajax({
-                type: 'GET',
-                url: '/QuizTakes/GetQuizQuestions?handler=Questions',
-                data: {
-                    quizId: parseInt("@Model.QuizId"),
-                    studentId: parseInt("@Model.StudentId")
-                },
-                success: function (data) {
-                    if (data.message === "OK") {
-                        console.log(data.questions);
-                    } else {
-                        console.error(data.message);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Error fetching questions:', textStatus, errorThrown);
-                }
-            });
-        }
+		function initializeQuestion() {
+			$.ajax({
+				type: 'GET',
+				url: '/QuizTakes/GetQuizQuestion?handler=Question',
+				data: {
+					quizId: parseInt("@Model.QuizId"),
+					quizTakeId: parseInt("@Model.QuizTakeId"),
+					studentId: parseInt("@Model.StudentId")
+				},
+				success: function (data) {
+					if (data.message === "OK") {
+						displayQuestion(data.question, data.answers, data.items);
+						displayButton(data.allowEmptyAnswers, data.questionRandomized);
+					} else if (data.message === "All questions answered.") {
+						window.location.href = '/QuizTakes/StudentQuizResult?quizTakeId=' + '@Model.QuizTakeId';
+					} else {
+						console.error(data);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error fetching questions:', textStatus, errorThrown);
+				}
+			});
+		}
 
-        // function displayQuestion(index) {
-        //     $('#quizContainer').empty();
-        //     const question = questions[index];
+		function getNextQuestion(order) {
+			$.ajax({
+				type: 'GET',
+				url: '/QuizTakes/GetQuizQuestion?handler=NextQuestion',
+				data: {
+					order: order,
+					quizId: parseInt("@Model.QuizId"),
+					quizTakeId: parseInt("@Model.QuizTakeId"),
+					studentId: parseInt("@Model.StudentId")
+				},
+				success: function (data) {
+					if (data.message === "OK") {
+						displayQuestion(data.question, data.answers, data.items);
+						displayButton(data.allowEmptyAnswers, data.questionRandomized);
+					} else {
+						console.error(data);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error fetching questions:', textStatus, errorThrown);
+				}
+			});
+		}
 
-        //     if (question) {
-        //         const questionHtml = generateQuestionHtml(question);
-        //         $('#quizContainer').append(questionHtml);
+		function displayQuestion(question, answers, items) {
+			var questionContainer = $('#questionContainer');
+			$('#quizQuestionId').val(question.id);
+			
+			questionContainer.empty();
 
-        //         // Determine if empty answers are allowed
-        //         const allowEmptyAnswers = question.answers.some(answer => answer.allowEmptyAnswers);
-        //         console.log("Allow Empty Answers:", allowEmptyAnswers);
-        //         $('#nextButton').toggle(allowEmptyAnswers);
-        //         console.log("Next Button Visible:", allowEmptyAnswers);
+			var hiddenOrder = `<input type="hidden" id="questionOrder" value="${question.order}" />`;
 
-        //         if (!allowEmptyAnswers) {
-        //             $('#nextButton').hide(); // Hide next button initially
-        //             enableNextButtonOnAnswer(question);
-        //         } else {
-        //             // Show next button immediately if empty answers are allowed
-        //             $('#nextButton').show();
-        //         }
-        //     }
-        // }
+			questionContainer.append(hiddenOrder);
 
-        // function generateQuestionHtml(question) {
-        //     let html = `<div class="question" data-id="${question.id}">
-        //                     <h4>${question.description}</h4>`;
+			var description = `<h3 class="mt-5">${question.order}.) ${question.description}</h3>`;
+			
+			if (question.image && question.image.startsWith('/9j/')) {
+				var image = `<img class="mb-3" id="questionImage" src="data:image/jpeg;base64,${question.image}" alt="Question Image" class="img-fluid" />`;
+				questionContainer.append(image);
+			}
 
-        //     switch (question.questionType) {
-        //         case 0: // Multiple Choice
-        //             question.answers.forEach(answer => {
-        //                 html += `<div>
-        //                             <input type="radio" name="question-${question.id}" value="${answer.id}"> ${answer.answer}
-        //                           </div>`;
-        //             });
-        //             break;
-        //         case 1: // True Or False
-        //             html += `
-        //                     <div class="row mt-4">
-						  //       <div class="col-6">
-							 //        <div class="p-3 border rounded" style="cursor: pointer;">
-								//         <div class="form-check d-flex align-items-center gap-3">
-								// 	        <input type="radio" name="question-${question.id}" value="True">
-								// 	        <label class="form-check-label" for="tf_radio_true" style="cursor: pointer;">
-								// 		        True
-								// 	        </label>
-								//         </div>
-							 //        </div>
-						  //       </div>
-						  //       <div class="col-6">
-							 //        <div class="p-3 border rounded" style="cursor: pointer;">
-								//         <div class="form-check d-flex align-items-center gap-3">
-								// 	        <input type="radio" name="question-${question.id}" value="False">
-								// 	        <label class="form-check-label" for="tf_radio_false" style="cursor: pointer;">
-								// 		        False
-								// 	        </label>
-								//         </div>
-							 //        </div>
-						  //       </div>
-					   //      </div>
-        //                     `;
-        //             break;
-        //         case 2: // Matching Or Ordering
-        //             const referenceItems = question.items.map(item => `<span class="border rounded-5 p-1 ps-2 pe-2">${item.order}. ${item.name}</span>`).join(' ');
-        //                 html += `<div class="reference-items mb-5 mt-5">${referenceItems}</div>`; // Display the reference above the answers
+			questionContainer.append(description);
 
-        //                 question.answers.forEach(answer => {
-        //                     html += `<div>
-        //                                 <label>${answer.answer}</label>
-        //                                 <select class="form-control mb-2" data-item-id="${answer.id}">
-        //                                     <option value="">Select...</option>
-        //                                     ${question.items.map(option => `<option value="${option.id}">${option.order}</option>`).join('')}
-        //                                 </select>
-        //                               </div>`;
-        //                 });
-        //             break;
-        //         case 3: // Numeric
-        //             html += `<input type="text" placeholder="Your answer" class="form-control" oninput="this.value = this.value.replace(/[^0-9.,%!-]/g,'')">`;
-        //             break;
-        //         case 4: // Fill in the Blank
-        //             html += `<input type="text" placeholder="Fill in the blank" class="form-control">`;
-        //             break;
-        //     }
+			switch (question.questionType) {
+				case 0:
+					$('#questionType').val(question.questionType);
+					displayMultipleChoiceAnswers(answers);
+					break;
+				case 1:
+					$('#questionType').val(question.questionType);
+					displayTrueOrFalseAnswers();
+					break;
+				case 2:
+					$('#questionType').val(question.questionType);
+					displayMatchingAnswers(answers, items);
+					break;
+				case 3:
+					$('#questionType').val(question.questionType);
+					displaySequencingAnswers(answers);
+					break;
+				case 4:
+					$('#questionType').val(question.questionType);
+					displayNumericAnswer();
+					break;
+				case 5:
+					$('#questionType').val(question.questionType);
+					displayShortAnswers(answers);
+					break;
+				case 6:
+					$('#questionType').val(question.questionType);
+					displayLongAnswer();
+					break;
+			}
+		}
 
-        //     html += '</div>';
-        //     return html;
-        // }
+		function displayButton(allowEmptyAnswers, questionRandomized) {
+			if (allowEmptyAnswers) {
+				$('#nextButton').show();
+				$('#nextButton').text('Next');
+				$('#nextButton').off('click').on('click', function () {
+					if (questionRandomized) {
+						initializeQuestion();
+					} else {
+						getNextQuestion($('#questionOrder').val());
+					}
+				});
 
-        // function enableNextButtonOnAnswer(question) {
-        //     $('input[name="question-' + question.id + '"]').on('change', function () {
-        //         console.log("Question answered: ", question.id);
-        //         $('#nextButton').show();
-        //     });
+				$('#answerButton').show();
+				$('#answerButton').text('Submit');
+				$('#answerButton').off('click').on('click', function () {
+					checkAnswer();
+				});
+			} else {
+				$('#answerButton').show();
 
-        //     $('[data-item-id]').on('change', function () {
-        //         const allSelected = $('[data-item-id]').toArray().every(select => $(select).val() !== '');
-        //         $('#nextButton').toggle(allSelected);
-        //         console.log("All items selected for matching:", allSelected);
-        //     });
+				$('#answerButton').text('Submit');
+				$('#answerButton').off('click').on('click', function () {
+					checkAnswer();
+				});
+			}
+		}
 
-        //     $('input[type="number"], input[type="text"]').on('input', function () {
-        //         console.log("Input detected, showing next button.");
-        //         $('#nextButton').show();
-        //     });
-        // }
+		function displayMultipleChoiceAnswers(answers) {
+			var answerContainer = $('#answerContainer');
 
-        // $('#nextButton').on('click', function () {
-        //     // Allow moving to the next question regardless of whether answered
-        //     currentQuestionIndex++; 
-        //     if (currentQuestionIndex < questions.length) {
-        //         displayQuestion(currentQuestionIndex);
-        //     } else {
-        //         alert("Quiz completed! Redirecting to results.");
-        //         // window.location.href = '/Results';
-        //     }
-        // });
+			answerContainer.empty();
 
-        // function isQuestionAnswered(question) {
-        //     if (question.answers.some(answer => answer.allowEmptyAnswers)) {
-        //         return true; // If empty answers are allowed, auto-skip
-        //     }
+			$.each(answers, function (index, answer) {
+				index + 1;
 
-        //     switch (question.questionType) {
-        //         case 0: // Multiple Choice
-        //         case 1: // True Or False
-        //             return $('input[name="question-' + question.id + '"]:checked').length > 0;
-        //         case 2: // Matching Or Ordering
-        //             return $('[data-item-id]').toArray().every(select => $(select).val() !== '');
-        //         case 3: // Numeric
-        //             return $('input[type="number"]').val().trim() !== '';
-        //         case 4: // Fill in the Blank
-        //             return $('input[type="text"]').val().trim() !== '';
-        //     }
-        //     return false;
-        // }
-    </script>
+				var answerImage = answer.image
+					? `<img src="data:image/png;base64,${answer.image}" alt="Answer Image" class="img-fluid" style="max-height: 100px; max-width: 100px;">`
+					: '';
+
+				var answerDisplay = `
+					<div class="row mt-3 border rounded p-3 w-100 mc-answer-container">
+						<div class="col-12">
+							<div class="form-check d-flex align-items-center gap-3">
+								<input class="form-check-input" type="radio" name="mc_answer_radio" id="answer_radio_${index}" style="transform: scale(1.2);">
+								<div class="w-100">
+									<p class="fs-5 m-0" for="answer_radio_${index}">${answer.answer}</p>
+								</div>
+								<div>
+									${answerImage}
+								</div>
+							</div>
+						</div>
+					`;
+
+				answerContainer.append(answerDisplay);
+			});
+
+			$('input[name="mc_answer_radio"]').on('click', function () {
+				var currentRadio = $(this);
+				var radioIndex = currentRadio.attr('id').split('_')[2];
+				var isChecked = currentRadio.data('is-checked');
+
+				$('input[name="mc_answer_radio"]').data('is-checked', false);
+				$('input[name="mc_answer_radio"]').prop('checked', false);
+
+				if (!isChecked) {
+					currentRadio.prop('checked', true);
+					currentRadio.data('is-checked', true);
+				} else {
+					currentRadio.prop('checked', false);
+					currentRadio.data('is-checked', false);
+				}
+			});
+		}
+
+		function displayTrueOrFalseAnswers() {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			var answerDisplay = `
+					<div class="row mt-3 border rounded p-3 w-100 tf-answer-container">
+						<div class="col-6">
+							<div class="p-3 border rounded" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_answer_radio" id="tf_answer_radio_1" style="transform: scale(1.2);">
+									<label class="form-check-label" for="tf_answer_radio_1" style="cursor: pointer;">
+										True
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="p-3 border rounded" style="cursor: pointer;">
+								<div class="form-check d-flex align-items-center gap-3">
+									<input class="form-check-input" type="radio" name="tf_answer_radio" id="tf_answer_radio_2" style="transform: scale(1.2);">
+									<label class="form-check-label" for="tf_answer_radio_2" style="cursor: pointer;">
+										False
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					`;
+
+			answerContainer.append(answerDisplay);
+
+			$('input[name="tf_answer_radio"]').on('click', function () {
+				var currentRadio = $(this);
+				var radioIndex = currentRadio.attr('id').split('_')[2];
+				var isChecked = currentRadio.data('is-checked');
+
+				$('input[name="tf_answer_radio"]').data('is-checked', false);
+				$('input[name="tf_answer_radio"]').prop('checked', false);
+
+				if (!isChecked) {
+					currentRadio.prop('checked', true);
+					currentRadio.data('is-checked', true);
+				} else {
+					currentRadio.prop('checked', false);
+					currentRadio.data('is-checked', false);
+				}
+			});
+		}
+
+		function displayMatchingAnswers(answers, items) {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			var itemDisplay = `
+				<div class="d-flex align-items-center justify-content-center w-100 mt-3">
+					${items.map((item, index) => `
+						<span class="ps-3 pe-3 p-2 m-3 border rounded-5">${item.order}. ${item.name}</span>
+					`).join('')}
+				</div>
+				`;
+
+			answerContainer.append(itemDisplay);
+
+			$.each(answers, function (index, answer) {
+				index + 1;
+
+				var answerImage = answer.image
+					? `<img src="data:image/png;base64,${answer.image}" alt="Answer Image" class="img-fluid" style="max-height: 100px; max-width: 100px;">`
+					: '';
+				
+				var answerDisplay = `
+					<div class="row mt-3 border rounded p-3 w-100 m-answer-container">
+						<div class="col-2 d-flex align-items-center justify-content-center">
+							<select class="form-select" id="m_answer_select_${index}">
+								${items.map((item, index) => `
+									<option value="${item.order}">${item.order}</option>
+								`).join('')}
+							</select>
+						</div>
+						<div class="col-6 d-flex align-items-center">
+							<span id="m_answer_label_${index}">${answer.answer}</span>
+						</div>
+						<div class="col-4 d-flex align-items-center justify-content-center">
+							${answerImage}
+						</div>
+					</div>
+					`;
+
+				answerContainer.append(answerDisplay);
+			});
+		}
+
+		function displaySequencingAnswers(answers) {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			$.each(answers, function (index, answer) {
+				index + 1;
+
+				var answerImage = answer.image
+					? `<img src="data:image/png;base64,${answer.image}" alt="Answer Image" class="img-fluid" style="max-height: 100px; max-width: 100px;">`
+					: '';
+
+				var answerDisplay = `
+					<div class="row mt-3 border rounded p-3 w-100 s-answer-container">
+						<div class="col-2 d-flex align-items-center justify-content-center">
+							<select class="form-select" id="s_answer_select_${index}">
+								${answers.map((ans, idx) => `
+									<option value="${idx + 1}">${idx + 1}</option>
+								`).join('')}
+							</select>
+						</div>
+						<div class="col-6 d-flex align-items-center">
+							<span id="s_answer_label_${index}">${answer.answer}</span>
+						</div>
+						<div class="col-4 d-flex align-items-center justify-content-center">
+							${answerImage}
+						</div>
+					</div>
+					`;
+
+				answerContainer.append(answerDisplay);
+			});
+		}
+
+		function displayNumericAnswer() {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			var answerDisplay = `
+					<div class="row w-50 mt-3" id="num_answer_container">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="num_input_answer" placeholder="Numeric Only" maxlength="100" autocomplete="off"
+									   oninput="this.value = this.value.replace(/[^0-9.]/g, '')" />
+								<label for="num_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+				`;
+
+			answerContainer.append(answerDisplay);
+		}
+
+		function displayShortAnswers(answers) {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			var answerDisplay = `
+					<div class="row w-50 mt-3 enum-answer-container" id="enum_answer_container">
+						${answers.map((_, index) => `
+							<div class="col-12 mb-2">
+								<div class="form-floating">
+									<input type="text" class="form-control" id="enum_input_answer_${index}" placeholder="Answer ${index + 1}" maxlength="100" autocomplete="off" />
+									<label for="enum_input_answer_${index}">Answer ${index + 1}</label>
+								</div>
+							</div>
+						`).join('')}
+					</div>
+				`;
+
+			answerContainer.append(answerDisplay);
+		}
+
+		function displayLongAnswer() {
+			var answerContainer = $('#answerContainer');
+
+			answerContainer.empty();
+
+			var answerDisplay = `
+					<div class="row w-50 mt-3" id="fill_answer_container">
+						<div class="col-12 mb-2">
+							<div class="form-floating">
+								<input type="text" class="form-control" id="fill_input_answer" placeholder="Long Answer" maxlength="100" autocomplete="off" />
+								<label for="fill_input_answer">Answer</label>
+							</div>
+						</div>
+					</div>
+				`;
+
+			answerContainer.append(answerDisplay);
+		}
+
+		function checkAnswer() {
+			var questionType = parseInt($('#questionType').val());
+
+			switch (questionType) {
+				case 0:
+					checkMultipleChoice();
+					break;
+				case 1:
+					checkTrueOrFalse();
+					break;
+				case 2:
+					checkMatching();
+					break;
+				case 3:
+					checkSequencing();
+					break;
+				case 4:
+					checkNumeric();
+					break;
+				case 5:
+					checkShortAnswer();
+					break;
+				case 6:
+					checkLongAnswer();
+					break;
+			}
+		}
+
+		function checkMultipleChoice() {
+			var answers = [];
+
+			$('.mc-answer-container').each(function () {
+				var selectedRadio = $(this).find('input[name="mc_answer_radio"]:checked');
+
+				if (selectedRadio.length > 0) {
+					var selectedAnswer = selectedRadio.next().find('p').text();
+					answers.push({
+						"Answer": selectedAnswer,
+						"Order": null
+					});
+				}
+			});
+
+			if (answers.length === 0) {
+				$('#alertText').text('Please choose an answer.');
+				$('#alertModal').modal('show');
+				return;
+			}
+
+			var finalAnswer = {
+				answers: answers,
+				quizQuestionId: parseInt($('#quizQuestionId').val()),
+				quizTakeId: parseInt("@Model.QuizTakeId"),
+				studentId: parseInt("@Model.StudentId")
+			};
+
+			submitFinalAnswer(finalAnswer);
+			// console.log(finalAnswer);
+		}
+
+		function checkTrueOrFalse() {
+			var answers = [];
+
+			$('.tf-answer-container').each(function () {
+				var selectedRadio = $(this).find('input[name="tf_answer_radio"]:checked');
+
+				if (selectedRadio.length > 0) {
+					var selectedAnswer = selectedRadio.closest('.form-check').find('label').text().trim();
+					answers.push({
+						"Answer": selectedAnswer,
+						"Order": null
+					});
+				}
+			});
+
+			if (answers.length === 0) {
+				$('#alertText').text('Please choose an answer.');
+				$('#alertModal').modal('show');
+				return;
+			}
+
+			var finalAnswer = {
+				answers: answers,
+				quizQuestionId: parseInt($('#quizQuestionId').val()),
+				quizTakeId: parseInt("@Model.QuizTakeId"),
+				studentId: parseInt("@Model.StudentId")
+			};
+
+			submitFinalAnswer(finalAnswer);
+			//console.log(finalAnswer);
+		}
+
+		function checkMatching() {
+			var answers = [];
+
+			$('.m-answer-container').each(function (index) {
+				var selectedOption = $(this).find('select option:selected');
+				var selectedValue = selectedOption.val();
+				var answerText = $(`#m_answer_label_${index}`).text();
+
+				answers.push({
+					"Answer": answerText,
+					"Order": selectedValue
+				});
+			});
+
+			var finalAnswer = {
+				answers: answers,
+				quizQuestionId: parseInt($('#quizQuestionId').val()),
+				quizTakeId: parseInt("@Model.QuizTakeId"),
+				studentId: parseInt("@Model.StudentId")
+			};
+
+			submitFinalAnswer(finalAnswer);
+			//console.log(finalAnswer);
+		}
+
+		function checkSequencing() {
+			var answers = [];
+			var orders = [];
+			var isValid = true;
+
+			$('.s-answer-container').each(function (index) {
+				var selectedOption = $(this).find('select option:selected');
+				var selectedValue = selectedOption.val();
+				var answerText = $(`#s_answer_label_${index}`).text();
+
+				if (orders.includes(selectedValue)) {
+					$('#alertText').text('Each order value must be unique. Please check your selections.');
+					$('#alertModal').modal('show');
+					isValid = false;
+					return false;
+				} else {
+					orders.push(selectedValue);
+				}
+
+				if (isValid) {
+					answers.push({
+						"Answer": answerText,
+						"Order": selectedValue
+					});
+				}
+			});
+
+			if (isValid && answers.length > 0) {
+				var finalAnswer = {
+					answers: answers,
+					quizQuestionId: parseInt($('#quizQuestionId').val()),
+					quizTakeId: parseInt("@Model.QuizTakeId"),
+					studentId: parseInt("@Model.StudentId")
+				};
+
+				submitFinalAnswer(finalAnswer);
+				//console.log(finalAnswer);
+			}
+		}
+
+		function checkNumeric() {
+			var answers = [];
+			var inputAnswer = $('#num_input_answer').val();
+
+			if (inputAnswer === '') {
+				$('#alertText').text('Answer must be filled out. Please check your input.');
+				$('#alertModal').modal('show');
+			} else {
+				answers.push({
+					"Answer": inputAnswer,
+					"Order": null
+				});
+
+				var finalAnswer = {
+					answers: answers,
+					quizQuestionId: parseInt($('#quizQuestionId').val()),
+					quizTakeId: parseInt("@Model.QuizTakeId"),
+					studentId: parseInt("@Model.StudentId")
+				};
+
+				submitFinalAnswer(finalAnswer);
+				//console.log(finalAnswer);
+			}
+		}
+
+		function checkShortAnswer() {
+			var allInputsFilled = true;
+
+			$('.enum-answer-container .form-control').each(function () {
+				var answerValue = $(this).val().trim();
+				if (answerValue === "") {
+					allInputsFilled = false;
+				}
+			});
+
+			if (!allInputsFilled) {
+				$('#alertText').text('All answers must be filled out. Please check your inputs.');
+				$('#alertModal').modal('show');
+				return;
+			}
+
+			var answers = [];
+			$('.enum-answer-container .form-control').each(function () {
+				var answerValue = $(this).val().trim();
+				answers.push({
+					"Answer": answerValue,
+					"Order": null
+				});
+			});
+
+			var finalAnswer = {
+				answers: answers,
+				quizQuestionId: parseInt($('#quizQuestionId').val()),
+				quizTakeId: parseInt("@Model.QuizTakeId"),
+				studentId: parseInt("@Model.StudentId")
+			};
+
+			submitFinalAnswer(finalAnswer);
+		}
+
+		function checkLongAnswer() {
+			var answers = [];
+			var inputAnswer = $('#fill_input_answer').val();
+
+			console.log(inputAnswer);
+
+			if (inputAnswer === '') {
+				$('#alertText').text('Answer must be filled out. Please check your input.');
+				$('#alertModal').modal('show');
+			} else {
+				answers.push({
+					"Answer": inputAnswer,
+					"Order": null
+				});
+
+				var finalAnswer = {
+					answers: answers,
+					quizQuestionId: parseInt($('#quizQuestionId').val()),
+					quizTakeId: parseInt("@Model.QuizTakeId"),
+					studentId: parseInt("@Model.StudentId")
+				};
+
+				submitFinalAnswer(finalAnswer);
+				//console.log(finalAnswer);
+			}
+		}
+
+		function submitFinalAnswer(data) {
+			$.ajax({
+				type: 'POST',
+				url: '/AnswerStudents/Create',
+				contentType: 'application/json',
+				headers: {
+					"X-CSRF-TOKEN": $('#RequestVerificationToken').val()
+				},
+				data: JSON.stringify(data),
+				success: function (response) {
+					if (response.status === "OK") {
+						initializeQuestion();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error submitting answer:', textStatus, errorThrown);
+					console.log('Response:', jqXHR.responseText);
+				}
+			});
+		}
+	</script>
 }

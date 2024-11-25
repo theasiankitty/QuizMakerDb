@@ -64,6 +64,8 @@ namespace QuizMakerDb.Pages.QuizTakes
                             m.Introduction,
                             m.isQuestionRandomized,
 							m.AllowEmptyAnswers,
+							m.isUnlimitedMinutes,
+							m.isUnlimitedTakes,
 							m.Minutes,
 							m.Takes
                         })

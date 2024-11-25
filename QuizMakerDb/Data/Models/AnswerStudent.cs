@@ -11,11 +11,11 @@ namespace QuizMakerDb.Data.Models
 		[StringLength(100)]
 		public string Answer { get; set; } = string.Empty!;
 
-        public bool isCorrect { get; set; }
-
         public int QuizQuestionId { get; set; }
 
-        public int StudentId { get; set; }
+		public int QuizTakeId { get; set; }
+
+		public int StudentId { get; set; }
 
 		public bool Active { get; set; }
 
@@ -29,6 +29,9 @@ namespace QuizMakerDb.Data.Models
 
 		[ForeignKey(nameof(QuizQuestionId))]
 		public QuizQuestion QuizQuestionInfo { get; set; } = null!;
+
+		[ForeignKey(nameof(QuizTakeId))]
+		public QuizTake QuizTakeInfo { get; set; } = null!;
 
 		[ForeignKey(nameof(StudentId))]
 		public Student StudentInfo { get; set; } = null!;

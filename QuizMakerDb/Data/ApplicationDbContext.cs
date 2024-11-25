@@ -33,6 +33,7 @@ namespace QuizMakerDb.Data
 		public DbSet<CourseYearSubject> CourseYearSubjects { get; set; }
 		public DbSet<Section> Sections { get; set; }
         public DbSet<SectionStudent> SectionStudents { get; set; }
+        public DbSet<QuizResult> QuizResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,6 +42,7 @@ namespace QuizMakerDb.Data
 			builder.ApplyConfiguration(new AnswerStudentConfig());
 			builder.ApplyConfiguration(new QuizSubjectConfig());
 			builder.ApplyConfiguration(new QuizTakeConfig());
+            builder.ApplyConfiguration(new QuizResultConfig());
 
             builder.Entity<AppUser>().ToTable("IdentityUsers");
             builder.Entity<AppRole>().ToTable("IdentityRoles");

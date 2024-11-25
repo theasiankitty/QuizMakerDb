@@ -10,125 +10,198 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace QuizMakerDb.Pages.QuizTakes
 {
-    public class QuizModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<AppUser> _userManager;
+	public class QuizModel : PageModel
+	{
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-        public QuizModel(ApplicationDbContext context, UserManager<AppUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+		public QuizModel(ApplicationDbContext context, UserManager<AppUser> userManager)
+		{
+			_context = context;
+			_userManager = userManager;
+		}
 
-        public class StudentData
-        {
-            public int StudentId { get; set; }
+		public class StudentData
+		{
+			public int StudentId { get; set; }
 
-            public string Code { get; set; } = string.Empty!;
-        }
+			public string Code { get; set; } = string.Empty!;
+		}
 
-        public int RemainingTime { get; set; }
-        public int QuizId { get; set; }
-        public int StudentId { get; set; }
+		public bool isUnlimitedTime { get; set; }
+		public int RemainingTime { get; set; }
+		public int QuizId { get; set; }
+		public int QuizTakeId { get; set; }
+		public int StudentId { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(StudentData studentData)
-        {
-            var user = await _userManager.GetUserAsync(User);
+		public async Task<IActionResult> OnGetAsync(StudentData studentData)
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null || studentData.StudentId <= 0 || string.IsNullOrWhiteSpace(studentData.Code))
+			{
+				return NotFound();
+			}
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+			var sectionStudent = await GetSectionStudentAsync(studentData.StudentId);
+			if (sectionStudent == null || sectionStudent.StudentInfo.UserId != user.Id)
+			{
+				return NotFound();
+			}
 
-            if (studentData == null || studentData.StudentId == 0 || string.IsNullOrEmpty(studentData.Code))
-            {
-                return NotFound();
-            }
+			var quizSubject = await GetQuizSubjectAsync(studentData.Code, sectionStudent.SectionId);
+			if (quizSubject == null)
+			{
+				return NotFound();
+			}
 
-            var sectionStudent = await _context.SectionStudents
-                .Include(m => m.StudentInfo)
-                .Where(m => m.StudentId == studentData.StudentId && m.Active)
-                .FirstOrDefaultAsync();
+			QuizId = quizSubject.QuizId;
+			StudentId = studentData.StudentId;
 
-            if (sectionStudent == null)
-            {
-                return NotFound();
-            }
+			var quiz = await _context.Quizzes
+				.Where(m => m.Id == QuizId && m.Active)
+				.FirstOrDefaultAsync();
 
-            if (sectionStudent.StudentInfo.UserId != user.Id)
-            {
-                return NotFound();
-            }
+			if (quiz == null)
+			{
+				return NotFound();
+			}
 
-            var quizSubject = await _context.QuizSubjects
-                .Include(m => m.QuizInfo)
-                .FirstOrDefaultAsync(m => m.Code == studentData.Code && m.SectionId == sectionStudent.SectionId && m.Active);
+			isUnlimitedTime = quiz.isUnlimitedMinutes;
 
-            if (quizSubject == null)
-            {
-                return NotFound();
-            }
+			// Get active quiz take
+			var activeQuizTake = await GetActiveQuizTakeAsync(QuizId, sectionStudent.StudentId);
 
-            QuizId = quizSubject.QuizId;
-            StudentId = studentData.StudentId;
+			// Handle existing quiz take
+			if (activeQuizTake != null)
+			{
+				QuizTakeId = activeQuizTake.Id;
 
-            var quizTake = await _context.QuizTakes
-                .FirstOrDefaultAsync(m => m.QuizId == quizSubject.QuizId && m.StudentId == sectionStudent.StudentId && m.Active);
+				var endTime = activeQuizTake.StartTime.AddMinutes(activeQuizTake.Duration);
+				var now = DateTime.UtcNow;
 
-            if (quizTake == null)
-            {
-                quizTake = new QuizTake
-                {
-                    StudentId = studentData.StudentId,
-                    QuizId = quizSubject.QuizId,
-                    StartTime = DateTime.Now,
-                    Duration = quizSubject.QuizInfo.Minutes,
-                    //Takes = 1,
-                    Active = true,
-                    CreatedBy = user.Id,
-                    CreatedDate = DateTime.Now
-                };
+				// If the quiz has time limits and time has expired
+				if (!quiz.isUnlimitedMinutes && now >= endTime)
+				{
+					activeQuizTake.isFinished = true;
+					activeQuizTake.Active = false;
+					await _context.SaveChangesAsync();
+					return RedirectToPage("StudentQuizResult", new { QuizTakeId });
+				}
 
-                _context.QuizTakes.Add(quizTake);
-            }
-            else
-            {
-                var endTime = quizTake.StartTime.AddMinutes(quizTake.Duration);
-                var remainingTime = endTime - DateTime.Now;
+				// If the quiz is complete
+				if (await IsQuizCompleteAsync(QuizId, activeQuizTake.Id))
+				{
+					activeQuizTake.isFinished = true;
+					activeQuizTake.Active = false;
+					await _context.SaveChangesAsync();
+					return RedirectToPage("StudentQuizResult", new { QuizTakeId });
+				}
 
-                if (remainingTime <= TimeSpan.Zero)
-                {
-                    // don't add takes if it is equal or more than the quizSubject.QuizInfo.Takes
-                    //if (quizTake.Takes < quizSubject.QuizInfo.Takes)
-                    //{
-                    //    quizTake.StartTime = DateTime.Now;
-                    //    //quizTake.Takes += 1;
-                    //    quizTake.UpdatedBy = user.Id;
-                    //    quizTake.UpdatedDate = DateTime.Now;
-                    //}
-                    //else
-                    //{
-                    //    // should show result if time is up and took the limit of the quizSubject.QuizInfo.Takes
-                    //    RemainingTime = 0;
-                    //    return Page();
-                    //}
-                }
-                else
-                {
-                    RemainingTime = (int)remainingTime.TotalSeconds;
-                    return Page();
-                }
-            }
+				// If the quiz is not unlimited time, calculate remaining time
+				RemainingTime = !quiz.isUnlimitedMinutes ? Math.Max(0, (int)(endTime - now).TotalSeconds) : 0;
+				return Page();
+			}
 
-            await _context.SaveChangesAsync();
+			// No active quiz take, determine if we should create a new one
+			if (ShouldAddNewTake(activeQuizTake, quiz, quizSubject))
+			{
+				await AddQuizTakeAsync(studentData.StudentId, user.Id, quizSubject);
+				RemainingTime = quiz.isUnlimitedMinutes ? 0 : quizSubject.QuizInfo.Minutes * 60;
+				return Page();
+			}
 
-            var currentEndTime = quizTake.StartTime.AddMinutes(quizSubject.QuizInfo.Minutes);
-            RemainingTime = (int)(currentEndTime - DateTime.Now).TotalSeconds > 0
-                ? (int)(currentEndTime - DateTime.Now).TotalSeconds
-                : 0;
+			// Redirect to results if maximum takes have been reached
+			if (!quiz.isUnlimitedTakes && await HasReachedMaxTakesAsync(QuizId, sectionStudent.StudentId, quizSubject))
+			{
+				return RedirectToPage("StudentQuizResult", new { QuizTakeId });
+			}
 
-            return Page();
-        }
-    }
+			// Default case
+			return RedirectToPage("StudentQuizResult", new { QuizTakeId });
+		}
+
+		private async Task<SectionStudent?> GetSectionStudentAsync(int studentId)
+		{
+			return await _context.SectionStudents
+				.Include(m => m.StudentInfo)
+				.Where(m => m.StudentId == studentId && m.Active)
+				.FirstOrDefaultAsync();
+		}
+
+		private async Task<QuizSubject?> GetQuizSubjectAsync(string code, int sectionId)
+		{
+			return await _context.QuizSubjects
+				.Include(m => m.QuizInfo)
+				.Where(m => m.Code == code && m.SectionId == sectionId && m.Active)
+				.FirstOrDefaultAsync();
+		}
+
+		private async Task<QuizTake?> GetActiveQuizTakeAsync(int quizId, int studentId)
+		{
+			return await _context.QuizTakes
+				.Where(m => m.QuizId == quizId && m.StudentId == studentId && m.Active && !m.isFinished)
+				.OrderByDescending(m => m.StartTime)
+				.FirstOrDefaultAsync();
+		}
+
+		private async Task<bool> IsQuizCompleteAsync(int quizId, int quizTakeId)
+		{
+			var quizQuestionCount = await _context.QuizQuestions
+				.Where(m => m.QuizId == quizId)
+				.CountAsync();
+
+			var studentQuizResult = await _context.AnswerStudents
+				.Where(m => m.QuizTakeId == quizTakeId && m.Active)
+				.CountAsync();
+
+			return quizQuestionCount == studentQuizResult;
+		}
+
+		private async Task<bool> HasReachedMaxTakesAsync(int quizId, int studentId, QuizSubject quizSubject)
+		{
+			var takeCount = await _context.QuizTakes
+				.Where(qt => qt.QuizId == quizId && qt.StudentId == studentId && qt.isFinished)
+				.CountAsync();
+
+			return takeCount >= quizSubject.QuizInfo.Takes;
+		}
+
+		private bool ShouldAddNewTake(QuizTake? activeQuizTake, Quiz quiz, QuizSubject quizSubject)
+		{
+			if (quiz.isUnlimitedTakes)
+			{
+				// Allow retake only if the last take is finished
+				return activeQuizTake == null || activeQuizTake.isFinished;
+			}
+			else
+			{
+				// Limited takes: allow if not finished and max takes not reached
+				var totalTakes = _context.QuizTakes
+					.Count(qt => qt.QuizId == QuizId && qt.StudentId == StudentId && qt.isFinished);
+
+				return totalTakes < quizSubject.QuizInfo.Takes &&
+					   (activeQuizTake == null || activeQuizTake.isFinished);
+			}
+		}
+
+		private async Task AddQuizTakeAsync(int studentId, Guid userId, QuizSubject quizSubject)
+		{
+			var take = new QuizTake
+			{
+				StudentId = studentId,
+				QuizId = QuizId,
+				StartTime = DateTime.UtcNow,
+				Duration = quizSubject.QuizInfo.Minutes,
+				Active = true,
+				isFinished = false, // New quiz takes are not finished by default
+				CreatedBy = userId,
+				CreatedDate = DateTime.UtcNow
+			};
+
+			_context.QuizTakes.Add(take);
+			await _context.SaveChangesAsync();
+
+			QuizTakeId = take.Id;
+		}
+	}
 }

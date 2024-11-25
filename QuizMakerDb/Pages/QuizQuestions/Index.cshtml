@@ -32,7 +32,7 @@
 							<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#questionTypeModal">Add Question</button>
 						</div>
 						<div class="col-md-12 text-center">
-							<a href="/QuizSubjects?quizId=@Model.QuizVM.Id" class="btn btn-success">
+							<a href="/QuizSubjects?quizId=@Model.QuizVM.Id" class="btn btn-success" id="publishButton">
 								Publish Quiz
 							</a>
 						</div>
@@ -1796,9 +1796,10 @@
 							`;
 
 				questionContainer.append(emptyQuestions);
-				$('#publishButton').prop('disabled', true);
+				$('#publishButton').addClass('disabled').attr('aria-disabled', 'true').css('pointer-events', 'none');
 			} else {
 				totalPoints = 0;
+				console.log('data is not 0');
 
 				$.each(data, function (index, question) {
 
@@ -1898,7 +1899,7 @@
 					});
 				});
 
-				$('#publishButton').prop('disabled', false);
+				$('#publishButton').removeClass('disabled').removeAttr('aria-disabled').css('pointer-events', 'auto'); 
 			}
 
 			$('#totalPoints').text(totalPoints);
