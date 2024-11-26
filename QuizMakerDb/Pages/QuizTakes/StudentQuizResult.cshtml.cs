@@ -111,6 +111,8 @@ namespace QuizMakerDb.Pages.QuizTakes
 				ShowResults = quizTake.QuizInfo.ShowResults
 			};
 
+			// What if I want to show all the Quiz Take Result here in one page?
+
 			return Page();
 		}
 	}

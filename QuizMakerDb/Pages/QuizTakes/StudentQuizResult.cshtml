@@ -31,16 +31,14 @@
                                 @(question.IsCorrect ? "border-success" : "border-danger")">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <span class="badge
+                                        <span class="badge me-2
                                             @(question.IsCorrect ? "bg-success" : "bg-danger")">
                                             @(question.IsCorrect ? "Correct" : "Incorrect")
                                         </span>
                                         @question.QuestionText
                                     </h5>
-                                    <div class="ms-5">
-                                        <p>Points: <strong>@question.Points</strong></p>
-                                    </div>
-                                    <div>
+                                    <br />
+                                    <div class="mt-2">
                                         <h6>Correct Answers:</h6>
                                         <ul>
                                             @foreach (var correctAnswer in question.CorrectAnswers)
@@ -57,6 +55,9 @@
                                                 <li>@studentAnswer</li>
                                             }
                                         </ul>
+                                    </div>
+                                    <div>
+                                        <p class="m-0">Points: <strong>@question.Points</strong></p>
                                     </div>
                                 </div>
                             </div>

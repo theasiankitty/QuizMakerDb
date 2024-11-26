@@ -636,12 +636,27 @@
 
 		function checkShortAnswer() {
 			var allInputsFilled = true;
+			var answers = [];
+			var duplicatesFound = false;
+			var seenAnswers = new Set();
 
 			$('.enum-answer-container .form-control').each(function () {
 				var answerValue = $(this).val().trim();
+
 				if (answerValue === "") {
 					allInputsFilled = false;
 				}
+
+				if (seenAnswers.has(answerValue)) {
+					duplicatesFound = true;
+				} else {
+					seenAnswers.add(answerValue);
+				}
+
+				answers.push({
+					"Answer": answerValue,
+					"Order": null
+				});
 			});
 
 			if (!allInputsFilled) {
@@ -650,14 +665,11 @@
 				return;
 			}
 
-			var answers = [];
-			$('.enum-answer-container .form-control').each(function () {
-				var answerValue = $(this).val().trim();
-				answers.push({
-					"Answer": answerValue,
-					"Order": null
-				});
-			});
+			if (duplicatesFound) {
+				$('#alertText').text('Duplicate answers detected. Please ensure all answers are unique.');
+				$('#alertModal').modal('show');
+				return;
+			}
 
 			var finalAnswer = {
 				answers: answers,
@@ -667,6 +679,7 @@
 			};
 
 			submitFinalAnswer(finalAnswer);
+			//console.log(finalAnswer);
 		}
 
 		function checkLongAnswer() {
