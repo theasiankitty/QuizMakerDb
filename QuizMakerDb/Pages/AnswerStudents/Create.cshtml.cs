@@ -5,6 +5,7 @@ using QuizMakerDb.Data.Identity;
 using QuizMakerDb.Data;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuizMakerDb.Pages.AnswerStudents
 {
@@ -42,6 +43,9 @@ namespace QuizMakerDb.Pages.AnswerStudents
 			public int QuizTakeId { get; set; }
 
 			public int StudentId { get; set; }
+
+			[ForeignKey(nameof(QuizQuestionId))]
+			public QuizQuestion QuizQuestionInfo { get; set; } = null!;
 		}
 
 		public async Task<JsonResult> OnPostAsync([FromBody] AnswerData answerData)
@@ -101,8 +105,10 @@ namespace QuizMakerDb.Pages.AnswerStudents
 
 					case 2:
 					case 3:
-					case 5:
 						await HandleMultipleAnswersAsync(answerData, correctAnswersWithOrder, creator);
+						break;
+					case 5:
+						await HandleEnumerationAnswersAsync(answerData, correctAnswersWithOrder, creator);
 						break;
 
 					default:
@@ -150,6 +156,19 @@ namespace QuizMakerDb.Pages.AnswerStudents
 						string.Equals(correctAnswer.Answer, submittedAnswer.Answer, StringComparison.Ordinal) &&
 						correctAnswer.Order == submittedAnswer.Order);
 
+				await SaveAnswerAndResultOfMultipleAnswerAsync(answerData, submittedAnswer, isAnswerCorrect, creator);
+			}
+		}
+
+		private async Task HandleEnumerationAnswersAsync(AnswerData answerData, List<AnswerWithOrder> correctAnswersWithOrder, AppUser creator)
+		{
+			foreach (var submittedAnswer in answerData.Answers)
+			{
+				var isAnswerCorrect = correctAnswersWithOrder
+					.Any(correctAnswer =>
+						string.Equals(correctAnswer.Answer, submittedAnswer.Answer, StringComparison.Ordinal) &&
+						correctAnswer.Order == submittedAnswer.Order);
+
 				await SaveAnswerAndResultAsync(answerData, submittedAnswer, isAnswerCorrect, creator);
 			}
 		}
@@ -159,6 +178,35 @@ namespace QuizMakerDb.Pages.AnswerStudents
 			var answerStudent = new AnswerStudent
 			{
 				Answer = submittedAnswer.Answer,
+				QuizQuestionId = answerData.QuizQuestionId,
+				QuizTakeId = answerData.QuizTakeId,
+				StudentId = answerData.StudentId,
+				Active = true,
+				CreatedBy = creator.Id,
+				CreatedDate = DateTime.UtcNow,
+			};
+
+			_context.AnswerStudents.Add(answerStudent);
+			await _context.SaveChangesAsync(); // Save to generate AnswerStudent.Id
+
+			var quizResult = new QuizResult
+			{
+				isCorrect = isAnswerCorrect,
+				AnswerStudentId = answerStudent.Id, // Ensure ID is available
+				Active = true,
+				CreatedBy = creator.Id,
+				CreatedDate = DateTime.UtcNow,
+			};
+
+			_context.QuizResults.Add(quizResult);
+			await _context.SaveChangesAsync();
+		}
+
+		private async Task SaveAnswerAndResultOfMultipleAnswerAsync(AnswerData answerData, AnswerObject submittedAnswer, bool isAnswerCorrect, AppUser creator)
+		{
+			var answerStudent = new AnswerStudent
+			{
+				Answer = submittedAnswer.Order ?? "", // order may be null here
 				QuizQuestionId = answerData.QuizQuestionId,
 				QuizTakeId = answerData.QuizTakeId,
 				StudentId = answerData.StudentId,

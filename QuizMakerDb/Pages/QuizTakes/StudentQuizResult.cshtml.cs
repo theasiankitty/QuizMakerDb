@@ -6,6 +6,7 @@ using QuizMakerDb.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using QuizMakerDb.Data.ViewModels;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 
 namespace QuizMakerDb.Pages.QuizTakes
 {
@@ -22,21 +23,43 @@ namespace QuizMakerDb.Pages.QuizTakes
 
 		public QuizTakeResultVM QuizTakeResultVM { get; set; } = default!;
 		public int QuizTakeId { get; set; }
-		public class QuizQuestionDetailVM
+
+		public class QuestionItemData
+		{
+			public string Name { get; set; } = string.Empty!;
+			public string Order { get; set; } = string.Empty!;
+		}
+
+		public class StudentAnswerData
+		{
+			public string? Answer { get; set; }
+			public string? Order { get; set; }
+		}
+
+		public class CorrectAnswerData
+		{
+			public string Answer { get; set; } = string.Empty!;
+			public string? Order { get; set; }
+		}
+
+		public class QuizQuestionData
 		{
 			public string QuestionText { get; set; } = string.Empty;
 			public int Points { get; set; }
 			public bool IsCorrect { get; set; }
-			public List<string> StudentAnswers { get; set; } = new();
-			public List<string> CorrectAnswers { get; set; } = new();
+			public List<StudentAnswerData> StudentAnswers { get; set; } = new();
+			public List<CorrectAnswerData> CorrectAnswers { get; set; } = new();
+			public List<QuestionItemData> QuestionItems { get; set; } = new();
+			public List<string> Orders { get; set; } = new();
 		}
-		public class AnswerDetailVM
+
+		public class AnswerData
 		{
 			public string AnswerText { get; set; } = string.Empty!;
 			public int? Order { get; set; }
 		}
 
-		public List<QuizQuestionDetailVM> QuizDetails { get; set; } = new();
+		public List<QuizQuestionData> QuizDetails { get; set; } = new();
 
 		public async Task<IActionResult> OnGetAsync(int quizTakeId)
 		{
@@ -59,9 +82,16 @@ namespace QuizMakerDb.Pages.QuizTakes
 
 			var quizTake = await _context.QuizTakes
 				.Include(m => m.QuizInfo)
-				.FirstOrDefaultAsync(m => m.StudentId == student.Id && m.Active);
+				.FirstOrDefaultAsync(m => m.Id == quizTakeId 
+					&& m.StudentId == student.Id
+					&& m.Active);
 
 			if (quizTake == null)
+			{
+				return NotFound();
+			}
+
+			if (quizTake.isFinished == false)
 			{
 				return NotFound();
 			}
@@ -88,19 +118,39 @@ namespace QuizMakerDb.Pages.QuizTakes
 					totalScore += quizQuestionPoints;
 				}
 
-				//In the answers, if the questionType is 2 or 3 please include the order and display them beside the answer
-				QuizDetails.Add(new QuizQuestionDetailVM
+				QuizDetails.Add(new QuizQuestionData
 				{
 					QuestionText = group.First().AnswerStudentInfo.QuizQuestionInfo.Description,
 					Points = quizQuestionPoints,
 					IsCorrect = allCorrect,
-					StudentAnswers = group.Select(r => r.AnswerStudentInfo.Answer).ToList(),
+					StudentAnswers = group
+						.Select(r => new StudentAnswerData
+						{
+							Answer = _context.QuestionAnswers
+								.Where(a => a.QuizQuestionId == r.AnswerStudentInfo.QuizQuestionId && a.Answer == r.AnswerStudentInfo.Answer)
+								.Select(a => a.Answer)
+								.FirstOrDefault(),
+							Order = r.AnswerStudentInfo.Answer,
+						}).ToList(),
 					CorrectAnswers = _context.QuestionAnswers
 						.Where(a => a.QuizQuestionId == group.Key && a.isCorrect)
-						.Select(a => a.Answer)
+						.Select(a => new CorrectAnswerData
+						{
+							Answer = a.Answer,
+							Order = group.First().AnswerStudentInfo.QuizQuestionInfo.QuestionType == 0 ? null : a.Order
+						})
+						.ToList(),
+					QuestionItems = _context.QuestionItems
+						.Where(m => m.QuizQuestionId == group
+							.Select(m => m.AnswerStudentInfo.QuizQuestionId)
+							.FirstOrDefault())
+						.Select(m => new QuestionItemData
+						{
+							Name = m.Name,
+							Order = m.Order
+						})
 						.ToList()
 				});
-
 			}
 
 			QuizTakeResultVM = new QuizTakeResultVM
