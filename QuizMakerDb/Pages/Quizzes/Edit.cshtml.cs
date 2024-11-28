@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuizMakerDb.Data;
 using QuizMakerDb.Data.Identity;
@@ -14,7 +9,7 @@ using QuizMakerDb.Data.ViewModels;
 
 namespace QuizMakerDb.Pages.Quizzes
 {
-    public class EditModel : PageModel
+	public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
 		private readonly UserManager<AppUser> _userManager;
@@ -61,7 +56,6 @@ namespace QuizMakerDb.Pages.Quizzes
                 UpdatedDate = quiz.UpdatedDate
             };
 
-            // ViewData["TeacherId"] = new SelectList(_context.Teachers, "Id", "Id");
             return Page();
         }
 

@@ -414,7 +414,9 @@
 									<option value="" selected>Select Course Year Subject</option>
 									@foreach (var subject in ViewBag.TeacherSubjects)
 									{
-										<option value="@subject.Id" data-subject="@subject.SubjectId">@subject.Name</option>
+										<option value="@subject.Id" data-subject="@subject.SubjectId">
+											@subject.Name
+										</option>
 									}
 								</select>
 								<button class="btn btn-outline-secondary" type="button" id="searchSectionButton" onclick="updateAddButton()"></button>
