@@ -100,7 +100,7 @@
 				},
 				success: function (data) {
 					if (data.message === "OK") {
-						displayQuestion(data.question, data.answers, data.items);
+						displayQuestion(data.question, data.answers, data.items, data.questionRandomized);
 						displayButton(data.allowEmptyAnswers, data.questionRandomized);
 					} else if (data.message === "All questions answered.") {
 						window.location.href = '/QuizTakes/StudentQuizResult?quizTakeId=' + '@Model.QuizTakeId';
@@ -126,7 +126,7 @@
 				},
 				success: function (data) {
 					if (data.message === "OK") {
-						displayQuestion(data.question, data.answers, data.items);
+						displayQuestion(data.question, data.answers, data.items, data.questionRandomized);
 						displayButton(data.allowEmptyAnswers, data.questionRandomized);
 					} else {
 						console.error(data);
@@ -138,7 +138,7 @@
 			});
 		}
 
-		function displayQuestion(question, answers, items) {
+		function displayQuestion(question, answers, items, isQuestionRandomized) {
 			var questionContainer = $('#questionContainer');
 			$('#quizQuestionId').val(question.id);
 			
@@ -148,8 +148,10 @@
 
 			questionContainer.append(hiddenOrder);
 
-			var description = `<h3 class="mt-5">${question.order}.) ${question.description}</h3>`;
-			
+			const description = isQuestionRandomized
+				? `<h3 class="mt-5">${question.description}</h3>`
+				: `<h3 class="mt-5">${question.order}.) ${question.description}</h3>`;
+
 			if (question.image && question.image.startsWith('/9j/')) {
 				var image = `<img class="mb-3" id="questionImage" src="data:image/jpeg;base64,${question.image}" alt="Question Image" class="img-fluid" />`;
 				questionContainer.append(image);
